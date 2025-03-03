@@ -1,7 +1,8 @@
+import 'package:events_app/presentation/select_location_screen.dart';
 import 'package:flutter/material.dart';
 
 class SelectLocation extends StatelessWidget {
-  const SelectLocation({Key? key}) : super(key: key);
+  const SelectLocation({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,11 +12,12 @@ class SelectLocation extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 109),
                 Column(
                   children: [
-                    Image.asset('images/illustration.png',
+                    Image.asset('assets/images/illustration.png',
                     height: 200,
                     ),
                     const SizedBox(height: 44),
@@ -52,7 +54,9 @@ class SelectLocation extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 109.15),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => SelectLocationScreen()));
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF0DCDAA),
                       minimumSize: const Size(double.infinity, 60),
