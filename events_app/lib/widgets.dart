@@ -31,13 +31,13 @@ extension IconButtonStyleHelper on CustomIconButton {
 //   unknown,
 // }
 
-enum BottomBarEnum {
-  Iconhome,
-  Iconsearchgray40001,
-  Iconticket,
-  Iconheartgray40001,
-  Iconuser,
-}
+// enum BottomBarEnum {
+//   Iconhome,
+//   Iconsearchgray40001,
+//   Iconticket,
+//   Iconheartgray40001,
+//   Iconuser,
+// }
 
 class BaseButton extends StatelessWidget {
   const BaseButton(
@@ -378,7 +378,10 @@ class CustomElevatedButton extends BaseButton {
         height: height ?? 60.h,
         width: width ?? double.maxFinite,
         margin: margin,
-        decoration: decoration,
+        decoration: decoration??BoxDecoration(
+          color: appTheme.greenA700,
+          borderRadius: BorderRadius.circular(10.h),
+        ),
         child: ElevatedButton(
           style: buttonStyle,
           onPressed: isDisabled ?? false ? null : onPressed ?? () {},
@@ -595,8 +598,13 @@ class CustomOutlinedButton extends BaseButton {
         width: width ?? double.maxFinite,
         margin: margin,
         decoration: decoration,
+        // ??BoxDecoration(
+        //   borderRadius: BorderRadius.circular(14.h),
+        //   border: Border.all(color: appTheme.gray600),
+        // ),
+        
         child: OutlinedButton(
-          style: buttonStyle,
+          style: buttonStyle?? CustomButtonStyles.none,
           onPressed: isDisabled ?? false ? null : onPressed ?? () {},
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -1411,147 +1419,147 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       );
 }
 
-class CustomBottomBar extends StatefulWidget {
-  CustomBottomBar({super.key, this.onChanged});
+// class CustomBottomBar extends StatefulWidget {
+//   CustomBottomBar({super.key, this.onChanged});
 
-  Function(BottomBarEnum)? onChanged;
-  @override
-  CustomBottomBarState createState() => CustomBottomBarState();
-}
+//   Function(BottomBarEnum)? onChanged;
+//   @override
+//   CustomBottomBarState createState() => CustomBottomBarState();
+// }
 
-class CustomBottomBarState extends State<CustomBottomBar> {
-  int selectedIndex = 0;
+// class CustomBottomBarState extends State<CustomBottomBar> {
+//   int selectedIndex = 0;
 
-  List<BottomMenuModel> bottomMenuList = [
-    BottomMenuModel(
-      // icon: ImageConstant.imgIconHome,
-      icon: Icon(
-        Icons.home_outlined,
-        color: appTheme.gray40001,
-        size: 4.h,
-      ),
-      activeIcon: Icon(
-        Icons.home_outlined,
-        color: appTheme.blueGray900,
-        size: 4.h,
-      ),
-      type: BottomBarEnum.Iconhome,
-    ),
-    BottomMenuModel(
-      // icon: ImageConstant.imgIconSearchGray40001,
-      icon: Icon(
-        Icons.search_outlined,
-        color: appTheme.gray40001,
-        size: 4.h,
-      ),
-      activeIcon: Icon(
-        Icons.search_outlined,
-        color: appTheme.blueGray900,
-        size: 4.h,
-      ),
-      type: BottomBarEnum.Iconsearchgray40001,
-    ),
-    BottomMenuModel(
-      // icon: ImageConstant.imgIconTicket,
-      icon: Icon(
-        Icons.local_activity_outlined,
-        color: appTheme.gray40001,
-        size: 4.h,
-      ),
-      activeIcon: Icon(
-        Icons.local_activity_outlined,
-        color: appTheme.blueGray900,
-        size: 4.h,
-      ),
-      type: BottomBarEnum.Iconticket,
-    ),
-    BottomMenuModel(
-      // icon: ImageConstant.imgIconHeartGray40001,
-      icon: Icon(
-        Icons.favorite_border_outlined,
-        color: appTheme.gray40001,
-        size: 4.h,
-      ),
-      activeIcon: Icon(
-        Icons.favorite_border_outlined,
-        color: appTheme.blueGray900,
-        size: 4.h,
-      ),
-      type: BottomBarEnum.Iconheartgray40001,
-    ),
-    BottomMenuModel(
-      // icon: ImageConstant.imgIconUser,
-      icon: Icon(
-        Icons.person_outline,
-        color: appTheme.gray40001,
-        size: 4.h,
-      ),
-      activeIcon: Icon(
-        Icons.person_outline,
-        color: appTheme.blueGray900,
-        size: 4.h,
-      ),
-      type: BottomBarEnum.Iconuser,
-    )
-  ];
+//   List<BottomMenuModel> bottomMenuList = [
+//     BottomMenuModel(
+//       // icon: ImageConstant.imgIconHome,
+//       icon: Icon(
+//         Icons.home_outlined,
+//         color: appTheme.gray40001,
+//         size: 4.h,
+//       ),
+//       activeIcon: Icon(
+//         Icons.home_outlined,
+//         color: appTheme.blueGray900,
+//         size: 4.h,
+//       ),
+//       type: BottomBarEnum.Iconhome,
+//     ),
+//     BottomMenuModel(
+//       // icon: ImageConstant.imgIconSearchGray40001,
+//       icon: Icon(
+//         Icons.search_outlined,
+//         color: appTheme.gray40001,
+//         size: 4.h,
+//       ),
+//       activeIcon: Icon(
+//         Icons.search_outlined,
+//         color: appTheme.blueGray900,
+//         size: 4.h,
+//       ),
+//       type: BottomBarEnum.Iconsearchgray40001,
+//     ),
+//     BottomMenuModel(
+//       // icon: ImageConstant.imgIconTicket,
+//       icon: Icon(
+//         Icons.local_activity_outlined,
+//         color: appTheme.gray40001,
+//         size: 4.h,
+//       ),
+//       activeIcon: Icon(
+//         Icons.local_activity_outlined,
+//         color: appTheme.blueGray900,
+//         size: 4.h,
+//       ),
+//       type: BottomBarEnum.Iconticket,
+//     ),
+//     BottomMenuModel(
+//       // icon: ImageConstant.imgIconHeartGray40001,
+//       icon: Icon(
+//         Icons.favorite_border_outlined,
+//         color: appTheme.gray40001,
+//         size: 4.h,
+//       ),
+//       activeIcon: Icon(
+//         Icons.favorite_border_outlined,
+//         color: appTheme.blueGray900,
+//         size: 4.h,
+//       ),
+//       type: BottomBarEnum.Iconheartgray40001,
+//     ),
+//     BottomMenuModel(
+//       // icon: ImageConstant.imgIconUser,
+//       icon: Icon(
+//         Icons.person_outline,
+//         color: appTheme.gray40001,
+//         size: 4.h,
+//       ),
+//       activeIcon: Icon(
+//         Icons.person_outline,
+//         color: appTheme.blueGray900,
+//         size: 4.h,
+//       ),
+//       type: BottomBarEnum.Iconuser,
+//     )
+//   ];
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: appTheme.gray100,
-      ),
-      child: BottomNavigationBar(
-        backgroundColor: Colors.transparent,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        selectedFontSize: 0,
-        elevation: 0,
-        currentIndex: selectedIndex,
-        type: BottomNavigationBarType.fixed,
-        items: List.generate(bottomMenuList.length, (index) {
-          return BottomNavigationBarItem(
-            // icon: CustomImageView(
-            //   // imagePath: bottomMenuList[index].icon,
-            //   icon: bottomMenuList[index].icon,
-            //   height: 24.h,
-            //   width: 26.h,
-            //   color: appTheme.gray40001,
-            // ),
-            icon: bottomMenuList[index].icon,
-            // activeIcon: CustomImageView(
-            //   // imagePath: bottomMenuList[index].activeIcon,
-            //   icon: bottomMenuList[index].icon,
-            //   height: 26.h,
-            //   width: 26.h,
-            //   color: appTheme.blueGray900,
-            // ),
-            activeIcon: bottomMenuList[index].activeIcon,
-            label: '',
-          );
-        }),
-        onTap: (index) {
-          selectedIndex = index;
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       decoration: BoxDecoration(
+//         color: appTheme.gray100,
+//       ),
+//       child: BottomNavigationBar(
+//         backgroundColor: Colors.transparent,
+//         showSelectedLabels: false,
+//         showUnselectedLabels: false,
+//         selectedFontSize: 0,
+//         elevation: 0,
+//         currentIndex: selectedIndex,
+//         type: BottomNavigationBarType.fixed,
+//         items: List.generate(bottomMenuList.length, (index) {
+//           return BottomNavigationBarItem(
+//             // icon: CustomImageView(
+//             //   // imagePath: bottomMenuList[index].icon,
+//             //   icon: bottomMenuList[index].icon,
+//             //   height: 24.h,
+//             //   width: 26.h,
+//             //   color: appTheme.gray40001,
+//             // ),
+//             icon: bottomMenuList[index].icon,
+//             // activeIcon: CustomImageView(
+//             //   // imagePath: bottomMenuList[index].activeIcon,
+//             //   icon: bottomMenuList[index].icon,
+//             //   height: 26.h,
+//             //   width: 26.h,
+//             //   color: appTheme.blueGray900,
+//             // ),
+//             activeIcon: bottomMenuList[index].activeIcon,
+//             label: '',
+//           );
+//         }),
+//         onTap: (index) {
+//           selectedIndex = index;
 
-          widget.onChanged?.call(bottomMenuList[index].type);
+//           widget.onChanged?.call(bottomMenuList[index].type);
 
-          setState(() {});
-        },
-      ),
-    );
-  }
-}
+//           setState(() {});
+//         },
+//       ),
+//     );
+//   }
+// }
 
-class BottomMenuModel {
-  BottomMenuModel(
-      { required this.icon, required this.activeIcon, required this.type});
+// class BottomMenuModel {
+//   BottomMenuModel(
+//       { required this.icon, required this.activeIcon, required this.type});
 
-  Icon icon;
+//   Icon icon;
 
-  Icon activeIcon;
+//   Icon activeIcon;
 
-  BottomBarEnum type;
-}
+//   BottomBarEnum type;
+// }
 
 // class DefaultWidget extends StatelessWidget {
 //   @override

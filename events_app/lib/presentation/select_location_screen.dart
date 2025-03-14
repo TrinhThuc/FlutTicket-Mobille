@@ -1,9 +1,9 @@
 import 'package:events_app/app_utils.dart';
-import 'package:events_app/presentation/home_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../app_theme.dart';
 import '../widgets.dart';
+import 'dashboard_screen.dart';
 
 class SelectLocationScreen extends StatelessWidget {
   SelectLocationScreen({super.key});
@@ -70,18 +70,6 @@ class SelectLocationScreen extends StatelessWidget {
     );
   }
 
-  /// **Search Box with Icon**
-//  Widget _buildLocationSelectionRow(BuildContext context) {
-//   return Expanded( // ✅ Prevents the Row from overflowing
-//     child: CustomSearchView(
-//       controller: searchController,
-//       hintText: "Select location....",
-//       alignment: Alignment.center,
-//       contentPadding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 12.h),
-//     ),
-//   );
-// }
-
 
 Widget _buildLocationSelectionRow(BuildContext context) {
   return Padding(
@@ -95,30 +83,6 @@ Widget _buildLocationSelectionRow(BuildContext context) {
   );
 }
 
-
-//   Widget _buildLocationText(BuildContext context, String city, String country) {
-//   return GestureDetector(
-//     onTap: () {
-//       _navigateToHome(context, city);
-//     },
-//     child: Padding(
-//       padding: EdgeInsets.only(bottom: 20.h),
-//       child: SizedBox(
-//         width: double.infinity, 
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Text(city, style: CustomTextStyles.titleMediumGray900, 
-//                 overflow: TextOverflow.ellipsis, maxLines: 1), // ✅ Ensures no overflow
-//             SizedBox(height: 4.h),
-//             Text(country, style: theme.textTheme.bodyLarge, 
-//                 overflow: TextOverflow.ellipsis, maxLines: 1), // ✅ Ensures no overflow
-//           ],
-//         ),
-//       ),
-//     ),
-//   );
-// }
 
 Widget _buildLocationText(BuildContext context, String city, String country) {
   return GestureDetector(
@@ -153,7 +117,7 @@ void _navigateToHome(BuildContext context, String location) {
   Navigator.pushReplacement(
     context,
     MaterialPageRoute(
-      builder: (context) => HomeScreen(selectedLocation: location),
+      builder: (context) => DashboardScreen(),
     ),
   );
 }

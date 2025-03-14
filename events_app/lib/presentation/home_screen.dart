@@ -18,65 +18,9 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: appTheme.whiteA700,
       body: SafeArea(
-        child: Navigator(
-          key: navigatorKey,
-          onGenerateRoute: (settings) {
-            return MaterialPageRoute(
-              builder: (context) => getCurrentPage(settings.name ?? "/"),
-            );
-          },
-        ),
+        child: HomeInitialPage( ),
       ),
-      bottomNavigationBar: buildBottomNavigation(context),
     );
-  }
-
-  /// **Bottom Navigation Bar**
-  Widget buildBottomNavigation(BuildContext context) {
-    return CustomBottomBar(
-      onChanged: (BottomBarEnum type) {
-        Navigator.pushNamed(
-          navigatorKey.currentContext!,
-          getCurrentRoute(type),
-        );
-      },
-    );
-  }
-
-  /// **Handle Route Navigation**
-  String getCurrentRoute(BottomBarEnum type) {
-    switch (type) {
-      case BottomBarEnum.Iconhome:
-        return AppRoutes.homeInitialPage;
-      case BottomBarEnum.Iconsearchgray40001:
-        return AppRoutes.searchPage;
-      case BottomBarEnum.Iconticket:
-        return AppRoutes.ticketPage;
-      case BottomBarEnum.Iconheartgray40001:
-        return AppRoutes.favouritesPage;
-      case BottomBarEnum.Iconuser:
-        return AppRoutes.userPage;
-      default:
-        return "/";
-    }
-  }
-
-  /// **Get Current Page Based on Route**
-  Widget getCurrentPage(String currentRoute) {
-    switch (currentRoute) {
-      case AppRoutes.homeInitialPage:
-        return const HomeInitialPage();
-      // case AppRoutes.searchPage:
-      //   return SearchPage();
-      // case AppRoutes.ticketPage:
-      //   return TicketPage();
-      // case AppRoutes.favouritesPage:
-      //   return FavouritesPage();
-      // case AppRoutes.userPage:
-      //   return UserPage();
-      default:
-        return const HomeInitialPage();
-    }
   }
 }
 
@@ -170,7 +114,6 @@ final int index;
               
               
           CustomElevatedButton(
-
             height: 26.h,
             width: 36.h,
             text: "New",

@@ -143,6 +143,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   /// **Bottom Payment Bar**
   Widget _buildBottomPaymentBar() {
+        List<String> paymentMethods = ['Apple Pay', 'Credit Card', 'Bitcoin'];
+    List<String> paymentIcons = [
+      'assets/images/Apple_Pay_logo.png',
+      'assets/images/visa_1.png',
+      'assets/images/bitcoin_1.png',
+    ];
     return Column(
       children: [
         const Divider(),
@@ -153,15 +159,17 @@ class _PaymentScreenState extends State<PaymentScreen> {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.shopping_bag),
+                  const Icon(Icons.shopping_bag_outlined),
                   SizedBox(width: 8.h),
                   Text('€67.00', style: theme.textTheme.titleLarge),
                 ],
               ),
               ElevatedButton.icon(
                 onPressed: () {},
-                icon: const Icon(Icons.apple),
-                label: const Text('Pay with Apple Pay'),
+                // icon: const Icon(Icons.apple),
+                     icon:       Image.asset(paymentIcons[selectedMethod], height: 24.h, width: 40.h, color: Colors.white),
+
+                label:  Text("Pay with ${paymentMethods[selectedMethod]}"),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
                   foregroundColor: Colors.white,
@@ -196,9 +204,9 @@ class PaymentMethodTile extends StatelessWidget {
   Widget build(BuildContext context) {
     List<String> paymentMethods = ['Apple Pay', 'Credit Card', 'Bitcoin'];
     List<String> paymentIcons = [
-      'https://storage.googleapis.com/a1aa/image/MpBTZLZxSddab58HkoghtOEHdn0ZARD9InP8C9SPbzg.jpg',
-      'https://storage.googleapis.com/a1aa/image/1LeWRVa1LqMm-0it_MPzykBC4hkK7PBk6qxxpCewnKA.jpg',
-      'https://storage.googleapis.com/a1aa/image/4SXP89Ss-EvrKxx9VbpDN0L551f0KlE0bdGr413UdKM.jpg'
+      'assets/images/Apple_Pay_logo.png',
+      'assets/images/visa_1.png',
+      'assets/images/bitcoin_1.png',
     ];
 
     return GestureDetector(
@@ -224,7 +232,8 @@ class PaymentMethodTile extends StatelessWidget {
             SizedBox(width: 12.h),
             Text(paymentMethods[index], style: CustomTextStyles.bodySmallBlack900),
             Spacer(),
-            Image.network(paymentIcons[index], height: 24.h, width: 40.h),
+            // Image.network(paymentIcons[index], height: 24.h, width: 40.h),
+            Image.asset(paymentIcons[index], height: 24.h, width: 40.h),
           ],
         ),
       ),

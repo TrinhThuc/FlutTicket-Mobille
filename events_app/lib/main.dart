@@ -1,4 +1,4 @@
-import 'package:events_app/presentation/buy_ticket_screen.dart';
+import 'package:events_app/presentation/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'app_utils.dart';
@@ -43,8 +43,9 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      // home: const StartScreen(),
-            home: const BuyTicketScreen(eventName: 'La Rosalia', eventDate: 'Mon, Apr 18 · 21:00 PM', eventLocation: 'Palau Sant Jordi, Barcelona',),
+      home: const StartScreen(),
+      // home:  DashboardScreen(),
+            // home: const BuyTicketScreen(eventName: 'La Rosalia', eventDate: 'Mon, Apr 18 · 21:00 PM', eventLocation: 'Palau Sant Jordi, Barcelona',),
 
     );
   }
