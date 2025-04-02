@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../app_routes.dart';
 import '../app_theme.dart';
 import '../app_utils.dart';
 import '../widgets.dart';
@@ -17,7 +16,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appTheme.whiteA700,
-      body: SafeArea(
+      body: const SafeArea(
         child: HomeInitialPage( ),
       ),
     );
@@ -121,7 +120,7 @@ final int index;
             buttonStyle: CustomButtonStyles.fillGreenA,
             buttonTextStyle: CustomTextStyles.bodySmallWhiteA700,
             alignment: Alignment.topLeft,
-          ): SizedBox(),
+          ): const SizedBox(),
             
         ],
       ),

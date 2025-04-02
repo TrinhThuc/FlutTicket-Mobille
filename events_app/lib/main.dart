@@ -1,4 +1,3 @@
-import 'package:events_app/presentation/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'app_utils.dart';
@@ -150,7 +149,7 @@ class StartScreen extends StatelessWidget {
                         ),
                       ),
                       child: const Text(
-                        'No account yet? Sing up',
+                        'No account yet? Sign up',
                         style: TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 16,

@@ -95,7 +95,7 @@ class SearchScreen extends StatelessWidget {
                         children: [
                           Text('123 Events',
                               style: CustomTextStyles.bodyLargeBlack900),
-                          Spacer(),
+                          const Spacer(),
                           Text('Sort by relevant',
                               style: CustomTextStyles.bodySmallBlack900),
                           Icon(
@@ -109,14 +109,14 @@ class SearchScreen extends StatelessWidget {
                       child: Padding(padding: EdgeInsets.only(left: 6.h),
                       child:ListView.separated(
                         padding: EdgeInsets.zero,
-                        physics: BouncingScrollPhysics(),
+                        physics: const BouncingScrollPhysics(),
                         shrinkWrap: true,
                         itemCount: 5,
                         separatorBuilder: (context, index) {
                           return SizedBox(height: 18.h);
                         },
                         itemBuilder: (context, index){
-                          return EventListItenWidget();
+                          return const EventListItenWidget();
                         }
 
 
@@ -186,9 +186,9 @@ class EventListItenWidget extends StatelessWidget {
           ),
         ),
 
-        Icon(Icons.favorite, color: Colors.red),
+        const Icon(Icons.favorite, color: Colors.red),
         SizedBox(width: 10.h),
-        Icon(Icons.share, color: Colors.grey),
+        const Icon(Icons.share, color: Colors.grey),
       ],
     );
 

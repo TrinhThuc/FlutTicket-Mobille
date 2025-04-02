@@ -2,7 +2,6 @@ import 'package:events_app/app_theme.dart';
 import 'package:events_app/app_utils.dart';
 import 'package:flutter/material.dart';
 
-import '../app_routes.dart';
 import '../widgets.dart';
 
 class FavouritesScreen extends StatelessWidget {
@@ -124,12 +123,12 @@ class FavouritesScreen extends StatelessWidget {
                                 child: ListView.separated(
                                     itemCount: 2,
                                     padding: EdgeInsets.zero,
-                                    physics: BouncingScrollPhysics(),
+                                    physics: const BouncingScrollPhysics(),
                                     shrinkWrap: true,
                                     separatorBuilder: (context, index) =>
                                         SizedBox(height: 18.h),
                                     itemBuilder: (context, index) {
-                                      return FavouritesItemWidget();
+                                      return const FavouritesItemWidget();
                                     }))),
                       ],
                     )))
@@ -140,7 +139,7 @@ class FavouritesScreen extends StatelessWidget {
 }
 
 class FavouritesItemWidget extends StatelessWidget {
-  FavouritesItemWidget({super.key});
+  const FavouritesItemWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

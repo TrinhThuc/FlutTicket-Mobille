@@ -42,7 +42,7 @@ class ProfileScreen extends StatelessWidget {
                             padding: EdgeInsets.all(8.h),
                             decoration: IconButtonStyleHelper.none,
                             alignment: Alignment.bottomRight,
-                            child: CustomImageView(
+                            child: const CustomImageView(
                               imagePath: 'assets/images/edit_icon.png',
                             ),
                           )
@@ -82,7 +82,7 @@ class ProfileScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               CustomOutlinedButton(
                       text: 'Log Out',
                       onPressed: () {},

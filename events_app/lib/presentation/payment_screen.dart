@@ -4,7 +4,7 @@ import 'package:events_app/widgets.dart';
 import 'package:flutter/material.dart';
 
 class PaymentScreen extends StatefulWidget {
-  PaymentScreen({super.key});
+  const PaymentScreen({super.key});
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
@@ -115,7 +115,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         SizedBox(height: 12.h),
         ListView.separated(
           shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           itemCount: 3,
           separatorBuilder: (_, __) => SizedBox(height: 6.h),
           itemBuilder: (_, index) => PaymentMethodTile(
@@ -231,7 +231,7 @@ class PaymentMethodTile extends StatelessWidget {
             ),
             SizedBox(width: 12.h),
             Text(paymentMethods[index], style: CustomTextStyles.bodySmallBlack900),
-            Spacer(),
+            const Spacer(),
             // Image.network(paymentIcons[index], height: 24.h, width: 40.h),
             Image.asset(paymentIcons[index], height: 24.h, width: 40.h),
           ],

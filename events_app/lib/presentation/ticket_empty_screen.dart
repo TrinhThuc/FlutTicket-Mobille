@@ -1,4 +1,3 @@
-import 'package:events_app/app_routes.dart';
 import 'package:events_app/app_utils.dart';
 import 'package:events_app/widgets.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +39,7 @@ class TicketEmptyScreenState extends State<TicketScreen>
                   controller: tabviewController,
                   // children: [TicketTabPage(), TicketTabPage()]
 
-                  children: [TicketUpcomingiTabPage(), TicketpastTabPage()],
+                  children: const [TicketUpcomingiTabPage(), TicketpastTabPage()],
                 ))),
               ]),
         ),
@@ -84,7 +83,7 @@ class TicketEmptyScreenState extends State<TicketScreen>
                 fontFamily: 'Inter',
               ),
               indicatorColor: appTheme.whiteA700,
-              tabs: [
+              tabs: const [
                 Tab(
                   text: 'Upcoming',
                 ),
@@ -128,11 +127,11 @@ class TicketpastTabPageState extends State<TicketpastTabPage> {
                             ),
                             ListView.separated(
                               padding: EdgeInsets.zero,
-                                physics: BouncingScrollPhysics(),
+                                physics: const BouncingScrollPhysics(),
                                 shrinkWrap: true,
                                 itemBuilder: (context, index) {
 
-                                  return ListtheWeekndItemWidget();
+                                  return const ListtheWeekndItemWidget();
                                 },
                                 separatorBuilder: (context, index) {
                                   return SizedBox(
@@ -154,11 +153,11 @@ class TicketpastTabPageState extends State<TicketpastTabPage> {
                                 ),
                                 ListView.separated(
                                   padding: EdgeInsets.zero,
-                                    physics: BouncingScrollPhysics(),
+                                    physics: const BouncingScrollPhysics(),
                                     shrinkWrap: true,
                                     itemBuilder: (context, index) {
                                       
-                                      return ListnikMulveyItemWidget();
+                                      return const ListnikMulveyItemWidget();
                                     },
                                     separatorBuilder: (context, index) {
                                       return SizedBox(
@@ -327,7 +326,7 @@ class TicketUpcomingiTabPageState extends State<TicketUpcomingiTabPage> {
           children: [
             Expanded(
                 child: ListView.separated(
-                    physics: BouncingScrollPhysics(),
+                    physics: const BouncingScrollPhysics(),
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
@@ -421,7 +420,7 @@ class TicketTabPageState extends State<TicketTabPage> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.h, vertical: 134.h),
           child: Column(

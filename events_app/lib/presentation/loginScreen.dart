@@ -1,5 +1,8 @@
 import 'package:events_app/presentation/selectLocation.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Thêm import để lưu access token
+
+import '../service/api_service.dart'; // Thêm import ApiService
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,6 +16,59 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _passwordVisible = false;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  void _login() async {
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Vui lòng nhập email và mật khẩu')),
+      );
+      return;
+    }
+
+    // Hiển thị dialog loading
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
+
+    try {
+      // Gọi API để đăng nhập
+      final response = await ApiService().requestLogin(email, password);
+
+      // Đóng dialog loading
+      Navigator.of(context, rootNavigator: true).pop();
+
+      if (response != null && response.containsKey('error')) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response['error'])),
+        );
+      } else {
+        // Chỉ lưu access token nếu Remember me được chọn
+        if (rememberMe) {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.remove('access_token'); // Xóa token cũ trước khi lưu
+          await prefs.setString('access_token', response?['access_token']);
+        }
+
+        // Chuyển đến màn hình chọn vị trí
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const SelectLocation()),
+        );
+      }
+    } catch (e) {
+      Navigator.of(context, rootNavigator: true).pop(); // Đóng dialog
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Có lỗi xảy ra, vui lòng thử lại')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 175),
-              
+
               // Email Input
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,9 +126,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 30),
-              
+
               // Password Input
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,9 +170,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 30),
-              
+
               // Remember me
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -154,16 +210,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 175),
-              
+
               // Sign in button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const SelectLocation()));
-                  },
+                  onPressed: _login, // Gọi hàm _login khi nhấn nút
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF0DCDAA),
                     padding: const EdgeInsets.symmetric(vertical: 18),
@@ -188,4 +242,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-

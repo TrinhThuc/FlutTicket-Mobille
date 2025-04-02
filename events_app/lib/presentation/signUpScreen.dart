@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../service/api_service.dart';
+import 'loginScreen.dart';
+
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
@@ -11,7 +14,65 @@ class _SignupscreenState extends State<SignUpScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+
+  void signUp() async {
+    if (_passwordController.text != _confirmPasswordController.text) {
+      Navigator.of(context).pop(); // Đóng dialog nếu đang mở
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Mật khẩu xác nhận không khớp')),
+      );
+      return;
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
+
+    try {
+      final body = {
+        'username': _emailController.text,
+        'email': _emailController.text,
+        'fullName': _nameController.text,
+        'password': _passwordController.text,
+      };
+
+      final response = await ApiService.requestApi(
+          'oauth/user/register', 'create-user', body);
+
+      if (response.containsKey('error')) {
+        if (mounted) {
+          Navigator.of(context, rootNavigator: true).pop(); // Đóng dialog
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(response['error'])),
+          );
+        }
+      } else {
+        if (mounted) {
+          Navigator.of(context, rootNavigator: true).pop(); // Đóng dialog sử dụng root navigator
+          Future.delayed(Duration.zero, () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const LoginScreen()),
+            );
+          });
+        }
+      }
+    } catch (e) {
+      print('Lỗi đăng ký: $e');
+      if (mounted) {
+        Navigator.of(context, rootNavigator: true).pop(); // Đóng dialog trong trường hợp exception
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Có lỗi xảy ra, vui lòng thử lại')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +147,7 @@ class _SignupscreenState extends State<SignUpScreen> {
                   padding: const EdgeInsets.only(bottom: 76),
                   child: ElevatedButton(
                     onPressed: () {
-                      // Handle sign up logic
+                      signUp();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF0DCDAA),
@@ -168,4 +229,3 @@ class _SignupscreenState extends State<SignUpScreen> {
     );
   }
 }
-

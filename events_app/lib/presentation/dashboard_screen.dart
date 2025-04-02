@@ -8,7 +8,7 @@ import '../app_theme.dart';
 import 'search_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({Key? key}) : super(key: key);
+  const DashboardScreen({super.key});
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
@@ -19,7 +19,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final List<Widget> _widgetOptions = <Widget>[
     HomeScreen(selectedLocation: 'Barcelona'),
     SearchScreen(),
-    TicketScreen(),
+    const TicketScreen(),
     FavouritesScreen(),
     ProfileScreen(),
   ];
@@ -37,7 +37,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         color: appTheme.gray900,
         padding: const EdgeInsets.all(0),
         child: Container(
-          decoration: BoxDecoration(color: appTheme.gray200, boxShadow: [
+          decoration: BoxDecoration(color: appTheme.gray200, boxShadow: const [
             BoxShadow(
                 color: Colors.black12, blurRadius: 2, offset: Offset(0, -2))
           ]),
@@ -114,12 +114,11 @@ class TabButton extends StatelessWidget {
   final VoidCallback onTap;
 
   const TabButton(
-      {Key? key,
+      {super.key,
       required this.icon,
       required this.selectIcon,
       required this.isActive,
-      required this.onTap})
-      : super(key: key);
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +133,7 @@ class TabButton extends StatelessWidget {
             height: 25,
             fit: BoxFit.fitWidth,
             errorBuilder: (context, error, stackTrace) {
-              return Icon(Icons.error, size: 25, color: Colors.red);
+              return const Icon(Icons.error, size: 25, color: Colors.red);
             },
           ),
           

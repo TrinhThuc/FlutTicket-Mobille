@@ -83,7 +83,7 @@ class EventPage extends StatelessWidget {
                     Icons.attach_money,
                     size: 18.h,
                   ),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   Padding(
                     padding: EdgeInsets.only(left: 10.h),
                     child: Text('Refund Policy',

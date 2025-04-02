@@ -278,7 +278,7 @@ class TextThemes {
 }
 
 class ColorSchemes {
-  static final lightCodeColorScheme = const ColorScheme.light(
+  static const lightCodeColorScheme = ColorScheme.light(
     primary: Color(0XFF0CCDAA),
     primaryContainer: Color(0XFF2E2E2E),
     secondaryContainer: Color(0XFF070707),

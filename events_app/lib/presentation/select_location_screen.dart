@@ -117,7 +117,7 @@ void _navigateToHome(BuildContext context, String location) {
   Navigator.pushReplacement(
     context,
     MaterialPageRoute(
-      builder: (context) => DashboardScreen(),
+      builder: (context) => const DashboardScreen(),
     ),
   );
 }

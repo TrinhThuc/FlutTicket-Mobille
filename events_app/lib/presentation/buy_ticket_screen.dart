@@ -28,7 +28,7 @@ class BuyTicketScreen extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: Icon(Icons.close, color: Colors.black),
+            icon: const Icon(Icons.close, color: Colors.black),
           )
         ],
       ),
@@ -85,13 +85,13 @@ class BuyTicketScreen extends StatelessWidget {
               Icons.shopping_bag_outlined,
               size: 24.h,
             ),
-            Spacer(),
+            const Spacer(),
             Text('€67.00', style: theme.textTheme.titleMedium),
             CustomElevatedButton(
               text: 'Buy',
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return PaymentScreen();
+                  return const PaymentScreen();
                 }));
               },
               height: 44.h,
@@ -139,7 +139,7 @@ class BuyTicketScreen extends StatelessWidget {
     return Expanded(
         child: ListView.separated(
             padding: EdgeInsets.zero,
-            physics: BouncingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             shrinkWrap: true,
             itemBuilder: (context, index) {
               return TicketpurchasesectionItemWidget(
@@ -198,19 +198,19 @@ class TicketpurchasesectionItemWidget extends StatelessWidget {
           ],
         )),
         ticketOption['isSoldOut']
-            ? Text('Sold Out!', style: TextStyle(color: Colors.grey))
+            ? const Text('Sold Out!', style: TextStyle(color: Colors.grey))
             : Container(
                 decoration: BoxDecoration(
                   border: Border.all(
                       color: Colors.grey, width: 1.5), // ✅ Border color & width
                   borderRadius: BorderRadius.circular(8), // ✅ Rounded corners
                 ),
-                padding: EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                     horizontal: 12), // ✅ Padding inside border
                 child: DropdownButtonHideUnderline(
                   // ✅ Removes default underline
                   child: DropdownButton<int>(
-                    icon: Icon(Icons.keyboard_arrow_down_rounded),
+                    icon: const Icon(Icons.keyboard_arrow_down_rounded),
                     value: 0,
                     items: List.generate(
                       5,
