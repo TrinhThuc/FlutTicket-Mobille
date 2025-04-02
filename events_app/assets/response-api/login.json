@@ -1,0 +1,38 @@
+{
+    "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY3Rpb25Vc2VyIjp7InVzZXJJZCI6MiwidXNlcm5hbWUiOiJ0cmluaHRodWM0MzJAZ21haWwuY29tIiwidXNlckNvZGUiOiJBQkMiLCJwaG9uZSI6IjAzOTU0Mjk5NyIsImVtYWlsIjoidHJpbmh0aHVjNDMyQGdtYWlsLmNvbSIsImZ1bGxOYW1lIjoiVHLhu4tuaCBWxINuIFRo4buxYyIsImlwQWRkcmVzcyI6IjE5Mi4xNjguMy44MCIsInN0YXR1cyI6MX0sImF1ZCI6WyJjYXRhbG9nIiwicHJvZmlsZSIsImNvbnRyYWN0IiwibGVhcm5pbmciLCJ0ZWFtIiwiZW1wbG95ZWUiLCJzYWxhcnkiLCJjYW5kaWRhdGUiLCJyZWNydWl0bWVudCIsInNhZ2EiLCJvYXV0aCIsImVtYWlsIl0sInVzZXJfbmFtZSI6InRyaW5odGh1YzQzMkBnbWFpbC5jb20iLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXSwiZXhwIjoxNzQzNTkxNzI4LCJqdGkiOiJkMGJjMDg0Ni0zZWUxLTQ3MzUtYjY2Ni1mODgyNDJkMjZjYmIiLCJjbGllbnRfaWQiOiJhdXRob3JpemF0aW9uX2NsaWVudF9pZCJ9.pvctxtPYHfm05bkKz-BP9BrMBAE0zfWGoHWy45e2uDYV1cUuh7K02VtKIJKmn96gYWNGPm152R9Jtc135aCv62UmURbr6Ah1sE_zhNtVfw5zlmLUyakOPN0GD0oyP3du-srK6X9P63VKN7VJv1QAXZHaL-quyE6Nf4V2LXV-URN4Ng4Pd2s0X92OcwMd6Q-XRyFZ6zr56GGboCF5n8e29oNKaHpigA7qElR9PyGejtWzEXcpfIPilR6TvckgqNRhkDd1vvobKLKtCgIIt_w-2muyhTs0GqzLsFEasceBSM1TMKPbbTBYeZIBHyBGoUicPaREQ3y4YXqeYtK_W4AdmQ",
+    "token_type": "bearer",
+    "refresh_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY3Rpb25Vc2VyIjp7InVzZXJJZCI6MiwidXNlcm5hbWUiOiJ0cmluaHRodWM0MzJAZ21haWwuY29tIiwidXNlckNvZGUiOiJBQkMiLCJwaG9uZSI6IjAzOTU0Mjk5NyIsImVtYWlsIjoidHJpbmh0aHVjNDMyQGdtYWlsLmNvbSIsImZ1bGxOYW1lIjoiVHLhu4tuaCBWxINuIFRo4buxYyIsImlwQWRkcmVzcyI6IjE5Mi4xNjguMy44MCIsInN0YXR1cyI6MX0sImF1ZCI6WyJjYXRhbG9nIiwicHJvZmlsZSIsImNvbnRyYWN0IiwibGVhcm5pbmciLCJ0ZWFtIiwiZW1wbG95ZWUiLCJzYWxhcnkiLCJjYW5kaWRhdGUiLCJyZWNydWl0bWVudCIsInNhZ2EiLCJvYXV0aCIsImVtYWlsIl0sInVzZXJfbmFtZSI6InRyaW5odGh1YzQzMkBnbWFpbC5jb20iLCJzY29wZSI6WyJyZWFkIiwid3JpdGUiXSwiYXRpIjoiZDBiYzA4NDYtM2VlMS00NzM1LWI2NjYtZjg4MjQyZDI2Y2JiIiwiZXhwIjoxNzQ0Mjc1NzI4LCJqdGkiOiIyMzEzODU3Zi1iMGQ3LTQ1MjgtYWJiMy0wNmI4MDAzM2JlOTUiLCJjbGllbnRfaWQiOiJhdXRob3JpemF0aW9uX2NsaWVudF9pZCJ9.CRiFYzfMmD1q2oKX7Z3cgG2PvTlIPlxcb9-s-8BthXeVP2IWJmgGj7NodSidtsc4iLtnNPYSiuhUUX3gvmGf4ohN-uYlM-JVqQ1blk3-YDIHPdOxTcVlnOmpnzcnLgC7-RVfSeY8TQposSL83tyEJ3rmk8c_g2MxS46OzDO00MDg_fU34kS5c6-HKilmAZ7eYxVQOfSHTbZ-r5CvzmL9SJBugI5ZnyGLBFMI1lampMcG7NN7Wj47Y7U0WWYzJiWWjrW6zwsVG3VaeuMKM8XYKt4Us6rnGwd_7eV1RO8kZGzCac0EdvMx9Ad93iiuENiYASXZEZXMwJZlaf8sOOvCdw",
+    "expires_in": 179998,
+    "scope": "read write",
+    "jti": "d0bc0846-3ee1-4735-b666-f88242d26cbb",
+    "user_info": {
+        "userId": 2,
+        "username": "trinhthuc432@gmail.com",
+        "userCode": "ABC",
+        "phone": "039542997",
+        "email": "trinhthuc432@gmail.com",
+        "fullName": "Trịnh Văn Thực",
+        "ipAddress": "192.168.3.80",
+        "status": 1,
+        "authorities": []
+    },
+    "role_list": [
+        {
+            "roleId": 1,
+            "code": "USER",
+            "name": "USER",
+            "note": "User role"
+        }
+    ],
+    "component_list": [
+        "remove_fav_event",
+        "create_order",
+        "create_payment",
+        "confirm_payment",
+        "get_fav_event",
+        "get_order",
+        "add_fav_event",
+        "update_order"
+    ],
+    "isFirstLogin": true
+}
