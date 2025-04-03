@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../app_theme.dart';
 import '../app_utils.dart';
+import '../service/api_service.dart';
 import '../widgets.dart';
 import 'single_event_screen.dart';
 
@@ -17,19 +19,28 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: appTheme.whiteA700,
       body: const SafeArea(
-        child: HomeInitialPage( ),
+        child: HomeInitialPage(),
       ),
     );
   }
 }
 
 /// **Home Initial Page with Events**
-class EventlistItemWidget extends StatelessWidget {
-  const EventlistItemWidget( {super.key, required this.index});
-final int index;
+class EventlistItemWidget extends StatefulWidget {
+  const EventlistItemWidget({super.key, required this.index});
+  final int index;
+
+  @override
+  State<EventlistItemWidget> createState() => _EventlistItemWidgetState();
+}
+
+class _EventlistItemWidgetState extends State<EventlistItemWidget> {
   @override
   Widget build(BuildContext context) {
-    int index = this.index;
+    final event = (context
+            .findAncestorStateOfType<_HomeInitialPageState>()
+            ?.popularEvents ??
+        [])[widget.index];
     return SizedBox(
       height: 96.h,
       child: Stack(
@@ -43,14 +54,13 @@ final int index;
                 child: Row(
                   children: [
                     CustomImageView(
-                      imagePath: "assets/images/Rectangle_4.png",
+                      imagePath: "assets/images/${event['eventPoster']}",
                       height: 84.h,
                       width: 88.h,
                       radius: BorderRadius.circular(
                         10.h,
                       ),
                     ),
-                    
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.only(left: 10.h),
@@ -59,11 +69,11 @@ final int index;
                           children: [
                             Text(
                               style: theme.textTheme.bodySmall,
-                              "Thu, Apr 19 20.00 Pm",
+                              "${event['startTime']}",
                             ),
                             SizedBox(height: 2.h),
                             Text(
-                              "The Kooks",
+                              event['name'],
                               style: CustomTextStyles.titleMediumGray900_1,
                             ),
                             SizedBox(height: 10.h),
@@ -71,7 +81,6 @@ final int index;
                               width: double.maxFinite,
                               child: Row(
                                 children: [
-                    
                                   Icon(
                                     Icons.location_on_outlined,
                                     color: appTheme.gray900,
@@ -80,7 +89,7 @@ final int index;
                                   Padding(
                                     padding: EdgeInsets.only(left: 4.h),
                                     child: Text(
-                                      "Razzmatazz",
+                                      event['location'],
                                       style: theme.textTheme.bodySmall,
                                     ),
                                   )
@@ -91,13 +100,29 @@ final int index;
                         ),
                       ),
                     ),
-                    
-                    Icon(
-                      Icons.favorite_border_outlined,
-                      color: appTheme.gray900,
+                     IconButton(
+                    icon: Icon(
+                      event['isFav'] ? Icons.favorite : Icons.favorite_border_outlined,
+                      color: event['isFav'] ? Colors.red : appTheme.gray900,
                       size: 18.h,
                     ),
-                    
+                    onPressed: () {
+                      // Thêm sự kiện vào danh sách yêu thích
+                      setState(() {
+                        ApiService.requestApi(
+                          event['isFav']
+                              ? 'event/private/remove-favourite-event/${event['id']}'
+                              : 'event/private/add-favourite-event/${event['id']}',
+                          event['isFav'] ? 'remove-fav-event' : 'add-fav-event',
+                          {},
+                        ).then((response) {
+                          if (response != null) {
+                            event['isFav'] = !event['isFav'];
+                          }
+                        });
+                      });
+                    },
+                  ),
                     Icon(
                       Icons.share_outlined,
                       color: appTheme.gray900,
@@ -108,20 +133,17 @@ final int index;
               ),
             ],
           ),
-
-         index == 0?
-              
-              
-          CustomElevatedButton(
-            height: 26.h,
-            width: 36.h,
-            text: "New",
-            margin: EdgeInsets.only(left: 46.h),
-            buttonStyle: CustomButtonStyles.fillGreenA,
-            buttonTextStyle: CustomTextStyles.bodySmallWhiteA700,
-            alignment: Alignment.topLeft,
-          ): const SizedBox(),
-            
+          widget.index == 0
+              ? CustomElevatedButton(
+                  height: 26.h,
+                  width: 36.h,
+                  text: "New",
+                  margin: EdgeInsets.only(left: 46.h),
+                  buttonStyle: CustomButtonStyles.fillGreenA,
+                  buttonTextStyle: CustomTextStyles.bodySmallWhiteA700,
+                  alignment: Alignment.topLeft,
+                )
+              : const SizedBox(),
         ],
       ),
     );
@@ -136,6 +158,27 @@ class HomeInitialPage extends StatefulWidget {
 
 class _HomeInitialPageState extends State<HomeInitialPage> {
   List<String> dropdownItemsList = ["Item 1", "Item 2", "Item 3"];
+
+  List popularEvents = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _getPopularEvents();
+  }
+
+  Future<void> _getPopularEvents() async {
+    final response = await ApiService.requestGetApi(
+        'event/public/get-popular-event', 'get-popular-event');
+
+    if (response != null) {
+      setState(() {
+        popularEvents = response['data']['content'];
+      });
+    } else {
+      print('Lỗi: Không nhận được dữ liệu user hợp lệ');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -157,9 +200,7 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
                   vertical: 20.h,
                 ),
                 child: Column(
-                  
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
@@ -187,7 +228,6 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
         padding: EdgeInsets.only(left: 24.h, top: 8.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-
           children: [
             AppbarSubtitle(
               text: "Find events in",
@@ -196,7 +236,7 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
             SizedBox(height: 4.h),
             Row(
               children: [
-                Icon (
+                Icon(
                   Icons.location_on_outlined,
                   color: appTheme.gray900,
                 ),
@@ -216,9 +256,10 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
 
   Widget _buildEventTile(BuildContext context) {
     return GestureDetector(
-       onTap: () {
-      _navigateToEventPage(context, "La Rosalia", "Mon, Apr 18 21:00 Pm", "Palau Sant Jordi, Barcelona", "assets/images/Rectangle_3.png");
-    },
+      onTap: () {
+        final event = popularEvents[0];
+        _navigateToEventPage(context, event['id']);
+      },
       child: Container(
         width: double.maxFinite,
         decoration: AppDecoration.globalGrey.copyWith(
@@ -235,8 +276,9 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
                 alignment: Alignment.center,
                 children: [
                   CustomImageView(
-                    imagePath: "assets/images/Rectangle_3.png",
-                    
+                    imagePath: popularEvents.isNotEmpty
+                        ? "assets/images/${popularEvents[0]['eventPoster']}"
+                        : "assets/images/default_poster.jpg",
                     height: 120.h,
                     width: double.maxFinite,
                     radius: BorderRadius.vertical(
@@ -262,14 +304,18 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
             Padding(
               padding: EdgeInsets.only(left: 10.h),
               child: Text(
-                "Mon, Apr 18 21:00 Pm",
+                popularEvents.isNotEmpty &&
+                        popularEvents[0]['startTime'] != null
+                    ? DateFormat('dd/MM/yyyy HH:mm')
+                        .format(DateTime.parse(popularEvents[0]['startTime']))
+                    : '',
                 style: theme.textTheme.bodySmall,
               ),
             ),
             Padding(
               padding: EdgeInsets.only(left: 10.h),
               child: Text(
-                "La Rosalia",
+                popularEvents[0]['name'],
                 style: CustomTextStyles.titleMediumGray900_1,
               ),
             ),
@@ -287,7 +333,7 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
                   Padding(
                     padding: EdgeInsets.only(left: 4.h),
                     child: Text(
-                      "Palau Sant Jordi, Barcelona",
+                      popularEvents[0]['location'],
                       style: theme.textTheme.bodySmall,
                     ),
                   ),
@@ -300,15 +346,38 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Icon(
-                    Icons.favorite_border_outlined,
-                    color: appTheme.gray900,
-                    size: 18.h,
+                  IconButton(
+                    icon: Icon(
+                      popularEvents[0]['isFav'] ? Icons.favorite : Icons.favorite_border_outlined,
+                      color: popularEvents[0]['isFav'] ? Colors.red : appTheme.gray900,
+                      size: 18.h,
+                    ),
+                    onPressed: () {
+                      // Thêm sự kiện vào danh sách yêu thích
+                      setState(() {
+                        ApiService.requestApi(
+                          popularEvents[0]['isFav']
+                              ? 'event/private/remove-favourite-event/${popularEvents[0]['id']}'
+                              : 'event/private/add-favourite-event/${popularEvents[0]['id']}',
+                          popularEvents[0]['isFav'] ? 'remove-fav-event' : 'add-fav-event',
+                          {},
+                        ).then((response) {
+                          if (response != null) {
+                            popularEvents[0]['isFav'] = !popularEvents[0]['isFav'];
+                          }
+                        });
+                      });
+                    },
                   ),
-                  Icon(
-                    Icons.share_outlined,
-                    color: appTheme.gray900,
-                    size: 18.h,
+                  IconButton(
+                    icon: Icon(
+                      Icons.share_outlined,
+                      color: appTheme.gray900,
+                      size: 18.h,
+                    ),
+                    onPressed: () {
+                      // Thêm hành động khi nhấn vào icon
+                    },
                   ),
                 ],
               ),
@@ -332,24 +401,26 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
             height: 18.h,
           );
         },
-        itemCount: 3,
+        itemCount: popularEvents.length,
         itemBuilder: (context, index) {
+          final event = popularEvents[index];
           return GestureDetector(
-      onTap: () {
-        _navigateToEventPage(context, "The Kooks", "Thu, Apr 19 20.00 Pm", "Razzmatazz", "assets/images/Rectangle_4.png");
-      },child: EventlistItemWidget( index: index),
+            onTap: () {
+              _navigateToEventPage(context, event['id']);
+            },
+            child: EventlistItemWidget(index: index),
           );
         },
       ),
     );
   }
-  void _navigateToEventPage(BuildContext context, String eventName, String eventDate, String eventLocation, String eventImage) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => EventPage(eventName: eventName, eventDate: eventDate, eventLocation: eventLocation, eventImage: eventImage),
-    ),
-  );
-}
 
+  void _navigateToEventPage(BuildContext context, int id) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EventPage(eventId: id),
+      ),
+    );
+  }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final Map<String, String> en = {
   "lbl_0": "0",
@@ -218,7 +220,6 @@ typedef ResponsiveBuild = Widget Function(
 //   // static String imagePath = 'assets/images';
 //     static String imagePath = 'images';
 
-
 // // Common images
 
 //   static String imgArrowDown = '$imagePath/img_arrow_down.svg';
@@ -413,7 +414,7 @@ class SizeUtils {
 
   static late Orientation orientation;
 
-  /// This can either be mobile or tablet 
+  /// This can either be mobile or tablet
   static late DeviceType deviceType;
 
   /// Device's Height
@@ -444,5 +445,75 @@ class SizeUtils {
       height = boxConstraints.maxWidth.isNonZero();
     }
     deviceType = DeviceType.mobile;
+  }
+}
+
+class AppUtils {
+  /// Hiển thị hộp thoại xác nhận.
+  static void showConfirmDialog(
+    BuildContext context,
+    String message, {
+    required VoidCallback onConfirm,
+  }) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text('Confirm'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                onConfirm();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  static Future<void> logout(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('access_token');
+    // Giả sử bạn đã đăng ký route '/login' cho màn hình đăng nhập
+    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+  }
+
+  static Future<String> pickImageFromGallery(BuildContext context) async {
+    final ImagePicker picker = ImagePicker();
+    try {
+      final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+      if (image != null) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Image selected: ${image.path}')),
+          );
+          
+        }
+        return image.path;
+      } else {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('No image selected')),
+          );
+        }
+      }
+      return '';
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error picking image: $e')),
+        );
+        print('Error picking image: $e');
+      }
+      return '';
+    }
   }
 }

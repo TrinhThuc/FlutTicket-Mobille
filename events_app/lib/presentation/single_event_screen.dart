@@ -1,23 +1,43 @@
 import 'package:events_app/app_utils.dart';
 import 'package:events_app/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../app_theme.dart';
+import '../service/api_service.dart';
 import 'buy_ticket_screen.dart';
 
-class EventPage extends StatelessWidget {
-  final String eventName;
-  final String eventDate;
-  final String eventLocation;
-  final String eventImage;
+class EventPage extends StatefulWidget {
+  final int eventId;
 
-  const EventPage({
+  EventPage({
     super.key,
-    required this.eventName,
-    required this.eventDate,
-    required this.eventLocation,
-    required this.eventImage,
+    required this.eventId,
   });
+
+  @override
+  State<EventPage> createState() => _EventPageState();
+}
+
+class _EventPageState extends State<EventPage> {
+  Map<String, dynamic> eventDetails = {};
+
+  @override
+  void initState() {
+    super.initState();
+    getEventDetails(widget.eventId);
+  }
+
+  Future<void> getEventDetails(int eventId) async {
+    final response = await ApiService.requestGetApi('events/$eventId', 'get-detail-event');
+    if (response != null) {
+      setState(() {
+        eventDetails = response['data'] ?? {};
+      });
+    } else {
+      print('Dữ liệu sự kiện rỗng hoặc không hợp lệ');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +50,9 @@ class EventPage extends StatelessWidget {
             _buildImageSection(context),
             SizedBox(height: 28.h),
             Padding(
-              padding: EdgeInsets.only(
-                left: 24.h,
-              ),
+              padding: EdgeInsets.only(left: 24.h),
               child: Text(
-                eventName,
+                eventDetails['name'] ?? 'Tên sự kiện không có',
                 style: CustomTextStyles.headlineSmallBlack900,
               ),
             ),
@@ -50,9 +68,8 @@ class EventPage extends StatelessWidget {
                   SizedBox(width: 8.h),
                   Padding(
                     padding: EdgeInsets.only(left: 10.h),
-                    child: Text(eventLocation,
-                        style: CustomTextStyles.titleMediumGray900_1
-                            .copyWith(color: appTheme.gray900)),
+                    child: Text(eventDetails['location'] ?? 'Địa điểm không có',
+                        style: CustomTextStyles.titleMediumGray900_1.copyWith(color: appTheme.gray900)),
                   ),
                 ],
               ),
@@ -69,7 +86,7 @@ class EventPage extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(left: 26.h),
               child: Text(
-                'View on maps',
+                'Xem trên bản đồ',
                 style: theme.textTheme.labelLarge,
               ),
             ),
@@ -79,16 +96,12 @@ class EventPage extends StatelessWidget {
               margin: EdgeInsets.symmetric(horizontal: 26.h),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.attach_money,
-                    size: 18.h,
-                  ),
+                  Icon(Icons.attach_money, size: 18.h),
                   const SizedBox(width: 8),
                   Padding(
                     padding: EdgeInsets.only(left: 10.h),
-                    child: Text('Refund Policy',
-                        style: CustomTextStyles.titleMediumGray900_1
-                            .copyWith(color: appTheme.gray900)),
+                    child: Text('Chính sách hoàn tiền',
+                        style: CustomTextStyles.titleMediumGray900_1.copyWith(color: appTheme.gray900)),
                   ),
                 ],
               ),
@@ -97,22 +110,21 @@ class EventPage extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(left: 26.h),
               child: Text(
-                'Flut fee is not-refundable.',
+                'Phí Flut không hoàn lại.',
                 style: theme.textTheme.bodySmall,
               ),
             ),
             SizedBox(height: 30.h),
             Padding(
               padding: EdgeInsets.only(left: 24.h),
-              child: Text('About',
-                  style: CustomTextStyles.titleMediumGray900_1
-                      .copyWith(color: appTheme.gray900)),
+              child: Text('Giới thiệu',
+                  style: CustomTextStyles.titleMediumGray900_1.copyWith(color: appTheme.gray900)),
             ),
             SizedBox(height: 8.h),
             Padding(
               padding: EdgeInsets.only(left: 24.h),
               child: Text(
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                eventDetails['description'] ?? 'Mô tả không có',
                 style: theme.textTheme.bodySmall!.copyWith(height: 1.6),
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
@@ -134,7 +146,7 @@ class EventPage extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           CustomImageView(
-              imagePath: eventImage, height: 194.h, width: double.maxFinite),
+              imagePath: 'assets/images/${eventDetails['eventPoster'] ?? 'event_poster_1.jpg'}', height: 194.h, width: double.maxFinite),
           Align(
             alignment: Alignment.bottomCenter,
             child: SizedBox(
@@ -161,19 +173,16 @@ class EventPage extends StatelessWidget {
                               ),
                               Expanded(
                                 child: Container(
-                                  padding:
-                                      EdgeInsets.symmetric(horizontal: 6.h),
+                                  padding: EdgeInsets.symmetric(horizontal: 6.h),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       IconButton(
-                                        icon: Icon(Icons.favorite_border,
-                                            size: 18.h, color: Colors.white),
+                                        icon: Icon(Icons.favorite_border, size: 18.h, color: Colors.white),
                                         onPressed: () {},
                                       ),
                                       IconButton(
-                                        icon: Icon(Icons.share,
-                                            size: 18.h, color: Colors.white),
+                                        icon: Icon(Icons.share, size: 18.h, color: Colors.white),
                                         onPressed: () {},
                                       ),
                                     ],
@@ -208,9 +217,8 @@ class EventPage extends StatelessWidget {
                 Icon(Icons.calendar_today_outlined, size: 18.h),
                 Padding(
                   padding: EdgeInsets.only(left: 10.h),
-                  child: Text(eventDate,
-                      style: CustomTextStyles.titleMediumGray900_1
-                          .copyWith(color: appTheme.gray900)),
+                  child: Text(eventDetails['startTime'] != null ? DateFormat('dd/MM/yyyy HH:mm').format(DateTime.parse(eventDetails['startTime'])) : '',
+                      style: CustomTextStyles.titleMediumGray900_1.copyWith(color: appTheme.gray900)),
                 ),
               ],
             ),
@@ -222,7 +230,7 @@ class EventPage extends StatelessWidget {
           ),
           SizedBox(height: 8.h),
           Text(
-            'Add to calendar',
+            'Thêm vào lịch',
             style: theme.textTheme.labelLarge,
           ),
         ],
@@ -233,66 +241,45 @@ class EventPage extends StatelessWidget {
   Widget _buildBottomNavigationBar(BuildContext context) {
     return Container(
       height: 90.h,
-      padding:  EdgeInsets.symmetric(horizontal: 14.h, vertical: 20.h),
+      padding: EdgeInsets.symmetric(horizontal: 14.h, vertical: 20.h),
       decoration: AppDecoration.globalGrey,
       width: double.maxFinite,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Column(
-            // spacing: 4.h,
-            mainAxisSize: MainAxisSize.min,           
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Price',
-                  style: CustomTextStyles.titleMediumGray900_1
-                      ),
-              Text('€ 35.00 - € 75.00', style: theme.textTheme.bodyLarge),
+              Text('Giá vé', style: CustomTextStyles.titleMediumGray900_1),
+              Text('${eventDetails['listTicket'] != null && eventDetails['listTicket'].isNotEmpty ? eventDetails['listTicket'][0]['price'] : '€ 0.00'}', style: theme.textTheme.bodyLarge),
             ],
           ),
-          //  CustomElevatedButton(
-
-          //   height: 44.h,
-          // width: 188.h,
-          //   text: "Tickets",
-          //   decoration: BoxDecoration(
-          //     borderRadius: BorderRadius.all(Radius.circular(14.h)),
-          //   ),
-          //   buttonStyle: CustomButtonStyles.fillGreenA700,
-          //   buttonTextStyle: CustomTextStyles.bodySmallWhiteA700,
-          //   alignment: Alignment.topLeft,
-          // ),
-
           CustomElevatedButton(
-  height: 44.h,
-  width: 188.h,
-  text: "Tickets",
-  buttonStyle: ElevatedButton.styleFrom(
-    backgroundColor: appTheme.greenA700, // ✅ Set button color
-    shape: RoundedRectangleBorder( // ✅ Apply rounded corners here
-      borderRadius: BorderRadius.circular(10.h),
-    ),
-  ),
-  buttonTextStyle: CustomTextStyles.bodySmallWhiteA700,
-  alignment: Alignment.center,
-  onPressed: () {
-    // ✅ Navigate to the BuyTicketScreen
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => BuyTicketScreen(
-          eventName: eventName,
-          eventDate: eventDate,
-          eventLocation: eventLocation,
-        ),
-      ),
-    );
-
-  },
-
-),
-
-          
+            height: 44.h,
+            width: 188.h,
+            text: "Mua vé",
+            buttonStyle: ElevatedButton.styleFrom(
+              backgroundColor: appTheme.greenA700,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.h),
+              ),
+            ),
+            buttonTextStyle: CustomTextStyles.bodySmallWhiteA700,
+            alignment: Alignment.center,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BuyTicketScreen(
+                    eventName: eventDetails['name'] ?? '',
+                    eventDate: eventDetails['startTime'] != null ? DateFormat('dd/MM/yyyy HH:mm').format(DateTime.parse(eventDetails['startTime'])) : '',
+                    eventLocation: eventDetails['location'] ?? '',
+                  ),
+                ),
+              );
+            },
+          ),
         ],
       ),
     );

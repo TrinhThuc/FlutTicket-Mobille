@@ -1,1 +1,16 @@
-{"status":{"success":true,"code":"200","message":"Cập nhập thông tin thành công."},"data":{"user_id":2,"username":"trinhthuc432@gmail.com","user_code":"ABC","phone":"039542997","email":"trinhthuc432@gmail.com","full_name":"Trịnh Văn Thực","avatar":"d4654ade-6d79-4416-a41f-9d4635fa17f1"}}
+{
+    "status": {
+        "success": true,
+        "code": "200",
+        "message": "Cập nhập thông tin thành công."
+    },
+    "data": {
+        "user_id": 2,
+        "username": "trinhthuc432@gmail.com",
+        "user_code": "ABC",
+        "phone": "039542997",
+        "email": "trinhthuc432@gmail.com",
+        "full_name": "Trịnh Văn Thực",
+        "avatar": "d4654ade-6d79-4416-a41f-9d4635fa17f1"
+    }
+}

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app_utils.dart';
+import 'presentation/dashboard_screen.dart';
 import 'presentation/loginScreen.dart';
 import 'presentation/signUpScreen.dart';
 
@@ -43,18 +45,51 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const StartScreen(),
-      // home:  DashboardScreen(),
-            // home: const BuyTicketScreen(eventName: 'La Rosalia', eventDate: 'Mon, Apr 18 · 21:00 PM', eventLocation: 'Palau Sant Jordi, Barcelona',),
 
     );
   }
 }
 
-class StartScreen extends StatelessWidget {
+class StartScreen extends StatefulWidget {
   const StartScreen({super.key});
 
   @override
+  State<StartScreen> createState() => _StartScreenState();
+}
+
+class _StartScreenState extends State<StartScreen> {
+    bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkAccessToken();
+  }
+
+  Future<void> _checkAccessToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('access_token');
+    // Nếu có token, chuyển ngay sang Dashboard
+    if (token != null && token.isNotEmpty) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const DashboardScreen()),
+      );
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // Hiển thị loading nếu đang kiểm tra token
+    if (isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     return Scaffold(
       body: SafeArea(
         child: Center(

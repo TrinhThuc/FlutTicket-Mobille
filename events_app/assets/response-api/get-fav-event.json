@@ -1,1 +1,46 @@
-{"success":true,"message":"success","data":[{"id":1,"createdBy":"","createdAt":"2025-02-24T15:28:53Z","lastModifiedAt":"2025-02-25T14:11:00Z","deleted":false,"name":"Concert 1","description":"Rock concert by Artist 1","eventTypeId":1,"startTime":"2025-03-10T20:00:00Z","endTime":"2025-07-01T22:00:00Z","location":"Stadium A","eventPoster":"event_poster_1.jpg","ticketSalesStartTime":"2025-03-09T08:00:00Z","ticketSalesEndTime":"2025-06-30T23:59:59Z","status":1,"organizerId":1,"popular":1},{"id":1,"createdBy":"","createdAt":"2025-02-24T15:28:53Z","lastModifiedAt":"2025-02-25T14:11:00Z","deleted":false,"name":"Concert 1","description":"Rock concert by Artist 1","eventTypeId":1,"startTime":"2025-03-10T20:00:00Z","endTime":"2025-07-01T22:00:00Z","location":"Stadium A","eventPoster":"event_poster_1.jpg","ticketSalesStartTime":"2025-03-09T08:00:00Z","ticketSalesEndTime":"2025-06-30T23:59:59Z","status":1,"organizerId":1,"popular":1}]}
+{
+    "success": true,
+    "message": "success",
+    "data": [
+        {
+            "id": 1,
+            "createdBy": "",
+            "createdAt": "2025-02-24T15:28:53Z",
+            "lastModifiedAt": "2025-02-25T14:11:00Z",
+            "deleted": false,
+            "name": "Concert 1",
+            "description": "Rock concert by Artist 1",
+            "eventTypeId": 1,
+            "startTime": "2025-03-10T20:00:00Z",
+            "endTime": "2025-07-01T22:00:00Z",
+            "location": "Stadium A",
+            "eventPoster": "event_poster_1.jpg",
+            "ticketSalesStartTime": "2025-03-09T08:00:00Z",
+            "ticketSalesEndTime": "2025-06-30T23:59:59Z",
+            "status": 1,
+            "organizerId": 1,
+            "popular": 1,
+            "isFav": true
+        },
+        {
+            "id": 1,
+            "createdBy": "",
+            "createdAt": "2025-02-24T15:28:53Z",
+            "lastModifiedAt": "2025-02-25T14:11:00Z",
+            "deleted": false,
+            "name": "Concert 1",
+            "description": "Rock concert by Artist 1",
+            "eventTypeId": 1,
+            "startTime": "2025-03-10T20:00:00Z",
+            "endTime": "2025-07-01T22:00:00Z",
+            "location": "Stadium A",
+            "eventPoster": "event_poster_1.jpg",
+            "ticketSalesStartTime": "2025-03-09T08:00:00Z",
+            "ticketSalesEndTime": "2025-06-30T23:59:59Z",
+            "status": 1,
+            "organizerId": 1,
+            "popular": 1,
+            "isFav": true
+        }
+    ]
+}

@@ -18,7 +18,7 @@ class TicketEmptyScreenState extends State<TicketScreen>
   @override
   void initState() {
     super.initState();
-    tabviewController = TabController(length: 2, vsync: this);
+    tabviewController = TabController(length: 3, vsync: this);
   }
 
   @override
@@ -29,8 +29,6 @@ class TicketEmptyScreenState extends State<TicketScreen>
         child: SizedBox(
           width: double.maxFinite,
           child: Column(
-              // mainAxisAlignment: MainAxisAlignment.center,
-              // crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 _buildTicketsSection(context),
                 Expanded(
@@ -39,7 +37,7 @@ class TicketEmptyScreenState extends State<TicketScreen>
                   controller: tabviewController,
                   // children: [TicketTabPage(), TicketTabPage()]
 
-                  children: const [TicketUpcomingiTabPage(), TicketpastTabPage()],
+                  children: const [TicketUpcomingiTabPage(), TicketpastTabPage(), AllTicketTabPage()],
                 ))),
               ]),
         ),
@@ -89,7 +87,11 @@ class TicketEmptyScreenState extends State<TicketScreen>
                 ),
                 Tab(
                   text: 'Past Tickets',
-                )
+                ),
+Tab(
+                  text: 'All',
+                ),
+
               ],
             ),
           )
@@ -409,6 +411,108 @@ class TicketUpcomingiTabPageState extends State<TicketUpcomingiTabPage> {
   }
 }
 
+
+class AllTicketTabPage extends StatefulWidget {
+  const AllTicketTabPage({super.key});
+
+  @override
+  AllTicketTabPageState createState() => AllTicketTabPageState();
+}
+
+class AllTicketTabPageState extends State<AllTicketTabPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 30.h),
+        child: Column(
+          children: [
+            Expanded(
+                child: ListView.separated(
+                    physics: const BouncingScrollPhysics(),
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        decoration: AppDecoration.outlineGray.copyWith(
+                            borderRadius: BorderRadiusStyle.roundedBorder4),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                width: double.maxFinite,
+                                padding: EdgeInsets.symmetric(horizontal: 8.h),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      width: double.maxFinite,
+                                      child: Row(
+                                        children: [
+                                          CustomImageView(
+                                            color: appTheme.greenA700,
+                                            imagePath:
+                                                'assets/images/empty_ticket.png',
+                                            width: 30.h,
+                                            height: 30.h,
+                                            fit: BoxFit.cover,
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "La Rosalia",
+                                                  style: theme
+                                                      .textTheme.titleMedium,
+                                                ),
+                                                Text(
+                                                  "Mon, Apr 18 · 21:00 PM",
+                                                  style:
+                                                      theme.textTheme.bodySmall,
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 4.h),
+                                      child: Text(
+                                        "2 tickets",
+                                        style:
+                                            CustomTextStyles.bodySmallBlack900,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                            CustomImageView(
+                              imagePath: 'assets/images/placeholder.png',
+                              height: 96.h,
+                              width: 140.h,
+                              radius: BorderRadius.horizontal(
+                                  right: Radius.circular(5.h)),
+                            )
+                          ],
+                        ),
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return SizedBox(
+                        height: 8.h,
+                      );
+                    },
+                    itemCount: 3))
+          ],
+        ));
+  }
+}
+
+
+
 class TicketTabPage extends StatefulWidget {
   const TicketTabPage({super.key});
 
@@ -482,3 +586,5 @@ class TicketTabPageState extends State<TicketTabPage> {
         ));
   }
 }
+
+

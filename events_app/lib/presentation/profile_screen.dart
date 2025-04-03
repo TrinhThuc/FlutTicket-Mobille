@@ -3,101 +3,176 @@ import 'package:events_app/widgets.dart';
 import 'package:flutter/material.dart';
 
 import '../app_theme.dart';
+import '../service/api_service.dart';
 
-class ProfileScreen extends StatelessWidget {
-  ProfileScreen({super.key});
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
 
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
   bool isCopyEvent = false;
+  // Khai báo biến chứa thông tin user
+  String userName = '';
+  String userEmail = '';
+  String avatar = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserInfo(); // Gọi lấy thông tin user khi widget khởi tạo
+  }
+
+  Future<void> _getUserInfo() async {
+    final response =
+        await ApiService.requestGetApi('oauth/user/get', 'get-user-info');
+
+    if (response != null) {
+      setState(() {
+        userName = response['full_name'];
+        userEmail = response['email'];
+        avatar = response['avatar'];
+      });
+    } else {
+      print('Lỗi: Không nhận được dữ liệu user hợp lệ');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-          child: SizedBox(
-        width: double.maxFinite,
-        child: Container(
+        child: SizedBox(
           width: double.maxFinite,
-          padding: EdgeInsets.only(left: 12.h, right: 12.h, top: 26.h),
-          child: Column(
-            children: [
-              Container(
-                width: double.maxFinite,
-                padding: EdgeInsets.symmetric(horizontal: 4.h),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 110.h,
-                      width: 106.h,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          CustomImageView(
-                            imagePath: 'assets/images/avatar.png',
-                            width: 104.h,
-                            height: 104.h,
-                            radius: BorderRadius.circular(52.h),
-                          ),
-                          CustomIconButton(
-                            height: 48.h,
-                            width: 48.h,
-                            padding: EdgeInsets.all(8.h),
-                            decoration: IconButtonStyleHelper.none,
-                            alignment: Alignment.bottomRight,
-                            child: const CustomImageView(
-                              imagePath: 'assets/images/edit_icon.png',
+          child: Container(
+            width: double.maxFinite,
+            padding: EdgeInsets.only(left: 12.h, right: 12.h, top: 26.h),
+            child: Column(
+              children: [
+                Container(
+                  width: double.maxFinite,
+                  padding: EdgeInsets.symmetric(horizontal: 4.h),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 110.h,
+                        width: 106.h,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Image.network(
+                              'http://192.168.22.49:8055/assets/$avatar',
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.fill,
+                              errorBuilder: (context, error, stackTrace) {
+                                // Nếu không load được ảnh từ network, sử dụng ảnh mặc định từ assets
+                                return CustomImageView(
+                                  imagePath: 'assets/images/avatar.png',
+                                  width: 104.h,
+                                  height: 104.h,
+                                  radius: BorderRadius.circular(52.h),
+                                );
+                              },
                             ),
-                          )
+                            CustomIconButton(
+                              onTap: () async {
+                                String? pickedFile =
+                                    await AppUtils.pickImageFromGallery(
+                                        context);
+
+                                if (pickedFile.isEmpty) {
+                                  debugPrint('Error: No file was selected.');
+                                  return;
+                                }
+
+                                debugPrint('Picked file path: $pickedFile');
+
+                                final apiService = ApiService();
+                                final Map<String, dynamic>? response =
+                                    await apiService.updateAvatar(pickedFile);
+
+                                if (response != null &&
+                                    response.containsKey('data') &&
+                                    response['data'].containsKey('avatar')) {
+                                  setState(() {
+                                    avatar = response['data']['avatar'];
+                                  });
+                                } else {
+                                  debugPrint(
+                                      'Error: Failed to upload the image.');
+                                }
+                              },
+                              height: 48.h,
+                              width: 48.h,
+                              padding: EdgeInsets.all(8.h),
+                              decoration: IconButtonStyleHelper.none,
+                              alignment: Alignment.bottomRight,
+                              child: const CustomImageView(
+                                imagePath: 'assets/images/edit_icon.png',
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 22.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(userName,
+                              style: CustomTextStyles.titleMediumSemiBold),
+                          SizedBox(width: 4.h),
+                          Icon(Icons.edit, size: 20.h),
                         ],
                       ),
-                    ),
-                    SizedBox(height: 22.h),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('Thực',
-                            style: CustomTextStyles.titleMediumSemiBold),
-                        SizedBox(width: 4.h),
-                        Icon(Icons.edit, size: 20.h),
-                      ],
-                    ),
-                    SizedBox(height: 6.h),
-                    Text('info@youremail.com',
-                        style: CustomTextStyles.bodySmallBlack900),
-                    SizedBox(height: 76.h),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
+                      SizedBox(height: 6.h),
+                      Text(userEmail,
+                          style: CustomTextStyles.bodySmallBlack900),
+                      SizedBox(height: 76.h),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
                           padding: EdgeInsets.only(left: 4.h),
                           child: Text('Settings',
-                              style: CustomTextStyles.titleMediumSemiBold)),
-                    ),
-                    SizedBox(height: 10.h),
-                    _buildPrimaryCityTab(context),
-                    _buildCopyEventTab(context),
-                    _buildManageEventsTab(context),
-                    _buildLoginOptionsTab(context),
-                    _buildAccountSettingsTab(context),
-                    // SizedBox(height: 176.h),
-                    
-                  ],
-                ),
-              ),
-              const Spacer(),
-              CustomOutlinedButton(
-                      text: 'Log Out',
-                      onPressed: () {},
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14.h),
-                        border: Border.all(color: appTheme.gray600),
+                              style: CustomTextStyles.titleMediumSemiBold),
+                        ),
                       ),
-                      buttonTextStyle: CustomTextStyles.titleMediumGray600,
-                    ),
-                    SizedBox(height: 88.h),
-
-            ],
+                      SizedBox(height: 10.h),
+                      _buildPrimaryCityTab(context),
+                      _buildCopyEventTab(context),
+                      _buildManageEventsTab(context),
+                      _buildLoginOptionsTab(context),
+                      _buildAccountSettingsTab(context),
+                    ],
+                  ),
+                ),
+                const Spacer(),
+                CustomOutlinedButton(
+                  text: 'Log Out',
+                  onPressed: () {
+                    AppUtils.showConfirmDialog(
+                      context,
+                      'Are you sure you want to log out?',
+                      onConfirm: () {
+                        AppUtils.logout(context);
+                      },
+                    );
+                  },
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14.h),
+                    border: Border.all(color: appTheme.gray600),
+                  ),
+                  buttonTextStyle: CustomTextStyles.titleMediumGray600,
+                ),
+                SizedBox(height: 88.h),
+              ],
+            ),
           ),
         ),
-      )),
+      ),
     );
   }
 
@@ -118,10 +193,7 @@ class ProfileScreen extends StatelessWidget {
                   style: CustomTextStyles.bodySmallBlack900),
             ),
           ),
-          Text(
-            'Barcelona',
-            style: CustomTextStyles.bodySmallBlack900,
-          )
+          Text('Barcelona', style: CustomTextStyles.bodySmallBlack900),
         ],
       ),
     );
@@ -147,7 +219,9 @@ class ProfileScreen extends StatelessWidget {
           CustomSwitch(
             value: isCopyEvent,
             onChange: (value) {
-              isCopyEvent = value;
+              setState(() {
+                isCopyEvent = value;
+              });
             },
           )
         ],

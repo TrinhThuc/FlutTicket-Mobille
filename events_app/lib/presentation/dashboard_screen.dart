@@ -1,7 +1,7 @@
 import 'package:events_app/presentation/favourites_screen.dart';
 import 'package:events_app/presentation/home_screen.dart';
 import 'package:events_app/presentation/profile_screen.dart';
-import 'package:events_app/presentation/ticket_empty_screen.dart';
+import 'package:events_app/presentation/ticket_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../app_theme.dart';
@@ -21,7 +21,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     SearchScreen(),
     const TicketScreen(),
     FavouritesScreen(),
-    ProfileScreen(),
+    const ProfileScreen(),
   ];
 
   @override
