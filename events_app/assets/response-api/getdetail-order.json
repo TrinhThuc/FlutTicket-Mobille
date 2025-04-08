@@ -1,0 +1,88 @@
+{
+    "success": true,
+    "message": "success",
+    "data": {
+        "id": 44,
+        "createdBy": "trinhthuc432@gmail.com",
+        "createdAt": "2025-04-03T10:08:45Z",
+        "lastModifiedBy": "trinhthuc432@gmail.com",
+        "lastModifiedAt": "2025-04-03T10:08:45Z",
+        "deleted": false,
+        "userId": 2,
+        "totalAmount": 100000,
+        "status": 0,
+        "eventId": 1,
+        "emailSent": false,
+        "orderCode": "ORDLFLTSU4GQK",
+        "voucherUsed": false,
+        "listOrderTicket": [
+            {
+                "id": 41,
+                "createdBy": "trinhthuc432@gmail.com",
+                "createdAt": "2025-04-03T10:08:46Z",
+                "lastModifiedBy": "trinhthuc432@gmail.com",
+                "lastModifiedAt": "2025-04-03T10:08:46Z",
+                "deleted": false,
+                "orderId": 44,
+                "ticketId": 1,
+                "ticketType": "VIP",
+                "quantity": 1,
+                "price": 100000.0,
+                "totalPrice": 100000.0,
+                "status": 1
+            }
+        ],
+        "eventDTO": {
+            "id": 1,
+            "createdBy": "",
+            "createdAt": "2025-02-24T15:28:53Z",
+            "lastModifiedAt": "2025-02-25T14:11:00Z",
+            "deleted": false,
+            "name": "Concert 1",
+            "description": "Rock concert by Artist 1",
+            "startTime": "2025-03-10T20:00:00Z",
+            "endTime": "2025-07-01T22:00:00Z",
+            "location": "Stadium A",
+            "ticketSalesStartTime": "2025-03-09T08:00:00Z",
+            "ticketSalesEndTime": "2025-06-30T23:59:59Z",
+            "status": 1,
+            "popular": 1,
+            "listArtist": [],
+            "listTicket": [
+                {
+                    "id": 1,
+                    "createdBy": "",
+                    "createdAt": "2025-02-24T15:29:04Z",
+                    "lastModifiedBy": "trinhthuc432@gmail.com",
+                    "lastModifiedAt": "2025-04-03T10:08:50Z",
+                    "deleted": false,
+                    "eventId": 1,
+                    "ticketType": "VIP",
+                    "price": 100000.0,
+                    "quantity": 500,
+                    "soldQuantity": 114,
+                    "description": "VIP ticket for the concert",
+                    "status": 1,
+                    "saleStartTime": "2025-03-01T00:00:00Z",
+                    "saleEndTime": "2025-06-01T23:59:59Z"
+                },
+                {
+                    "id": 2,
+                    "createdBy": "",
+                    "createdAt": "2025-02-24T15:29:04Z",
+                    "lastModifiedAt": "2025-02-27T15:17:11Z",
+                    "deleted": false,
+                    "eventId": 1,
+                    "ticketType": "Regular",
+                    "price": 50000.0,
+                    "quantity": 1000,
+                    "soldQuantity": 200,
+                    "description": "Regular ticket for the concert",
+                    "status": 1,
+                    "saleStartTime": "2025-03-01T00:00:00Z",
+                    "saleEndTime": "2025-06-01T23:59:59Z"
+                }
+            ]
+        }
+    }
+}
