@@ -6,7 +6,7 @@ import '../service/api_service.dart';
 import '../widgets.dart';
 
 class FavouritesScreen extends StatefulWidget {
-  FavouritesScreen({super.key});
+  const FavouritesScreen({super.key});
 
   @override
   State<FavouritesScreen> createState() => _FavouritesScreenState();
@@ -32,7 +32,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
         favEvents = response['data'];
       });
     } else {
-      print('Lỗi: Không nhận được dữ liệu user hợp lệ');
+      print('Lỗi: Không nhận được dữ liệu favourite events');
     }
   }
 
@@ -162,11 +162,17 @@ class _FavouritesItemWidgetState extends State<FavouritesItemWidget> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        CustomImageView(
-          imagePath: widget.event['eventPoster'] != null ? 'assets/images/${widget.event['eventPoster']}' : 'assets/images/Rectangle_4.png',
+        
+        Container(
           width: 88.h,
           height: 84.h,
-          radius: BorderRadius.circular(10.h),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.h),
+            image: DecorationImage(
+              image: NetworkImage(widget.event['eventPoster'] ?? 'https://example.com/default_image.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
         ),
         Expanded(
           child: Padding(

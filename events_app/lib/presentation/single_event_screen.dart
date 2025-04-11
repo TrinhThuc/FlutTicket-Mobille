@@ -10,7 +10,7 @@ import 'buy_ticket_screen.dart';
 class EventPage extends StatefulWidget {
   final int eventId;
 
-  EventPage({
+  const EventPage({
     super.key,
     required this.eventId,
   });
@@ -29,7 +29,9 @@ class _EventPageState extends State<EventPage> {
   }
 
   Future<void> getEventDetails(int eventId) async {
-    final response = await ApiService.requestGetApi('events/$eventId', 'get-detail-event');
+    final response = await ApiService.requestGetApi(
+        'event/public/$eventId', 'get-detail-event',
+        useAuth: false);
     if (response != null) {
       setState(() {
         eventDetails = response['data'] ?? {};
@@ -63,13 +65,17 @@ class _EventPageState extends State<EventPage> {
               width: double.maxFinite,
               margin: EdgeInsets.symmetric(horizontal: 26.h),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(Icons.location_on_outlined, size: 18.h),
                   SizedBox(width: 8.h),
-                  Padding(
-                    padding: EdgeInsets.only(left: 10.h),
-                    child: Text(eventDetails['location'] ?? 'Địa điểm không có',
-                        style: CustomTextStyles.titleMediumGray900_1.copyWith(color: appTheme.gray900)),
+                  Expanded(
+                    child: Text(
+                      eventDetails['location'] ?? 'Địa điểm không có',
+                      style: CustomTextStyles.titleMediumGray900_1
+                          .copyWith(color: appTheme.gray900),
+                      softWrap: true,
+                    ),
                   ),
                 ],
               ),
@@ -101,7 +107,8 @@ class _EventPageState extends State<EventPage> {
                   Padding(
                     padding: EdgeInsets.only(left: 10.h),
                     child: Text('Chính sách hoàn tiền',
-                        style: CustomTextStyles.titleMediumGray900_1.copyWith(color: appTheme.gray900)),
+                        style: CustomTextStyles.titleMediumGray900_1
+                            .copyWith(color: appTheme.gray900)),
                   ),
                 ],
               ),
@@ -118,7 +125,8 @@ class _EventPageState extends State<EventPage> {
             Padding(
               padding: EdgeInsets.only(left: 24.h),
               child: Text('Giới thiệu',
-                  style: CustomTextStyles.titleMediumGray900_1.copyWith(color: appTheme.gray900)),
+                  style: CustomTextStyles.titleMediumGray900_1
+                      .copyWith(color: appTheme.gray900)),
             ),
             SizedBox(height: 8.h),
             Padding(
@@ -145,8 +153,18 @@ class _EventPageState extends State<EventPage> {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          CustomImageView(
-              imagePath: 'assets/images/${eventDetails['eventPoster'] ?? 'event_poster_1.jpg'}', height: 194.h, width: double.maxFinite),
+          Container(
+            width: double.maxFinite,
+            height: 194.h,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(
+                  'http://162.248.102.236:8055/assets/${eventDetails['eventPoster'] ?? ''}',
+                ),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
           Align(
             alignment: Alignment.bottomCenter,
             child: SizedBox(
@@ -173,16 +191,19 @@ class _EventPageState extends State<EventPage> {
                               ),
                               Expanded(
                                 child: Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 6.h),
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 6.h),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       IconButton(
-                                        icon: Icon(Icons.favorite_border, size: 18.h, color: Colors.white),
+                                        icon: Icon(Icons.favorite_border,
+                                            size: 18.h, color: Colors.white),
                                         onPressed: () {},
                                       ),
                                       IconButton(
-                                        icon: Icon(Icons.share, size: 18.h, color: Colors.white),
+                                        icon: Icon(Icons.share,
+                                            size: 18.h, color: Colors.white),
                                         onPressed: () {},
                                       ),
                                     ],
@@ -217,8 +238,13 @@ class _EventPageState extends State<EventPage> {
                 Icon(Icons.calendar_today_outlined, size: 18.h),
                 Padding(
                   padding: EdgeInsets.only(left: 10.h),
-                  child: Text(eventDetails['startTime'] != null ? DateFormat('dd/MM/yyyy HH:mm').format(DateTime.parse(eventDetails['startTime'])) : '',
-                      style: CustomTextStyles.titleMediumGray900_1.copyWith(color: appTheme.gray900)),
+                  child: Text(
+                      eventDetails['startTime'] != null
+                          ? DateFormat('dd/MM/yyyy HH:mm')
+                              .format(DateTime.parse(eventDetails['startTime']))
+                          : '',
+                      style: CustomTextStyles.titleMediumGray900_1
+                          .copyWith(color: appTheme.gray900)),
                 ),
               ],
             ),
@@ -252,7 +278,9 @@ class _EventPageState extends State<EventPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Giá vé', style: CustomTextStyles.titleMediumGray900_1),
-              Text('${eventDetails['listTicket'] != null && eventDetails['listTicket'].isNotEmpty ? eventDetails['listTicket'][0]['price'] : '€ 0.00'}', style: theme.textTheme.bodyLarge),
+              Text(
+                  '${eventDetails['listTicket'] != null && eventDetails['listTicket'].isNotEmpty ? eventDetails['listTicket'][0]['price'] : '€ 0.00'}',
+                  style: theme.textTheme.bodyLarge),
             ],
           ),
           CustomElevatedButton(
@@ -272,9 +300,7 @@ class _EventPageState extends State<EventPage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => BuyTicketScreen(
-                    eventName: eventDetails['name'] ?? '',
-                    eventDate: eventDetails['startTime'] != null ? DateFormat('dd/MM/yyyy HH:mm').format(DateTime.parse(eventDetails['startTime'])) : '',
-                    eventLocation: eventDetails['location'] ?? '',
+                    eventDetails: eventDetails, // Bỏ key để khắc phục lỗi
                   ),
                 ),
               );

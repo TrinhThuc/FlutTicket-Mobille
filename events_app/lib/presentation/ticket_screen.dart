@@ -545,6 +545,7 @@ class TicketTabPageState extends State<TicketTabPage> {
                         width: double.maxFinite,
                         fit: BoxFit.fitHeight,
                         height: 80.h,
+                        
                       ),
                     ),
                     SizedBox(

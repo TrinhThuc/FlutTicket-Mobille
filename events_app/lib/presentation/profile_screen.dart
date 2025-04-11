@@ -1,4 +1,5 @@
 import 'package:events_app/app_utils.dart';
+import 'package:events_app/presentation/update_info_screen.dart';
 import 'package:events_app/widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -63,19 +64,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           alignment: Alignment.center,
                           children: [
                             Image.network(
-                              'http://192.168.22.49:8055/assets/$avatar',
+                              'http://162.248.102.236:8055/assets/${avatar}',
                               width: 60,
                               height: 60,
-                              fit: BoxFit.fill,
-                              errorBuilder: (context, error, stackTrace) {
-                                // Nếu không load được ảnh từ network, sử dụng ảnh mặc định từ assets
-                                return CustomImageView(
-                                  imagePath: 'assets/images/avatar.png',
-                                  width: 104.h,
-                                  height: 104.h,
-                                  radius: BorderRadius.circular(52.h),
-                                );
-                              },
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => CustomImageView(
+                      imagePath: 'assets/images/No-Image.png',
+                      width: double.maxFinite,
+                      height: 120.h,
+                      fit: BoxFit.cover,
+                      radius: BorderRadius.circular(52.h),
+                    ),
                             ),
                             CustomIconButton(
                               onTap: () async {
@@ -125,7 +124,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Text(userName,
                               style: CustomTextStyles.titleMediumSemiBold),
                           SizedBox(width: 4.h),
-                          Icon(Icons.edit, size: 20.h),
+                          CustomIconButton(
+                            onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const UpdateInfoScreen(),
+                              ),
+                            );
+                            },
+                            height: 20.h,
+                            width: 20.h,
+                            child: Icon(Icons.edit, size: 20.h),
+                          ),
                         ],
                       ),
                       SizedBox(height: 6.h),

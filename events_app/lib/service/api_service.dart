@@ -1,70 +1,84 @@
 import 'dart:convert';
 
-import 'package:flutter/services.dart' as rootBundle;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
   // Hàm để gửi request API
-  static Future<dynamic> requestApi(String endpoint, String fakeEndpoint, Map<String, dynamic> body) async {
-    final url = 'http://192.168.22.49:8302/$endpoint';
-    // try {
-    //   final response = await http.post(
-    //     Uri.parse(url),
-    //     headers: {'Content-Type': 'application/json'},
-    //     body: json.encode(body),
-    //   ).timeout(const Duration(seconds: 5));
+  static Future<dynamic> requestApi(
+      String endpoint, String fakeEndpoint, Map<String, dynamic> body,
+      {bool useAuth = false}) async {
+    final url = 'https://39e7-14-224-155-46.ngrok-free.app/apis/$endpoint';
 
-    //   if (response.statusCode == 200) {
-    //     final data = json.decode(response.body);
-    //     return data;
-    //   } else {
-    //     print('API request failed with status: ${response.statusCode}');
-    //     return await _loadFakeResponse(fakeEndpoint);
-    //   }
-    // } catch (e) {
-    //   print('Error connecting to API: $e');
-      // Nếu không kết nối được đến server, lấy dữ liệu từ response local
-      return await _loadFakeResponse(fakeEndpoint);
-    // }
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Accept-Language': 'vi-VN',
+    };
+
+    if (useAuth) {
+      final prefs = await SharedPreferences.getInstance();
+      String? accessToken = prefs.getString('access_token');
+      if (accessToken == null || accessToken.isEmpty) {
+        print('Error: No access token found');
+        return {"error": "Unauthorized"};
+      }
+      headers['Authorization'] = 'Bearer $accessToken';
+    }
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: json.encode(body),
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        print('API request $url failed with status: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error connecting to API: $e');
+    }
   }
 
-   static Future<dynamic> requestGetApi(String endpoint, String fakeEndpoint) async {
-    // final url = 'http://192.168.22.49:8302/$endpoint';
+  static Future<dynamic> requestGetApi(String endpoint, String fakeEndpoint,
+      {bool useAuth = true}) async {
+    final url = 'https://39e7-14-224-155-46.ngrok-free.app/apis/$endpoint';
 
-    // try {
-    //   // Lấy access token từ SharedPreferences
-    //   final prefs = await SharedPreferences.getInstance();
-    //   String? accessToken = prefs.getString('access_token');
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Accept-Language': 'vi-VN',
+    };
 
-    //   if (accessToken == null || accessToken.isEmpty) {
-    //     print('Error: No access token found');
-    //     return {"error": "Unauthorized"};
-    //   }
+    if (useAuth) {
+      final prefs = await SharedPreferences.getInstance();
+      String? accessToken = prefs.getString('access_token');
+      print('Access token: $accessToken');
+      if (accessToken == null || accessToken.isEmpty) {
+        print('Error: No access token found');
+        return {"error": "Unauthorized"};
+      }
+      headers['Authorization'] = 'Bearer $accessToken';
+    }
 
-    //   final response = await http.get(
-    //     Uri.parse(url),
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       'Authorization': 'Bearer $accessToken',
-    //     },
-    //   ).timeout(const Duration(seconds: 5));
+    try {
+      final response = await http.get(Uri.parse(url), headers: headers);
 
-    //   if (response.statusCode == 200) {
-    //     return json.decode(response.body);
-    //   } else {
-    //     print('API request failed with status: ${response.statusCode}');
-    //     return await _loadFakeResponse(fakeEndpoint);
-    //   }
-    // } catch (e) {
-    //   print('Error connecting to API: $e');
-      return await _loadFakeResponse(fakeEndpoint);
-    // }
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        print('API request $url failed with status: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error connecting to API: $e');
+    }
   }
 
-
-  Future<Map<String, dynamic>?> requestLogin(String username, String password) async {
-    final url = Uri.parse('http://192.168.22.49:8302/oauth/token');
+  Future<Map<String, dynamic>?> requestLogin(
+      String username, String password) async {
+    final url =
+        Uri.parse('https://39e7-14-224-155-46.ngrok-free.app/apis/oauth/token');
 
     // Tạo request dạng Multipart để gửi dữ liệu form-data
     final request = http.MultipartRequest('POST', url)
@@ -78,8 +92,8 @@ class ApiService {
     request.fields['password'] = password;
 
     try {
-      final streamedResponse = await request.send().timeout(const Duration(seconds: 5));
-      final response = await http.Response.fromStream(streamedResponse).timeout(const Duration(seconds: 5));
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
 
       if (response.statusCode == 200) {
         // Giải mã JSON nếu thành công
@@ -87,16 +101,18 @@ class ApiService {
       } else {
         // Xử lý lỗi, có thể ghi log hoặc ném exception
         print('Lỗi đăng nhập: ${response.statusCode} - ${response.body}');
-        return await _loadFakeResponse('login'); // Lấy response local nếu đăng nhập thất bại
+        // return await _loadFakeResponse('login'); // Lấy response local nếu đăng nhập thất bại
       }
     } catch (e) {
       print('Exception: $e');
-      return await _loadFakeResponse('login'); // Lấy response local nếu có lỗi
+      // return await _loadFakeResponse('login'); // Lấy response local nếu có lỗi
     }
+    return null;
   }
 
   Future<Map<String, dynamic>?> updateAvatar(String filePath) async {
-    final url = Uri.parse('http://192.168.22.49:8302/oauth/user/update-avatar');
+    final url = Uri.parse(
+        'https://39e7-14-224-155-46.ngrok-free.app/apis/oauth/user/update-avatar');
 
     try {
       // Lấy access token từ SharedPreferences
@@ -116,31 +132,104 @@ class ApiService {
       // Thêm file vào request
       request.files.add(await http.MultipartFile.fromPath('avatar', filePath));
 
-      final streamedResponse = await request.send().timeout(const Duration(seconds: 5));
-      final response = await http.Response.fromStream(streamedResponse).timeout(const Duration(seconds: 5));
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
 
       if (response.statusCode == 200) {
         return json.decode(response.body) as Map<String, dynamic>;
       } else {
-        print('Error updating avatar: ${response.statusCode} - ${response.body}');
+        print(
+            'Error updating avatar: ${response.statusCode} - ${response.body}');
         return {"error": "Failed to update avatar"};
       }
     } catch (e) {
       print('Exception: $e');
-      return await _loadFakeResponse('update-avatar'); // Lấy response local nếu có lỗi
+      // return await _loadFakeResponse('update-avatar'); // Lấy response local nếu có lỗi
+    }
+    return null;
+  }
+
+  // hàm post oder
+  static Future<dynamic> requestPostOder(
+      String endpoint, Map<String, dynamic> body,
+      {bool useAuth = false}) async {
+    final url = 'https://39e7-14-224-155-46.ngrok-free.app/apis/$endpoint';
+
+    Map<String, String> headers = {
+      'Accept-Language': 'vi-VN',
+      'Content-Type': 'application/json',
+    };
+
+    if (useAuth) {
+      final prefs = await SharedPreferences.getInstance();
+      String? accessToken = prefs.getString('access_token');
+      if (accessToken == null || accessToken.isEmpty) {
+        print('Error: No access token found');
+        return {"error": "Unauthorized"};
+      }
+      headers['Authorization'] = 'Bearer $accessToken';
+    }
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: json.encode(body),
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        print('API request $url failed with status: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error connecting to API: $e');
     }
   }
 
-  // Hàm để lấy fake response từ file
-  static Future<dynamic> _loadFakeResponse(String fakeEndpoint) async {
+  // hàm get oder
+  static Future<dynamic> requestGetOder(String endpoint, String fakeEndpoint,
+      {bool useAuth = true}) async {
+    final url = 'https://39e7-14-224-155-46.ngrok-free.app/apis/$endpoint';
+
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Accept-Language': 'vi-VN',
+    };
+
+    if (useAuth) {
+      final prefs = await SharedPreferences.getInstance();
+      String? accessToken = prefs.getString('access_token');
+      if (accessToken == null || accessToken.isEmpty) {
+        print('Error: No access token found');
+        return {"error": "Unauthorized"};
+      }
+      headers['Authorization'] = 'Bearer $accessToken';
+    }
+
     try {
-      final response = await rootBundle.rootBundle.loadString('assets/response-api/$fakeEndpoint.json');
-      final data = json.decode(response);
-      print('Fake response loaded successfully: $data');
-      return data; 
+      final response = await http.get(Uri.parse(url), headers: headers);
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        print('API request $url failed with status: ${response.statusCode}');
+      }
     } catch (e) {
-      print('Error loading fake response: $e');
-      return {}; // Trả về object trống thay vì null
+      print('Error connecting to API: $e');
     }
   }
+
+  // // Hàm để lấy fake response từ file
+  // static Future<dynamic> _loadFakeResponse(String fakeEndpoint) async {
+  //   try {
+  //     final response = await rootBundle.rootBundle.loadString('assets/response-api/$fakeEndpoint.json');
+  //     final data = json.decode(response);
+  //     print('Fake response loaded successfully: $data');
+  //     return data;
+  //   } catch (e) {
+  //     print('Error loading fake response: $e');
+  //     return {}; // Trả về object trống thay vì null
+  //   }
+  // }
 }

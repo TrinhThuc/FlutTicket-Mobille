@@ -2,20 +2,72 @@ import 'package:events_app/app_theme.dart';
 import 'package:events_app/app_utils.dart';
 import 'package:events_app/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+import '../service/api_service.dart';
+import 'web_view_screen.dart';
 
 class PaymentScreen extends StatefulWidget {
-  const PaymentScreen({super.key});
+  final Map<String, dynamic> eventDetails; // Thêm trường này
+  final double totalPrice; // Thêm trường này
+  final Map<int, int> ticketQuantities;
+  final dynamic selectedTicketType;
+
+  const PaymentScreen({
+    super.key,
+    required this.eventDetails,
+    required this.totalPrice,
+    required this.ticketQuantities,
+    required this.selectedTicketType,
+  });
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController surnameController = TextEditingController();
+  final TextEditingController fullnameController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController genderController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   int selectedMethod = 0; // Track selected payment method globally
+  String? selectedGender;
+  @override
+  void initState() {
+    super.initState();
+    _getUserInfo(); // Gọi lấy thông tin user khi widget khởi tạo
+  }
+
+  Future<void> _getUserInfo() async {
+    final response =
+        await ApiService.requestGetApi('oauth/user/get', 'get-user-info');
+
+    if (response != null) {
+      setState(() {
+        fullnameController.text = response['full_name'] ?? '';
+        phoneController.text = response['phone'] ?? '';
+        emailController.text = response['email'] ?? '';
+        addressController.text = response['location'] ?? '';
+
+        // Giới tính: từ số -> chuỗi
+        final int genderCode = response['gender'] ?? -1;
+        if (genderCode == 0) {
+          selectedGender = 'Nam';
+        } else if (genderCode == 1) {
+          selectedGender = 'Nữ';
+        } else {
+          selectedGender = 'Khác';
+        }
+
+        genderController.text = selectedGender ?? '';
+      });
+    } else {
+      print('Lỗi: Không nhận được dữ liệu user hợp lệ');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,28 +131,83 @@ class _PaymentScreenState extends State<PaymentScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Contact Info', style: theme.textTheme.titleMedium),
+        Text('Nhập các thông tin', style: theme.textTheme.titleMedium),
         SizedBox(height: 16.h),
-        Row(
-          children: [
-            Expanded(
-              child: CustomTextFormField(
-                controller: nameController,
-                hintText: 'Your Name',
-                contentPadding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 14.h),
-                validator: (value) => value!.isEmpty ? 'Enter name' : null,
-              ),
+        CustomTextFormField(
+          controller: fullnameController,
+          hintText: 'Họ và tên',
+          contentPadding:
+              EdgeInsets.symmetric(vertical: 12.h, horizontal: 14.h),
+          validator: (value) => value!.isEmpty ? 'Nhập họ và tên' : null,
+        ),
+        SizedBox(height: 12.h),
+        CustomTextFormField(
+          controller: phoneController,
+          hintText: 'Số điện thoại',
+          contentPadding:
+              EdgeInsets.symmetric(vertical: 12.h, horizontal: 14.h),
+          validator: (value) => value!.isEmpty ? 'Nhập số điện thoại' : null,
+        ),
+        SizedBox(height: 12.h),
+        Text('Giới tính', style: theme.textTheme.bodyLarge),
+        SizedBox(height: 8.h),
+        RadioListTile<String>(
+          title: const Text('Nam'),
+          value: 'Nam',
+          groupValue: selectedGender,
+          onChanged: (value) {
+            setState(() {
+              selectedGender = value;
+              genderController.text =
+                  value!; // vẫn dùng controller để gửi đi API
+            });
+          },
+        ),
+        RadioListTile<String>(
+          title: const Text('Nữ'),
+          value: 'Nữ',
+          groupValue: selectedGender,
+          onChanged: (value) {
+            setState(() {
+              selectedGender = value;
+              genderController.text = value!;
+            });
+          },
+        ),
+        RadioListTile<String>(
+          title: const Text('Khác'),
+          value: 'Khác',
+          groupValue: selectedGender,
+          onChanged: (value) {
+            setState(() {
+              selectedGender = value;
+              genderController.text = value!;
+            });
+          },
+        ),
+        if (selectedGender == null)
+          Padding(
+            padding: EdgeInsets.only(left: 12.h),
+            child: Text(
+              'Vui lòng chọn giới tính',
+              style: TextStyle(color: Colors.red, fontSize: 12.h),
             ),
-            SizedBox(width: 12.h),
-            Expanded(
-              child: CustomTextFormField(
-                controller: surnameController,
-                hintText: 'Your Surname',
-                contentPadding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 14.h),
-                validator: (value) => value!.isEmpty ? 'Enter surname' : null,
-              ),
-            ),
-          ],
+          ),
+        SizedBox(height: 12.h),
+        CustomTextFormField(
+          controller: emailController,
+          hintText: 'Email',
+          contentPadding:
+              EdgeInsets.symmetric(vertical: 12.h, horizontal: 14.h),
+          validator: (value) => value!.isEmpty ? 'Nhập email' : null,
+        ),
+        SizedBox(height: 12.h),
+        CustomTextFormField(
+          controller: addressController,
+          hintText: 'Địa chỉ',
+          contentPadding:
+              EdgeInsets.symmetric(vertical: 12.h, horizontal: 14.h),
+          validator: (value) => value!.isEmpty ? 'Nhập địa chỉ' : null,
         ),
       ],
     );
@@ -113,20 +220,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
       children: [
         Text('Payment Methods', style: theme.textTheme.titleMedium),
         SizedBox(height: 12.h),
-        ListView.separated(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: 3,
-          separatorBuilder: (_, __) => SizedBox(height: 6.h),
-          itemBuilder: (_, index) => PaymentMethodTile(
-            index: index,
-            selectedMethod: selectedMethod,
-            onSelected: (value) {
-              setState(() {
-                selectedMethod = value;
-              });
-            },
-          ),
+        PaymentMethodTile(
+          index: 0,
+          selectedMethod: selectedMethod,
+          onSelected: (value) {
+            setState(() {
+              selectedMethod = value;
+            });
+          },
         ),
       ],
     );
@@ -141,13 +242,35 @@ class _PaymentScreenState extends State<PaymentScreen> {
     );
   }
 
+  void showLoadingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+  }
+
+  void hideLoadingDialog(BuildContext context) {
+    Navigator.of(context, rootNavigator: true).pop();
+  }
+
+  void showToast(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+    );
+  }
+
   /// **Bottom Payment Bar**
   Widget _buildBottomPaymentBar() {
-        List<String> paymentMethods = ['Apple Pay', 'Credit Card', 'Bitcoin'];
+    List<String> paymentMethods = ['VNPay'];
     List<String> paymentIcons = [
-      'assets/images/Apple_Pay_logo.png',
-      'assets/images/visa_1.png',
-      'assets/images/bitcoin_1.png',
+      'assets/images/vnpay-logo.png',
     ];
     return Column(
       children: [
@@ -161,22 +284,103 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 children: [
                   const Icon(Icons.shopping_bag_outlined),
                   SizedBox(width: 8.h),
-                  Text('€67.00', style: theme.textTheme.titleLarge),
+                  Text(widget.totalPrice.toString(),
+                      style: theme.textTheme.titleLarge),
                 ],
               ),
-              ElevatedButton.icon(
-                onPressed: () {},
-                // icon: const Icon(Icons.apple),
-                     icon:       Image.asset(paymentIcons[selectedMethod], height: 24.h, width: 40.h, color: Colors.white),
+              Flexible(
+                child: ElevatedButton.icon(
+                  onPressed: () async {
+                    if (selectedGender == null) {
+                      showToast("Vui lòng chọn giới tính");
+                      return;
+                    }
 
-                label:  Text("Pay with ${paymentMethods[selectedMethod]}"),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24.h),
+                    if (_formKey.currentState!.validate()) {
+                      showLoadingDialog(context); // Hiện loading trong lúc chờ
+
+                      try {
+                        // 1. Gọi API tạo order
+                        Map<String, dynamic> _buildOrderBody() {
+                          return {
+                            "eventId": widget.eventDetails["id"],
+                            "listOrderTicketReq":
+                                widget.ticketQuantities.entries.map((entry) {
+                              return {
+                                "ticketId": entry.key,
+                                "quantity": entry.value,
+                              };
+                            }).toList(),
+                            "fullName": fullnameController.text,
+                            "gender": genderController.text,
+                            "address": addressController.text,
+                            "phoneNumber": phoneController.text,
+                            "email": emailController.text,
+                          };
+                        }
+
+                        print("Body: ${_buildOrderBody()}");
+
+                        final orderRes = await ApiService.requestPostOder(
+                          'saga/event/order/create-order',
+                          _buildOrderBody(),
+                          useAuth: true,
+                        );
+
+                        if (orderRes != null && orderRes["orderId"] != null) {
+                          final orderId = orderRes["orderId"];
+
+                          // 2. Gọi API tạo URL thanh toán VNPAY
+                          final vnpayRes = await ApiService.requestPostOder(
+                            'https://99ec-14-224-155-46.ngrok-free.app/apis/payment/private/vn-pay',
+                            {
+                              "orderId": orderId,
+                            },
+                          );
+
+                          if (vnpayRes != null && vnpayRes["url"] != null) {
+                            final paymentUrl = vnpayRes["url"];
+
+                            // 3. Mở WebView để người dùng thanh toán
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => WebViewPaymentScreen(
+                                  paymentUrl: paymentUrl,
+                                ),
+                              ),
+                            );
+                          } else {
+                            showToast("Không tạo được URL thanh toán");
+                          }
+                        } else {
+                          showToast("Tạo đơn hàng thất bại");
+                        }
+                      } catch (e) {
+                        print("Error: $e");
+                        showToast("Đã xảy ra lỗi khi thanh toán");
+                      } finally {
+                        Navigator.pop(context); // Ẩn loading
+                      }
+                    }
+                  },
+
+                  // icon: Image.asset(paymentIcons[selectedMethod], height: 24.h, width: 40.h, color: Colors.white),
+                  label: Flexible(
+                    child: Text(
+                      "Pay with ${paymentMethods[selectedMethod]}",
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                  padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 20.h),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24.h),
+                    ),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 12.h, horizontal: 20.h),
+                  ),
                 ),
               ),
             ],
@@ -202,11 +406,9 @@ class PaymentMethodTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> paymentMethods = ['Apple Pay', 'Credit Card', 'Bitcoin'];
+    List<String> paymentMethods = ['VNPay'];
     List<String> paymentIcons = [
-      'assets/images/Apple_Pay_logo.png',
-      'assets/images/visa_1.png',
-      'assets/images/bitcoin_1.png',
+      'assets/images/vnpay-logo.png',
     ];
 
     return GestureDetector(
@@ -230,9 +432,9 @@ class PaymentMethodTile extends StatelessWidget {
               activeColor: Colors.blue,
             ),
             SizedBox(width: 12.h),
-            Text(paymentMethods[index], style: CustomTextStyles.bodySmallBlack900),
+            Text(paymentMethods[index],
+                style: CustomTextStyles.bodySmallBlack900),
             const Spacer(),
-            // Image.network(paymentIcons[index], height: 24.h, width: 40.h),
             Image.asset(paymentIcons[index], height: 24.h, width: 40.h),
           ],
         ),

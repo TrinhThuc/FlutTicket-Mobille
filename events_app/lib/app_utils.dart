@@ -4,6 +4,8 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'presentation/loginScreen.dart';
+
 final Map<String, String> en = {
   "lbl_0": "0",
   "lbl_1": "1",
@@ -483,7 +485,10 @@ class AppUtils {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('access_token');
     // Giả sử bạn đã đăng ký route '/login' cho màn hình đăng nhập
-    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+    Navigator.pushAndRemoveUntil(context, 
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+      (route) => false,
+    );
   }
 
   static Future<String> pickImageFromGallery(BuildContext context) async {

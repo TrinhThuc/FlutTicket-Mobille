@@ -1,1 +1,38 @@
-{"actionType":"CREATE_ORDER_CHANNEL","sagaId":"00000195f612dcf9-e155ca87c87e98ec","successMessage":"[CREATE_ORDER_CHANNEL] successfully!","success":true,"data":{"id":25,"createdBy":"trinhthuc432@gmail.com","createdAt":"2025-04-02T17:36:30.1469443Z","lastModifiedBy":"trinhthuc432@gmail.com","lastModifiedAt":"2025-04-02T17:36:30.1469443Z","deleted":false,"userId":2,"totalAmount":100000.0,"status":0,"eventId":1,"emailSent":false,"orderCode":"ORDLFLUSU36SU","voucherUsed":false,"listOrderTicket":[{"id":22,"createdBy":"trinhthuc432@gmail.com","createdAt":"2025-04-02T17:36:30.6055106Z","lastModifiedBy":"trinhthuc432@gmail.com","lastModifiedAt":"2025-04-02T17:36:30.6055106Z","deleted":false,"orderId":25,"ticketId":1,"ticketType":"VIP","quantity":1,"price":100000.0,"totalPrice":100000.0,"status":1}]}}
+{
+    "actionType": "CREATE_ORDER_CHANNEL",
+    "sagaId": "00000195f612dcf9-e155ca87c87e98ec",
+    "successMessage": "[CREATE_ORDER_CHANNEL] successfully!",
+    "success": true,
+    "data": {
+        "id": 25,
+        "createdBy": "trinhthuc432@gmail.com",
+        "createdAt": "2025-04-02T17:36:30.1469443Z",
+        "lastModifiedBy": "trinhthuc432@gmail.com",
+        "lastModifiedAt": "2025-04-02T17:36:30.1469443Z",
+        "deleted": false,
+        "userId": 2,
+        "totalAmount": 100000.0,
+        "status": 0,
+        "eventId": 1,
+        "emailSent": false,
+        "orderCode": "ORDLFLUSU36SU",
+        "voucherUsed": false,
+        "listOrderTicket": [
+            {
+                "id": 22,
+                "createdBy": "trinhthuc432@gmail.com",
+                "createdAt": "2025-04-02T17:36:30.6055106Z",
+                "lastModifiedBy": "trinhthuc432@gmail.com",
+                "lastModifiedAt": "2025-04-02T17:36:30.6055106Z",
+                "deleted": false,
+                "orderId": 25,
+                "ticketId": 1,
+                "ticketType": "VIP",
+                "quantity": 1,
+                "price": 100000.0,
+                "totalPrice": 100000.0,
+                "status": 1
+            }
+        ]
+    }
+}

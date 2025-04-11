@@ -12,7 +12,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool rememberMe = false;
   bool _passwordVisible = false;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -49,12 +48,10 @@ class _LoginScreenState extends State<LoginScreen> {
           SnackBar(content: Text(response['error'])),
         );
       } else {
-        // Chỉ lưu access token nếu Remember me được chọn
-        if (rememberMe) {
           final prefs = await SharedPreferences.getInstance();
           await prefs.remove('access_token'); // Xóa token cũ trước khi lưu
           await prefs.setString('access_token', response?['access_token']);
-        }
+        
 
         // Chuyển đến màn hình chọn vị trí
         Navigator.pushReplacement(
@@ -166,46 +163,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           });
                         },
                       ),
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 30),
-
-              // Remember me
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Remember me',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Color(0xFF7C7C7C),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        rememberMe = !rememberMe;
-                      });
-                    },
-                    child: Container(
-                      height: 24,
-                      width: 24,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: const Color(0xFF7C7C7C),
-                        ),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: rememberMe
-                          ? const Icon(
-                              Icons.check,
-                              color: Colors.black,
-                              size: 16,
-                            )
-                          : null,
                     ),
                   ),
                 ],

@@ -20,7 +20,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     HomeScreen(selectedLocation: 'Barcelona'),
     SearchScreen(),
     const TicketScreen(),
-    FavouritesScreen(),
+    const FavouritesScreen(),
     const ProfileScreen(),
   ];
 
