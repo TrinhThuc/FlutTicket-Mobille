@@ -311,11 +311,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                 "quantity": entry.value,
                               };
                             }).toList(),
-                            "fullName": fullnameController.text,
-                            "gender": genderController.text,
-                            "address": addressController.text,
-                            "phoneNumber": phoneController.text,
-                            "email": emailController.text,
+                            // "fullName": fullnameController.text,
+                            // "gender": genderController.text,
+                            // "address": addressController.text,
+                            // "phoneNumber": phoneController.text,
+                            // "email": emailController.text,
                           };
                         }
 
