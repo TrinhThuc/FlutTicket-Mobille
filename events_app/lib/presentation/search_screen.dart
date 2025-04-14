@@ -75,6 +75,7 @@ class _SearchScreenState extends State<SearchScreen> {
         'event/public/search-event?sort=name,asc', 'search-events', {});
 
     if (response != null) {
+      debugPrint('Search response data: ${response['data']}');
       setState(() {
         events = response['data']['content'];
       });
@@ -395,6 +396,7 @@ class _EventListItemWidgetState extends State<EventListItemWidget> {
                       : 'event/private/add-favourite-event/${widget.event['id']}',
                   widget.event['isFav'] ? 'remove-fav-event' : 'add-fav-event',
                   {},
+                  useAuth: true,
                 ).then((response) {
                   if (response != null) {
                     setState(() {

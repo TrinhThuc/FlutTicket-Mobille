@@ -25,7 +25,8 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
 
   Future<void> _getFavEvents() async {
     final response = await ApiService.requestGetApi(
-        'event/private/get-favourite-event', 'get-fav-event');
+        'event/private/get-favourite-event', 'get-fav-event',
+        useAuth: true);
 
     if (response != null) {
       setState(() {
@@ -41,7 +42,8 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
     return Scaffold(
       backgroundColor: appTheme.whiteA700,
       body: SafeArea(
-        child: favEvents.isEmpty ? _buildEmptyFavourites() : _buildFavoriteItem(),
+        child:
+            favEvents.isEmpty ? _buildEmptyFavourites() : _buildFavoriteItem(),
       ),
     );
   }
@@ -131,7 +133,8 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                         padding: EdgeInsets.zero,
                         physics: const BouncingScrollPhysics(),
                         shrinkWrap: true,
-                        separatorBuilder: (context, index) => SizedBox(height: 18.h),
+                        separatorBuilder: (context, index) =>
+                            SizedBox(height: 18.h),
                         itemBuilder: (context, index) {
                           return FavouritesItemWidget(event: favEvents[index]);
                         },
@@ -162,14 +165,14 @@ class _FavouritesItemWidgetState extends State<FavouritesItemWidget> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        
         Container(
           width: 88.h,
           height: 84.h,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10.h),
             image: DecorationImage(
-              image: NetworkImage(widget.event['eventPoster'] ?? 'https://example.com/default_image.png'),
+              image: NetworkImage(widget.event['eventPoster'] ??
+                  'https://example.com/default_image.png'),
               fit: BoxFit.cover,
             ),
           ),
@@ -192,46 +195,59 @@ class _FavouritesItemWidgetState extends State<FavouritesItemWidget> {
                 SizedBox(height: 10.h),
                 SizedBox(
                   width: double.maxFinite,
-                  child: Row(
-                    children: [
-                      Icon(Icons.location_on, size: 16.h),
-                      Padding(
-                        padding: EdgeInsets.only(left: 4.h),
-                        child: Text(
-                          widget.event['location'] ?? 'Địa điểm không xác định',
-                          style: theme.textTheme.bodySmall,
+                  child: Flexible(
+                    child: Row(
+                      children: [
+                        Icon(Icons.location_on, size: 16.h),
+                        SizedBox(width: 4.h),
+                        Expanded(
+                          child: Text(
+                            widget.event['location'] ??
+                                'Địa điểm không xác định',
+                            style: theme.textTheme.bodySmall,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ],
             ),
           ),
         ),
-          IconButton(
-                    icon: Icon(
-                      widget.event['isFav'] ? Icons.favorite : Icons.favorite_border_outlined,
-                      color: widget.event['isFav'] ? Colors.red : appTheme.gray900,
-                      size: 18.h,
-                    ),
-                    onPressed: () {
-                      // Thêm sự kiện vào danh sách yêu thích
-                      setState(() {
-                        ApiService.requestApi(
-                          widget.event['isFav']
-                              ? 'event/private/remove-favourite-event/${widget.event['id']}'
-                              : 'event/private/add-favourite-event/${widget.event['id']}',
-                          widget.event['isFav'] ? 'remove-fav-event' : 'add-fav-event',
-                          {},
-                        ).then((response) {
-                          if (response != null) {
-                            widget.event['isFav'] = !widget.event['isFav'];
-                          }
-                        });
-                      });
-                    },
-                  ),
+        IconButton(
+          icon: Icon(
+            (widget.event['isFav'] ?? false)
+                ? Icons.favorite
+                : Icons.favorite_border_outlined,
+            color: (widget.event['isFav'] ?? false)
+                ? Colors.red
+                : appTheme.gray900,
+            size: 18.h,
+          ),
+          onPressed: () {
+            // Thêm sự kiện vào danh sách yêu thích
+            setState(() {
+              bool isFav = widget.event['isFav'] ?? false;
+              ApiService.requestApi(
+                isFav
+                    ? 'event/private/remove-favourite-event/${widget.event['id']}'
+                    : 'event/private/add-favourite-event/${widget.event['id']}',
+                isFav ? 'remove-fav-event' : 'add-fav-event',
+                {},
+                useAuth: true,
+              ).then((response) {
+                if (response != null) {
+                  setState(() {
+                    widget.event['isFav'] = !isFav;
+                  });
+                }
+              });
+            });
+          },
+        ),
       ],
     );
   }

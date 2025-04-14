@@ -16,28 +16,27 @@ class BuyTicketScreen extends StatefulWidget {
 }
 
 class _BuyTicketScreenState extends State<BuyTicketScreen> {
-  double totalPrice = 0.0;
-  Map<int, int> ticketQuantities = {}; // index -> quantity
+  int totalPrice = 0;
+  Map<int, int> ticketQuantities = {}; // ticketId -> quantity
 
   void _updateQuantity(int index, int quantity) {
     final ticket = widget.eventDetails['listTicket'][index];
-    final price = double.tryParse(
-            ticket['price'].toString().replaceAll('€', '').trim()) ??
-        0.0;
+    final ticketId = ticket['id'];
+    final price = (ticket['price'] as num?)?.toInt() ?? 0;
 
     setState(() {
-      ticketQuantities[index] = quantity;
+      ticketQuantities[ticketId] = quantity;
 
-      totalPrice = 0.0;
-      ticketQuantities.forEach((i, qty) {
-        final ticketItem = widget.eventDetails['listTicket'][i];
-        final itemPrice = double.tryParse(
-                ticketItem['price'].toString().replaceAll('€', '').trim()) ??
-            0.0;
-        totalPrice += (itemPrice + 2.0) * qty; // cộng phí €2.00 mỗi vé
+      totalPrice = 0;
+      ticketQuantities.forEach((ticketId, qty) {
+        final ticketItem = widget.eventDetails['listTicket']
+            .firstWhere((t) => t['id'] == ticketId);
+        final itemPrice = (ticketItem['price'] as num?)?.toInt() ?? 0;
+        totalPrice += itemPrice * qty;
       });
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -130,26 +129,32 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
           children: [
             Icon(Icons.shopping_bag_outlined, size: 24.h),
             const Spacer(),
-            Text('€ ${totalPrice.toStringAsFixed(2)}',
+            Text(formatCurrencyVND(totalPrice),
                 style: theme.textTheme.titleMedium),
             CustomElevatedButton(
               text: 'Mua',
               onPressed: () {
-                if (ticketQuantities.isEmpty) {
+                bool hasTickets =
+                    ticketQuantities.values.any((quantity) => quantity > 0);
+                if (!hasTickets) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Vui lòng chọn ít nhất 1 vé')),
                   );
                   return;
                 }
 
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                int firstSelectedTicketId = ticketQuantities.entries
+                    .firstWhere((entry) => entry.value > 0)
+                    .key;
+
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) {
                   return PaymentScreen(
-                      ticketQuantities: ticketQuantities,
-                      selectedTicketType:
-                          ticketOptions[ticketQuantities.keys.first]
-                              ['ticketType'],
-                      eventDetails: widget.eventDetails,
-                      totalPrice: totalPrice);
+                    ticketQuantities: ticketQuantities,
+                    selectedTicketType: firstSelectedTicketId,
+                    eventDetails: widget.eventDetails,
+                    totalPrice: totalPrice,
+                  );
                 }));
               },
               height: 44.h,
@@ -167,6 +172,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
       ),
     );
   }
+
 
   Widget _buildVoucherInput(BuildContext context) {
     return Padding(
@@ -230,13 +236,10 @@ class _TicketPurchaseSectionItemState extends State<TicketPurchaseSectionItem> {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: '${widget.ticketOption['price'] ?? '€ 0.00'}',
+                    text: formatCurrencyVND((widget.ticketOption['price'] as num?)?.toInt()),
                     style: CustomTextStyles.bodyLargeBlack900_1,
                   ),
-                  TextSpan(
-                    text: '+ €2.00 Fee',
-                    style: CustomTextStyles.bodySmallGray600_1,
-                  ),
+                  
                 ],
               ),
             ),

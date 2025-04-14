@@ -522,3 +522,15 @@ class AppUtils {
     }
   }
 }
+
+/// Formats a double amount into Vietnamese Dong (vnđ) currency format.
+///
+/// Example: formatCurrencyVND(1234567.89) -> "1.234.568 vnđ"
+String formatCurrencyVND(int? amount) {
+  if (amount == null) {
+    return '0 vnđ'; // Hoặc giá trị mặc định khác tùy bạn chọn
+  }
+  final format = NumberFormat.currency(locale: 'vi_VN', symbol: 'vnđ');
+  // Làm tròn đến số nguyên gần nhất trước khi định dạng
+  return format.format(amount.round()); 
+}

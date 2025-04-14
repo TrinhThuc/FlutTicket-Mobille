@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -26,7 +28,8 @@ class _WebViewPaymentScreenState extends State<WebViewPaymentScreen> {
             if (request.url.contains("vnp_ResponseCode")) {
               final uri = Uri.parse(request.url);
               final responseCode = uri.queryParameters['vnp_ResponseCode'];
-
+              log("Response URL: ${request.url}");
+  
               if (responseCode == '00') {
                 showDialog(
                   context: context,
@@ -38,6 +41,8 @@ class _WebViewPaymentScreenState extends State<WebViewPaymentScreen> {
                         onPressed: () {
                           Navigator.pop(context); // Close dialog
                           Navigator.pop(context); // Close WebView
+                                                    Navigator.pop(context); // Close WebView
+
                         },
                       ),
                     ],

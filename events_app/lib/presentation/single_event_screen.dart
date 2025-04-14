@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:events_app/app_utils.dart';
 import 'package:events_app/widgets.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +35,8 @@ class _EventPageState extends State<EventPage> {
         'event/public/$eventId', 'get-detail-event',
         useAuth: false);
     if (response != null) {
+      log('getEventDetails response data: ${response['data']}');
+
       setState(() {
         eventDetails = response['data'] ?? {};
       });
@@ -78,14 +82,6 @@ class _EventPageState extends State<EventPage> {
                     ),
                   ),
                 ],
-              ),
-            ),
-            SizedBox(height: 4.h),
-            Padding(
-              padding: EdgeInsets.only(left: 26.h),
-              child: Text(
-                'Passeig Olímpic, 5-7, 08038 Barcelona',
-                style: theme.textTheme.bodySmall,
               ),
             ),
             SizedBox(height: 8.h),
@@ -251,11 +247,6 @@ class _EventPageState extends State<EventPage> {
           ),
           SizedBox(height: 4.h),
           Text(
-            '21:00 PM - 23.30 PM',
-            style: theme.textTheme.bodySmall,
-          ),
-          SizedBox(height: 8.h),
-          Text(
             'Thêm vào lịch',
             style: theme.textTheme.labelLarge,
           ),
@@ -279,7 +270,9 @@ class _EventPageState extends State<EventPage> {
             children: [
               Text('Giá vé', style: CustomTextStyles.titleMediumGray900_1),
               Text(
-                  '${eventDetails['listTicket'] != null && eventDetails['listTicket'].isNotEmpty ? eventDetails['listTicket'][0]['price'] : '€ 0.00'}',
+                  formatCurrencyVND((eventDetails['listTicket'] != null && eventDetails['listTicket'].isNotEmpty
+                          ? (eventDetails['listTicket'][0]['price'] as num?)?.toInt() ?? 0
+                          : 0)),
                   style: theme.textTheme.bodyLarge),
             ],
           ),

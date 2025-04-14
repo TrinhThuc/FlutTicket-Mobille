@@ -19,7 +19,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
-  int _selectedGender = 1; // 1: Nam, 2: Nữ
+  int _selectedGender = 0; 
 
   @override
   void dispose() {
@@ -88,7 +88,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
                 Expanded(
                   child: RadioListTile<int>(
                     title: Text('Nam', style: AppStyles.h4),
-                    value: 1,
+                    value: 0,
                     groupValue: _selectedGender,
                     onChanged: (value) {
                       setState(() {
@@ -100,7 +100,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
                 Expanded(
                   child: RadioListTile<int>(
                     title: Text('Nữ', style: AppStyles.h4),
-                    value: 2,
+                    value: 1,
                     groupValue: _selectedGender,
                     onChanged: (value) {
                       setState(() {
@@ -123,7 +123,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
                 };
                 print(updateData);
                 ApiService.requestApi(
-                        'oauth/user/update', 'update-user-info', updateData)
+                        'oauth/user/update-info', 'update-user-info', updateData, useAuth: true)
                     .then((response) {
                   if (response != null && response['status']['success'] == true) {
                     Navigator.pushReplacement(

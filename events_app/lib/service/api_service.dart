@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -54,7 +55,7 @@ class ApiService {
     if (useAuth) {
       final prefs = await SharedPreferences.getInstance();
       String? accessToken = prefs.getString('access_token');
-      print('Access token: $accessToken');
+      log('Access token: $accessToken');
       if (accessToken == null || accessToken.isEmpty) {
         print('Error: No access token found');
         return {"error": "Unauthorized"};
@@ -149,43 +150,44 @@ class ApiService {
     return null;
   }
 
-  // hàm post oder
-  static Future<dynamic> requestPostOder(
-      String endpoint, Map<String, dynamic> body,
-      {bool useAuth = false}) async {
-    final url = 'https://39e7-14-224-155-46.ngrok-free.app/apis/$endpoint';
+ static Future<dynamic> requestPostOder(
+    String endpoint, Map<String, dynamic> body,
+    {bool useAuth = false}) async {
+  final url = 'https://39e7-14-224-155-46.ngrok-free.app/apis/$endpoint';
 
-    Map<String, String> headers = {
-      'Accept-Language': 'vi-VN',
-      'Content-Type': 'application/json',
-    };
+  Map<String, String> headers = {
+    'Accept-Language': 'vi-VN',
+    'Content-Type': 'application/json',
+  };
 
-    if (useAuth) {
-      final prefs = await SharedPreferences.getInstance();
-      String? accessToken = prefs.getString('access_token');
-      if (accessToken == null || accessToken.isEmpty) {
-        print('Error: No access token found');
-        return {"error": "Unauthorized"};
-      }
-      headers['Authorization'] = 'Bearer $accessToken';
+  if (useAuth) {
+    final prefs = await SharedPreferences.getInstance();
+    String? accessToken = prefs.getString('access_token');
+    if (accessToken == null || accessToken.isEmpty) {
+      print('Error: No access token found');
+      return {"error": "Unauthorized"};
     }
-
-    try {
-      final response = await http.post(
-        Uri.parse(url),
-        headers: headers,
-        body: json.encode(body),
-      );
-
-      if (response.statusCode == 200) {
-        return json.decode(response.body);
-      } else {
-        print('API request $url failed with status: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error connecting to API: $e');
+    headers['Authorization'] = 'Bearer $accessToken';
+  };
+  
+  try {
+    final response = await http.post(
+      Uri.parse(url),
+      headers: headers,
+      body: json.encode(body),
+    );
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      // 🔥 Quan trọng: cần return lỗi luôn nếu không phải 200
+      return json.decode(response.body);
     }
+  } catch (e) {
+    print('Error connecting to API: $e');
+    return {"error": "Connection failed", "exception": e.toString()};
   }
+}
+
 
   // hàm get oder
   static Future<dynamic> requestGetOder(String endpoint, String fakeEndpoint,

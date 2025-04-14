@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:events_app/app_theme.dart';
 import 'package:events_app/app_utils.dart';
 import 'package:events_app/widgets.dart';
@@ -9,7 +11,7 @@ import 'web_view_screen.dart';
 
 class PaymentScreen extends StatefulWidget {
   final Map<String, dynamic> eventDetails; // Thêm trường này
-  final double totalPrice; // Thêm trường này
+  final int totalPrice; // Thêm trường này
   final Map<int, int> ticketQuantities;
   final dynamic selectedTicketType;
 
@@ -26,6 +28,8 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
+       bool _dialogDismissed = false;
+
   final TextEditingController fullnameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController genderController = TextEditingController();
@@ -71,6 +75,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: appTheme.whiteA700,
       resizeToAvoidBottomInset: true,
@@ -80,12 +85,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.close, color: Colors.black),
-            onPressed: () {},
-          ),
-        ],
+
       ),
       body: Padding(
         padding: EdgeInsets.all(16.h),
@@ -174,17 +174,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             });
           },
         ),
-        RadioListTile<String>(
-          title: const Text('Khác'),
-          value: 'Khác',
-          groupValue: selectedGender,
-          onChanged: (value) {
-            setState(() {
-              selectedGender = value;
-              genderController.text = value!;
-            });
-          },
-        ),
+        
         if (selectedGender == null)
           Padding(
             padding: EdgeInsets.only(left: 12.h),
@@ -284,65 +274,93 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 children: [
                   const Icon(Icons.shopping_bag_outlined),
                   SizedBox(width: 8.h),
-                  Text(widget.totalPrice.toString(),
+                  Text(formatCurrencyVND(widget.totalPrice),
                       style: theme.textTheme.titleLarge),
                 ],
               ),
               Flexible(
                 child: ElevatedButton.icon(
-                  onPressed: () async {
-                    if (selectedGender == null) {
-                      showToast("Vui lòng chọn giới tính");
-                      return;
-                    }
 
-                    if (_formKey.currentState!.validate()) {
-                      showLoadingDialog(context); // Hiện loading trong lúc chờ
+onPressed: () async {
+  if (selectedGender == null) {
+    showToast("Vui lòng chọn giới tính");
+    return;
+  }
+
+  if (_formKey.currentState!.validate()) {
+    showLoadingDialog(context); // Show loading dialog
 
                       try {
+                        int _genderToInt(String gender) {
+                          switch (gender) {
+                            case 'Nam':
+                              return 1;
+                            case 'Nữ':
+                              return 0;
+                            default:
+                              return -1;
+                          }
+                        }
+
                         // 1. Gọi API tạo order
                         Map<String, dynamic> _buildOrderBody() {
                           return {
                             "eventId": widget.eventDetails["id"],
-                            "listOrderTicketReq":
-                                widget.ticketQuantities.entries.map((entry) {
+                            "listOrderTicketReq": widget
+                                .ticketQuantities.entries
+                                .where((entry) => entry.value > 0)
+                                .map((entry) {
                               return {
                                 "ticketId": entry.key,
                                 "quantity": entry.value,
                               };
                             }).toList(),
-                            // "fullName": fullnameController.text,
-                            // "gender": genderController.text,
-                            // "address": addressController.text,
-                            // "phoneNumber": phoneController.text,
-                            // "email": emailController.text,
+                            "fullName": fullnameController.text,
+                            "gender": _genderToInt(genderController.text),
+                            "address": addressController.text,
+                            "phoneNumber": phoneController.text,
+                            "email": emailController.text,
                           };
                         }
 
                         print("Body: ${_buildOrderBody()}");
-
                         final orderRes = await ApiService.requestPostOder(
                           'saga/event/order/create-order',
                           _buildOrderBody(),
                           useAuth: true,
                         );
-
-                        if (orderRes != null && orderRes["orderId"] != null) {
-                          final orderId = orderRes["orderId"];
+                        log("Chi tiết phản hồi từ server: $orderRes"); // 👈 THÊM DÒNG NÀY
+                        if (orderRes == null) {
+                          showToast("Không nhận được phản hồi từ server");
+                          print("Không nhận được phản hồi từ server"); // 👈 THÊM DÒNG NÀY
+                        } else if (orderRes['data']["id"] == null) {
+                          print(
+                              "Chi tiết lỗi từ server: $orderRes"); // 👈 THÊM DÒNG NÀY
+                          showToast(
+                              orderRes['message'] ?? "Tạo đơn hàng thất bại");
+                          return;
+                        }
+                        if (orderRes != null && orderRes['data']["id"] != null) {
+                          final orderId = orderRes['data']["id"];
 
                           // 2. Gọi API tạo URL thanh toán VNPAY
                           final vnpayRes = await ApiService.requestPostOder(
-                            'https://99ec-14-224-155-46.ngrok-free.app/apis/payment/private/vn-pay',
+                            'payment/private/vn-pay',
                             {
                               "orderId": orderId,
                             },
+                            useAuth: true,
                           );
-
-                          if (vnpayRes != null && vnpayRes["url"] != null) {
-                            final paymentUrl = vnpayRes["url"];
+                          print (
+                              "Chi tiết phản hồi từ server: $vnpayRes"); // 👈 THÊM DÒNG NÀY
+                          if (vnpayRes != null && vnpayRes["data"]?['paymentUrl'] != null) {
+                            final paymentUrl = vnpayRes["data"]['paymentUrl'];
 
                             // 3. Mở WebView để người dùng thanh toán
-                            Navigator.push(
+if (!_dialogDismissed) {
+            hideLoadingDialog(context);
+            _dialogDismissed = true;
+          }                            Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => WebViewPaymentScreen(
@@ -360,17 +378,18 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         print("Error: $e");
                         showToast("Đã xảy ra lỗi khi thanh toán");
                       } finally {
-                        Navigator.pop(context); // Ẩn loading
-                      }
+if (!_dialogDismissed) {
+        hideLoadingDialog(context);
+      }
+      // Optionally, reset the flag here if needed.
+      _dialogDismissed = false;                      }
                     }
                   },
 
                   // icon: Image.asset(paymentIcons[selectedMethod], height: 24.h, width: 40.h, color: Colors.white),
-                  label: Flexible(
-                    child: Text(
-                      "Pay with ${paymentMethods[selectedMethod]}",
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                  label: Text(
+                    "Pay with ${paymentMethods[selectedMethod]}",
+                    overflow: TextOverflow.ellipsis,
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,

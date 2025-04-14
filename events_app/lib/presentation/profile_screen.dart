@@ -32,9 +32,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (response != null) {
       setState(() {
-        userName = response['full_name'];
-        userEmail = response['email'];
-        avatar = response['avatar'];
+        userName = response['full_name'] ?? '';
+        userEmail = response['email'] ?? '';
+        avatar = response['avatar'] ?? '';
       });
     } else {
       print('Lỗi: Không nhận được dữ liệu user hợp lệ');
@@ -69,12 +69,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               height: 60,
                               fit: BoxFit.cover,
                               errorBuilder: (_, __, ___) => CustomImageView(
-                      imagePath: 'assets/images/No-Image.png',
-                      width: double.maxFinite,
-                      height: 120.h,
-                      fit: BoxFit.cover,
-                      radius: BorderRadius.circular(52.h),
-                    ),
+                                imagePath: 'assets/images/No-Image.png',
+                                width: double.maxFinite,
+                                height: 120.h,
+                                fit: BoxFit.cover,
+                                radius: BorderRadius.circular(52.h),
+                              ),
                             ),
                             CustomIconButton(
                               onTap: () async {
@@ -126,12 +126,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           SizedBox(width: 4.h),
                           CustomIconButton(
                             onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const UpdateInfoScreen(),
-                              ),
-                            );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const UpdateInfoScreen(),
+                                ),
+                              );
                             },
                             height: 20.h,
                             width: 20.h,
