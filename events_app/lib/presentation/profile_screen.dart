@@ -28,7 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _getUserInfo() async {
     final response =
-        await ApiService.requestGetApi('oauth/user/get', 'get-user-info');
+        await ApiService.requestGetApi('oauth/user/get', useAuth: true);
 
     if (response != null) {
       setState(() {

@@ -25,7 +25,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
 
   Future<void> _getFavEvents() async {
     final response = await ApiService.requestGetApi(
-        'event/private/get-favourite-event', 'get-fav-event',
+        'event/private/get-favourite-event',
         useAuth: true);
 
     if (response != null) {
@@ -235,7 +235,7 @@ class _FavouritesItemWidgetState extends State<FavouritesItemWidget> {
                 isFav
                     ? 'event/private/remove-favourite-event/${widget.event['id']}'
                     : 'event/private/add-favourite-event/${widget.event['id']}',
-                isFav ? 'remove-fav-event' : 'add-fav-event',
+               
                 {},
                 useAuth: true,
               ).then((response) {

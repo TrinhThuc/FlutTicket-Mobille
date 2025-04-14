@@ -46,7 +46,7 @@ class _FilterScreenState extends State<FilterScreen> {
 
   Future<void> _getEventTypes() async {
     final response = await ApiService.requestGetApi(
-        'event/public/get-event-type', 'get-event-type');
+        'event/public/get-event-type');
 
     if (response != null) {
       setState(() {

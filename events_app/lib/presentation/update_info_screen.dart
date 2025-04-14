@@ -123,7 +123,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
                 };
                 print(updateData);
                 ApiService.requestApi(
-                        'oauth/user/update-info', 'update-user-info', updateData, useAuth: true)
+                        'oauth/user/update-info',updateData, useAuth: true)
                     .then((response) {
                   if (response != null && response['status']['success'] == true) {
                     Navigator.pushReplacement(

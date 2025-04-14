@@ -1,8 +1,11 @@
 import 'package:events_app/app_utils.dart';
+import 'package:events_app/presentation/ticket_detail.dart';
 import 'package:events_app/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // Thêm thư viện để định dạng ngày
 
 import '../app_theme.dart';
+import '../service/api_service.dart';
 
 class TicketScreen extends StatefulWidget {
   const TicketScreen({super.key});
@@ -14,7 +17,7 @@ class TicketScreen extends StatefulWidget {
 class TicketEmptyScreenState extends State<TicketScreen>
     with TickerProviderStateMixin {
   late TabController tabviewController;
-  GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
   @override
   void initState() {
     super.initState();
@@ -24,22 +27,22 @@ class TicketEmptyScreenState extends State<TicketScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: appTheme.whiteA700,
+      backgroundColor: Colors.white,
       body: SafeArea(
-        child: SizedBox(
-          width: double.maxFinite,
-          child: Column(
-              children: [
-                _buildTicketsSection(context),
-                Expanded(
-                    child: Container(
-                        child: TabBarView(
-                  controller: tabviewController,
-                  // children: [TicketTabPage(), TicketTabPage()]
-
-                  children: const [TicketUpcomingiTabPage(), TicketpastTabPage(), AllTicketTabPage()],
-                ))),
-              ]),
+        child: Column(
+          children: [
+            _buildTicketsSection(context),
+            Expanded(
+              child: TabBarView(
+                controller: tabviewController,
+                children: const [
+                  TicketUpcomingTabPage(),
+                  TicketPastTabPage(),
+                  AllTicketTabPage(),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -47,7 +50,6 @@ class TicketEmptyScreenState extends State<TicketScreen>
 
   Widget _buildTicketsSection(BuildContext context) {
     return Container(
-      width: double.maxFinite,
       padding: EdgeInsets.only(top: 44.h),
       decoration: AppDecoration.globalPrimary,
       child: Column(
@@ -58,12 +60,8 @@ class TicketEmptyScreenState extends State<TicketScreen>
               margin: EdgeInsets.symmetric(horizontal: 14.h, vertical: 22.h),
             ),
           ),
-          // Spacer(),
-          SizedBox(
-            height: 16.h,
-          ),
+          SizedBox(height: 16.h),
           Container(
-            width: double.maxFinite,
             margin: EdgeInsets.symmetric(horizontal: 14.h),
             child: TabBar(
               controller: tabviewController,
@@ -82,510 +80,299 @@ class TicketEmptyScreenState extends State<TicketScreen>
               ),
               indicatorColor: appTheme.whiteA700,
               tabs: const [
-                Tab(
-                  text: 'Upcoming',
-                ),
-                Tab(
-                  text: 'Past Tickets',
-                ),
-Tab(
-                  text: 'All',
-                ),
-
+                Tab(text: 'Upcoming'),
+                Tab(text: 'Past Tickets'),
+                Tab(text: 'All'),
               ],
             ),
-          )
-        ],
-      ),
-    );
-  }
-}
-class TicketpastTabPage extends StatefulWidget {
-  const TicketpastTabPage({super.key});
-
-  @override
-  TicketpastTabPageState createState() => TicketpastTabPageState();
-}
-
-class TicketpastTabPageState extends State<TicketpastTabPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        padding: EdgeInsets.symmetric(horizontal: 24.h, vertical: 30.h),
-        child: Column(
-          children: [
-            SizedBox(
-                width: double.maxFinite,
-                child: Column(
-                  children: [
-                    SizedBox(
-                        width: double.maxFinite,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '2022',
-                              style: CustomTextStyles.titleMediumGray600_1,
-                            ),
-                            ListView.separated(
-                              padding: EdgeInsets.zero,
-                                physics: const BouncingScrollPhysics(),
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) {
-
-                                  return const ListtheWeekndItemWidget();
-                                },
-                                separatorBuilder: (context, index) {
-                                  return SizedBox(
-                                    height: 12.h,
-                                  );
-                                },
-                                itemCount: 2)
-                          ],
-                        )),
-
-                        SizedBox(
-                            width: double.maxFinite,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '2021',
-                                  style: CustomTextStyles.titleMediumGray600_1,
-                                ),
-                                ListView.separated(
-                                  padding: EdgeInsets.zero,
-                                    physics: const BouncingScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemBuilder: (context, index) {
-                                      
-                                      return const ListnikMulveyItemWidget();
-                                    },
-                                    separatorBuilder: (context, index) {
-                                      return SizedBox(
-                                        height: 12.h,
-                                      );
-                                    },
-                                    itemCount: 2)
-                              ],
-                            ))
-                  ],
-                )),
-          ],
-        ));
-  }
-}
-
-class ListnikMulveyItemWidget extends StatelessWidget {
-  const ListnikMulveyItemWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: AppDecoration.outlineGray.copyWith(
-          borderRadius: BorderRadiusStyle.roundedBorder4),
-      child: Row(
-        children: [
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(left: 8.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: double.maxFinite,
-                    child: Row(
-                      children: [
-                        CustomImageView(
-                          color: appTheme.greenA700,
-                          imagePath: 'assets/images/empty_ticket.png',
-                          width: 30.h,
-                          height: 30.h,
-                          fit: BoxFit.cover,
-                        ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Nick Mulvey",
-                                style: theme.textTheme.titleMedium,
-                              ),
-                              Text(
-                                "Mon, May 18 · 21:30 PM",
-                                style: theme.textTheme.bodySmall,
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 4.h),
-                    child: Text(
-                      "2 tickets",
-                      style: CustomTextStyles.bodySmallBlack900,
-                    ),
-                  )
-                ],
-              ),
-            ),
           ),
-          CustomImageView(
-            imagePath: 'assets/images/placeholder.png',
-            height: 96.h,
-            width: 140.h,
-            radius: BorderRadius.horizontal(right: Radius.circular(5.h)),
-          )
         ],
       ),
     );
   }
 }
 
-class ListtheWeekndItemWidget extends StatelessWidget {
-  const ListtheWeekndItemWidget({super.key});
+class TicketPastTabPage extends StatefulWidget {
+  const TicketPastTabPage({super.key});
+
+  @override
+  State<TicketPastTabPage> createState() => _TicketPastTabPageState();
+}
+
+class _TicketPastTabPageState extends State<TicketPastTabPage> {
+  List pastEvents = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getPastEvents();
+  }
+
+  Future<void> getPastEvents() async {
+    final response = await ApiService.requestApi(
+      'order/private/search-event',
+      {
+        "isPastTicket": true,
+        "page": 0,
+        "size": 99
+      },
+      useAuth: true,
+    );
+
+    if (!mounted) return;
+
+    if (response != null && response['data'] != null) {
+      setState(() {
+        pastEvents = response['data']['content'];
+      });
+    } else {
+      print('No data found');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 24.h, vertical: 30.h),
+      child: pastEvents.isNotEmpty 
+        ? ListView.separated(
+            itemCount: pastEvents.length,
+            separatorBuilder: (_, __) => SizedBox(height: 12.h),
+            itemBuilder: (context, index) {
+              final event = pastEvents[index];
+              return _buildTicketItem(event);
+            },
+          )
+        : Center(child: Text('Không có sự kiện nào', style: theme.textTheme.titleMedium)),
+    );
+  }
+
+
+}
+  Widget _buildTicketItem(event) {
+    String status;
+    switch (event['status']) {
+      case 0:
+        status = 'Chờ thanh toán';
+        break;
+      case 1:
+        status = 'Đã thanh toán';
+        break;
+      case 2:
+        status = 'Thanh toán thất bại';
+        break;
+      default:
+        status = 'Trạng thái không xác định';
+    }
+
     return Container(
-      decoration: AppDecoration.outlineGray.copyWith(
-          borderRadius: BorderRadiusStyle.roundedBorder4),
-      child: Row(
+      padding: EdgeInsets.all(8.h),
+      // decoration: AppDecoration.outlineGray.copyWith(borderRadius: BorderRadiusStyle.roundedBorder4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(left: 8.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: double.maxFinite,
-                    child: Row(
-                      children: [
-                        CustomImageView(
-                          color: appTheme.greenA700,
-                          imagePath: 'assets/images/empty_ticket.png',
-                          width: 30.h,
-                          height: 30.h,
-                          fit: BoxFit.cover,
-                        ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "The Weeknd",
-                                style: theme.textTheme.titleMedium,
-                              ),
-                              Text(
-                                "Mon, Feb 11 · 21:00 PM",
-                                style: theme.textTheme.bodySmall,
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 4.h),
-                    child: Text(
-                      "1 tickets",
-                      style: CustomTextStyles.bodySmallBlack900,
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
-          CustomImageView(
-            imagePath: 'assets/images/placeholder.png',
-            height: 96.h,
-            width: 140.h,
-            radius: BorderRadius.horizontal(right: Radius.circular(5.h)),
-          )
+          // Text(event['orderCode'], style: theme.textTheme.titleMedium),
+          // Text(DateFormat('dd/MM/yyyy').format(DateTime.parse(event['createdAt'])), style: theme.textTheme.bodySmall), // Định dạng ngày
+          // Text("${event['totalAmount']} VND", style: CustomTextStyles.bodySmallBlack900),
+          Text(status, style: theme.textTheme.bodySmall), // Hiển thị trạng thái
         ],
       ),
     );
   }
-}
-
-class TicketUpcomingiTabPage extends StatefulWidget {
-  const TicketUpcomingiTabPage({super.key});
+class TicketUpcomingTabPage extends StatefulWidget {
+  const TicketUpcomingTabPage({super.key});
 
   @override
-  TicketUpcomingiTabPageState createState() => TicketUpcomingiTabPageState();
+  State<TicketUpcomingTabPage> createState() => _TicketUpcomingTabPageState();
 }
 
-class TicketUpcomingiTabPageState extends State<TicketUpcomingiTabPage> {
+class _TicketUpcomingTabPageState extends State<TicketUpcomingTabPage> {
+  int? selectedIndex;
+  List upcomingEvents = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getUpcomingEvent();
+  }
+
+  Future<void> getUpcomingEvent() async {
+    final response = await ApiService.requestApi(
+      'order/private/search-event',
+      {
+        "isPastTicket": false,
+        "page": 0,
+        "size": 99,
+      }, useAuth: true,
+    );
+    if (!mounted) return;
+    if (response != null && response['data'] != null) {
+      setState(() {
+        upcomingEvents = response['data']['content'];
+      });
+    } else {
+      print('No data found');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-        padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 30.h),
-        child: Column(
-          children: [
-            Expanded(
-                child: ListView.separated(
-                    physics: const BouncingScrollPhysics(),
-                    padding: EdgeInsets.zero,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        decoration: AppDecoration.outlineGray.copyWith(
-                            borderRadius: BorderRadiusStyle.roundedBorder4),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                width: double.maxFinite,
-                                padding: EdgeInsets.symmetric(horizontal: 8.h),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: double.maxFinite,
-                                      child: Row(
-                                        children: [
-                                          CustomImageView(
-                                            color: appTheme.greenA700,
-                                            imagePath:
-                                                'assets/images/empty_ticket.png',
-                                            width: 30.h,
-                                            height: 30.h,
-                                            fit: BoxFit.cover,
-                                          ),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  "La Rosalia",
-                                                  style: theme
-                                                      .textTheme.titleMedium,
-                                                ),
-                                                Text(
-                                                  "Mon, Apr 18 · 21:00 PM",
-                                                  style:
-                                                      theme.textTheme.bodySmall,
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(left: 4.h),
-                                      child: Text(
-                                        "2 tickets",
-                                        style:
-                                            CustomTextStyles.bodySmallBlack900,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            CustomImageView(
-                              imagePath: 'assets/images/placeholder.png',
-                              height: 96.h,
-                              width: 140.h,
-                              radius: BorderRadius.horizontal(
-                                  right: Radius.circular(5.h)),
-                            )
-                          ],
-                        ),
-                      );
-                    },
-                    separatorBuilder: (context, index) {
-                      return SizedBox(
-                        height: 8.h,
-                      );
-                    },
-                    itemCount: 3))
-          ],
-        ));
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 30.h),
+      child: upcomingEvents.isNotEmpty 
+        ? ListView.separated(
+            physics: const BouncingScrollPhysics(),
+            itemCount: upcomingEvents.length,
+            separatorBuilder: (_, __) => SizedBox(height: 8.h),
+            itemBuilder: (context, index) {
+              final event = upcomingEvents[index];
+              final isSelected = selectedIndex == index;
+
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => TicketPage(id: event["id"] ?? 0),
+                  ));
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: isSelected ? appTheme.green500 : Colors.white,
+                    border: Border.all(
+                      color: isSelected ? appTheme.greenA700 : appTheme.gray300,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: TicketItemWidget(event: event),
+                ),
+              );
+            },
+          )
+        : Center(child: Text('Không có sự kiện nào', style: theme.textTheme.titleMedium)),
+    );
   }
 }
-
 
 class AllTicketTabPage extends StatefulWidget {
   const AllTicketTabPage({super.key});
 
   @override
-  AllTicketTabPageState createState() => AllTicketTabPageState();
+  State<AllTicketTabPage> createState() => _AllTicketTabPageState();
 }
 
-class AllTicketTabPageState extends State<AllTicketTabPage> {
+class _AllTicketTabPageState extends State<AllTicketTabPage> {
+
+  List allEvents = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getAllEvents();
+  }
+
+  Future<void> getAllEvents() async {
+    final response = await ApiService.requestApi(
+      'order/private/search-event',
+      {
+        "isPastTicket": null,
+        "page": 0,
+        "size": 99,
+      }, useAuth: true,
+    );
+    if (response != null && response['data'] != null) {
+      setState(() {
+        allEvents = response['data']['content'];
+      });
+    } else {
+      print('No data found');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 30.h),
+      child: ListView.separated(
+        physics: const BouncingScrollPhysics(),
+        itemCount: allEvents.length,
+        itemBuilder: (context, index) {
+          final event = allEvents[index];
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context) => TicketPage(id:  event["id"] ?? 0),
+              ));
+            },
+            child: TicketItemWidget(event: event),
+          );
+        },
+        separatorBuilder: (_, __) => SizedBox(height: 8.h),
+      ),
+    );
+  }
+}
+
+class TicketItemWidget extends StatelessWidget {
+  final dynamic event;
+
+  const TicketItemWidget({super.key, this.event});
+
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 30.h),
-        child: Column(
-          children: [
-            Expanded(
-                child: ListView.separated(
-                    physics: const BouncingScrollPhysics(),
-                    padding: EdgeInsets.zero,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        decoration: AppDecoration.outlineGray.copyWith(
-                            borderRadius: BorderRadiusStyle.roundedBorder4),
-                        child: Row(
+      decoration: AppDecoration.outlineGray.copyWith(borderRadius: BorderRadiusStyle.roundedBorder4),
+      child: Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(left: 8.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      CustomImageView(
+                        color: appTheme.greenA700,
+                        imagePath: 'assets/images/empty_ticket.png',
+                        width: 30.h,
+                        height: 30.h,
+                        fit: BoxFit.cover,
+                      ),
+                      // Image.network(
+                      //   event != null ? event['eventPoster'] : 'https://example.com/default_image.png',
+                      //   width: 30.h,
+                      //   height: 30.h,
+                      //   fit: BoxFit.cover,
+                      // ),
+                      SizedBox(width: 8.h),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                              child: Container(
-                                width: double.maxFinite,
-                                padding: EdgeInsets.symmetric(horizontal: 8.h),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: double.maxFinite,
-                                      child: Row(
-                                        children: [
-                                          CustomImageView(
-                                            color: appTheme.greenA700,
-                                            imagePath:
-                                                'assets/images/empty_ticket.png',
-                                            width: 30.h,
-                                            height: 30.h,
-                                            fit: BoxFit.cover,
-                                          ),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  "La Rosalia",
-                                                  style: theme
-                                                      .textTheme.titleMedium,
-                                                ),
-                                                Text(
-                                                  "Mon, Apr 18 · 21:00 PM",
-                                                  style:
-                                                      theme.textTheme.bodySmall,
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(left: 4.h),
-                                      child: Text(
-                                        "2 tickets",
-                                        style:
-                                            CustomTextStyles.bodySmallBlack900,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            CustomImageView(
-                              imagePath: 'assets/images/placeholder.png',
-                              height: 96.h,
-                              width: 140.h,
-                              radius: BorderRadius.horizontal(
-                                  right: Radius.circular(5.h)),
-                            )
+                            Text(event != null ? event['orderCode'] : "Tên sự kiện", style: theme.textTheme.titleMedium),
+                            Text(event != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(event['createdAt'])) : "Ngày & Giờ", style: theme.textTheme.bodySmall), // Định dạng ngày
                           ],
                         ),
-                      );
-                    },
-                    separatorBuilder: (context, index) {
-                      return SizedBox(
-                        height: 8.h,
-                      );
-                    },
-                    itemCount: 3))
-          ],
-        ));
-  }
-}
-
-
-
-class TicketTabPage extends StatefulWidget {
-  const TicketTabPage({super.key});
-
-  @override
-  TicketTabPageState createState() => TicketTabPageState();
-}
-
-class TicketTabPageState extends State<TicketTabPage> {
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.h, vertical: 134.h),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: 4.h,
-              ),
-              SizedBox(
-                width: double.maxFinite,
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 86.h,
-                      child: CustomImageView(
-                        imagePath: 'assets/images/empty_ticket.png',
-                        width: double.maxFinite,
-                        fit: BoxFit.fitHeight,
-                        height: 80.h,
-                        
                       ),
-                    ),
-                    SizedBox(
-                      height: 44.h,
-                    ),
-                    Text(
-                      'No Tickets yes',
-                      style: theme.textTheme.titleMedium,
-                    ),
-                    SizedBox(
-                      height: 8.h,
-                    ),
-                    SizedBox(
-                      width: double.maxFinite,
-                      child: Text(
-                        "Make sure you'r in the same account that purchased the tickets",
-                        maxLines: 2,
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                        style: CustomTextStyles.bodyLargeBlack900
-                            .copyWith(height: 1.5),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 42.h,
-                    ),
-                    CustomElevatedButton(
-                      onPressed: () {},
-                      text: 'try again',
-
-                      buttonStyle: CustomButtonStyles.fillGreenA700,
-                      // buttonTextStyle: CustomTextStyles.bodySmallWhiteA700,
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 4.h),
+                    // child: Text(event != null ? "${event['totalAmount']} VND" : "2 vé", style: CustomTextStyles.bodySmallBlack900),
+                    child: _buildTicketItem(event != null ? event : 0),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ));
+          CustomImageView(
+            imagePath: 'assets/images/placeholder.png',
+            height: 96.h,
+            width: 140.h,
+            radius: BorderRadius.horizontal(right: Radius.circular(5.h)),
+          ),
+        ],
+      ),
+    );
   }
 }
-
-

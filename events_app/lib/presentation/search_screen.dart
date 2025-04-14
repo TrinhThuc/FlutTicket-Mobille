@@ -36,7 +36,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Future<void> _getPopularEvents() async {
     final response = await ApiService.requestGetApi(
-        'event/public/get-popular-event', 'get-popular-event');
+        'event/public/get-popular-event');
 
     if (response != null) {
       setState(() {
@@ -49,7 +49,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Future<void> _getEventTypes() async {
     final response = await ApiService.requestGetApi(
-        'event/public/get-event-type', 'get-event-type');
+        'event/public/get-event-type');
 
     if (response != null) {
       setState(() {
@@ -72,7 +72,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Future<void> _searchEvents(String query) async {
     final response = await ApiService.requestApi(
-        'event/public/search-event?sort=name,asc', 'search-events', {});
+        'event/public/search-event?sort=name,asc',  {});
 
     if (response != null) {
       debugPrint('Search response data: ${response['data']}');
@@ -294,7 +294,6 @@ class _SearchScreenState extends State<SearchScreen> {
 
     final response = await ApiService.requestApi(
       url,
-      'search-event',
       {},
     );
 
@@ -394,7 +393,6 @@ class _EventListItemWidgetState extends State<EventListItemWidget> {
                   widget.event['isFav']
                       ? 'event/private/remove-favourite-event/${widget.event['id']}'
                       : 'event/private/add-favourite-event/${widget.event['id']}',
-                  widget.event['isFav'] ? 'remove-fav-event' : 'add-fav-event',
                   {},
                   useAuth: true,
                 ).then((response) {

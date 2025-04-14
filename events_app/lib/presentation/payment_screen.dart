@@ -8,7 +8,29 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import '../service/api_service.dart';
 import 'web_view_screen.dart';
+  void hideLoadingDialog(BuildContext context) {
+    Navigator.of(context, rootNavigator: true).pop();
+  }
+    void showLoadingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+  }
 
+
+  void showToast(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+    );
+  }
 class PaymentScreen extends StatefulWidget {
   final Map<String, dynamic> eventDetails; // Thêm trường này
   final int totalPrice; // Thêm trường này
@@ -28,7 +50,7 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-       bool _dialogDismissed = false;
+  bool _dialogDismissed = false;
 
   final TextEditingController fullnameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
@@ -47,7 +69,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   Future<void> _getUserInfo() async {
     final response =
-        await ApiService.requestGetApi('oauth/user/get', 'get-user-info');
+        await ApiService.requestGetApi('oauth/user/get', useAuth: true);
 
     if (response != null) {
       setState(() {
@@ -75,7 +97,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: appTheme.whiteA700,
       resizeToAvoidBottomInset: true,
@@ -85,7 +106,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-
       ),
       body: Padding(
         padding: EdgeInsets.all(16.h),
@@ -174,7 +194,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
             });
           },
         ),
-        
         if (selectedGender == null)
           Padding(
             padding: EdgeInsets.only(left: 12.h),
@@ -232,29 +251,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
     );
   }
 
-  void showLoadingDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
-  }
 
-  void hideLoadingDialog(BuildContext context) {
-    Navigator.of(context, rootNavigator: true).pop();
-  }
 
-  void showToast(String message) {
-    Fluttertoast.showToast(
-      msg: message,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-    );
-  }
 
   /// **Bottom Payment Bar**
   Widget _buildBottomPaymentBar() {
@@ -280,15 +278,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
               ),
               Flexible(
                 child: ElevatedButton.icon(
+                  onPressed: () async {
+                    if (selectedGender == null) {
+                      showToast("Vui lòng chọn giới tính");
+                      return;
+                    }
 
-onPressed: () async {
-  if (selectedGender == null) {
-    showToast("Vui lòng chọn giới tính");
-    return;
-  }
-
-  if (_formKey.currentState!.validate()) {
-    showLoadingDialog(context); // Show loading dialog
+                    if (_formKey.currentState!.validate()) {
+                      showLoadingDialog(context); // Show loading dialog
 
                       try {
                         int _genderToInt(String gender) {
@@ -332,7 +329,8 @@ onPressed: () async {
                         log("Chi tiết phản hồi từ server: $orderRes"); // 👈 THÊM DÒNG NÀY
                         if (orderRes == null) {
                           showToast("Không nhận được phản hồi từ server");
-                          print("Không nhận được phản hồi từ server"); // 👈 THÊM DÒNG NÀY
+                          print(
+                              "Không nhận được phản hồi từ server"); // 👈 THÊM DÒNG NÀY
                         } else if (orderRes['data']["id"] == null) {
                           print(
                               "Chi tiết lỗi từ server: $orderRes"); // 👈 THÊM DÒNG NÀY
@@ -340,7 +338,8 @@ onPressed: () async {
                               orderRes['message'] ?? "Tạo đơn hàng thất bại");
                           return;
                         }
-                        if (orderRes != null && orderRes['data']["id"] != null) {
+                        if (orderRes != null &&
+                            orderRes['data']["id"] != null) {
                           final orderId = orderRes['data']["id"];
 
                           // 2. Gọi API tạo URL thanh toán VNPAY
@@ -351,16 +350,18 @@ onPressed: () async {
                             },
                             useAuth: true,
                           );
-                          print (
+                          print(
                               "Chi tiết phản hồi từ server: $vnpayRes"); // 👈 THÊM DÒNG NÀY
-                          if (vnpayRes != null && vnpayRes["data"]?['paymentUrl'] != null) {
+                          if (vnpayRes != null &&
+                              vnpayRes["data"]?['paymentUrl'] != null) {
                             final paymentUrl = vnpayRes["data"]['paymentUrl'];
 
                             // 3. Mở WebView để người dùng thanh toán
-if (!_dialogDismissed) {
-            hideLoadingDialog(context);
-            _dialogDismissed = true;
-          }                            Navigator.push(
+                            if (!_dialogDismissed) {
+                              hideLoadingDialog(context);
+                              _dialogDismissed = true;
+                            }
+                            Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => WebViewPaymentScreen(
@@ -378,11 +379,12 @@ if (!_dialogDismissed) {
                         print("Error: $e");
                         showToast("Đã xảy ra lỗi khi thanh toán");
                       } finally {
-if (!_dialogDismissed) {
-        hideLoadingDialog(context);
-      }
-      // Optionally, reset the flag here if needed.
-      _dialogDismissed = false;                      }
+                        if (!_dialogDismissed) {
+                          hideLoadingDialog(context);
+                        }
+                        // Optionally, reset the flag here if needed.
+                        _dialogDismissed = false;
+                      }
                     }
                   },
 

@@ -32,7 +32,7 @@ class _EventPageState extends State<EventPage> {
 
   Future<void> getEventDetails(int eventId) async {
     final response = await ApiService.requestGetApi(
-        'event/public/$eventId', 'get-detail-event',
+        'event/public/$eventId',
         useAuth: false);
     if (response != null) {
       log('getEventDetails response data: ${response['data']}');

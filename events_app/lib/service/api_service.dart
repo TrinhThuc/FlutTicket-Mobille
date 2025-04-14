@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ApiService {
   // Hàm để gửi request API
   static Future<dynamic> requestApi(
-      String endpoint, String fakeEndpoint, Map<String, dynamic> body,
+      String endpoint, Map<String, dynamic> body,
       {bool useAuth = false}) async {
     final url = 'https://39e7-14-224-155-46.ngrok-free.app/apis/$endpoint';
 
@@ -43,7 +43,7 @@ class ApiService {
     }
   }
 
-  static Future<dynamic> requestGetApi(String endpoint, String fakeEndpoint,
+  static Future<dynamic> requestGetApi(String endpoint, 
       {bool useAuth = true}) async {
     final url = 'https://39e7-14-224-155-46.ngrok-free.app/apis/$endpoint';
 
@@ -190,7 +190,7 @@ class ApiService {
 
 
   // hàm get oder
-  static Future<dynamic> requestGetOder(String endpoint, String fakeEndpoint,
+  static Future<dynamic> requestGetOder(String endpoint,
       {bool useAuth = true}) async {
     final url = 'https://39e7-14-224-155-46.ngrok-free.app/apis/$endpoint';
 
@@ -222,16 +222,4 @@ class ApiService {
     }
   }
 
-  // // Hàm để lấy fake response từ file
-  // static Future<dynamic> _loadFakeResponse(String fakeEndpoint) async {
-  //   try {
-  //     final response = await rootBundle.rootBundle.loadString('assets/response-api/$fakeEndpoint.json');
-  //     final data = json.decode(response);
-  //     print('Fake response loaded successfully: $data');
-  //     return data;
-  //   } catch (e) {
-  //     print('Error loading fake response: $e');
-  //     return {}; // Trả về object trống thay vì null
-  //   }
-  // }
 }

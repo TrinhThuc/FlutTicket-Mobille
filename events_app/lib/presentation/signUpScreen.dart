@@ -43,7 +43,7 @@ class _SignupscreenState extends State<SignUpScreen> {
       };
 
       final response = await ApiService.requestApi(
-          'oauth/user/register', 'create-user', body);
+          'oauth/user/register',  body);
 
       if (response.containsKey('error')) {
         if (mounted) {

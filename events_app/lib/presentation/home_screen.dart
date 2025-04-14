@@ -48,9 +48,7 @@ class _EventlistItemWidgetState extends State<EventlistItemWidget> {
     String endpoint = isFav
         ? 'event/private/remove-favourite-event/$eventId'
         : 'event/private/add-favourite-event/$eventId';
-    String action = isFav ? 'remove-fav-event' : 'add-fav-event';
-
-    final response = await ApiService.requestApi(endpoint, action, {}, 
+    final response = await ApiService.requestApi(endpoint, {}, 
         useAuth: true);
     if (response != null) {
       setState(() {
@@ -190,7 +188,6 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
   Future<void> _getPopularEvents() async {
     final response = await ApiService.requestGetApi(
       'event/public/get-popular-event',
-      'get-popular-event',
     );
     if (response != null) {
       setState(() {
@@ -324,10 +321,9 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
                       final endpoint = isFav
                           ? 'event/private/remove-favourite-event/${event['id']}'
                           : 'event/private/add-favourite-event/${event['id']}';
-                      final action =
-                          isFav ? 'remove-fav-event' : 'add-fav-event';
+                      
                       final response =
-                          await ApiService.requestApi(endpoint, action, {}, 
+                          await ApiService.requestApi(endpoint, {}, 
                               useAuth: true);
                       if (response != null) {
                         setState(() {
