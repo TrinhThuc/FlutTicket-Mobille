@@ -257,7 +257,7 @@ class _EventPageState extends State<EventPage> {
 
   Widget _buildBottomNavigationBar(BuildContext context) {
     return Container(
-      height: 90.h,
+      height: 120.h,
       padding: EdgeInsets.symmetric(horizontal: 14.h, vertical: 20.h),
       decoration: AppDecoration.globalGrey,
       width: double.maxFinite,
