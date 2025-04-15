@@ -171,8 +171,11 @@ class _FavouritesItemWidgetState extends State<FavouritesItemWidget> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10.h),
             image: DecorationImage(
-              image: NetworkImage(widget.event['eventPoster'] ??
-                  'https://example.com/default_image.png'),
+              image: NetworkImage(
+                "http://162.248.102.236:8055/assets/${
+                  widget.event['eventPoster'] ?? 'default_image.png'
+                }",
+              ),
               fit: BoxFit.cover,
             ),
           ),

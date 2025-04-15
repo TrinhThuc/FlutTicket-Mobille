@@ -48,8 +48,7 @@ class _EventlistItemWidgetState extends State<EventlistItemWidget> {
     String endpoint = isFav
         ? 'event/private/remove-favourite-event/$eventId'
         : 'event/private/add-favourite-event/$eventId';
-    final response = await ApiService.requestApi(endpoint, {}, 
-        useAuth: true);
+    final response = await ApiService.requestApi(endpoint, {}, useAuth: true);
     if (response != null) {
       setState(() {
         widget.event['isFav'] = !isFav;
@@ -94,7 +93,9 @@ class _EventlistItemWidgetState extends State<EventlistItemWidget> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "${event['startTime'] ?? ''}",
+                        DateFormat('dd MMM yyyy • hh:mm a').format(
+                            DateTime.parse(event['startTime'] ??
+                                DateTime.now().toIso8601String())),
                         style: theme.textTheme.bodySmall,
                       ),
                       SizedBox(height: 2.h),
@@ -265,7 +266,8 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
               padding: EdgeInsets.only(left: 10.h),
               child: Text(
                 startTime != null
-                    ? DateFormat('dd/MM/yyyy HH:mm').format(startTime)
+                    ? DateFormat('EEEE, dd MMM yyyy • hh:mm a')
+                        .format(startTime)
                     : '',
                 style: theme.textTheme.bodySmall,
               ),
@@ -321,10 +323,9 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
                       final endpoint = isFav
                           ? 'event/private/remove-favourite-event/${event['id']}'
                           : 'event/private/add-favourite-event/${event['id']}';
-                      
-                      final response =
-                          await ApiService.requestApi(endpoint, {}, 
-                              useAuth: true);
+
+                      final response = await ApiService.requestApi(endpoint, {},
+                          useAuth: true);
                       if (response != null) {
                         setState(() {
                           event['isFav'] = !isFav;

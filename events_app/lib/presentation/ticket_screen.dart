@@ -349,7 +349,7 @@ class TicketItemWidget extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(event != null ? event['orderCode'] : "Tên sự kiện", style: theme.textTheme.titleMedium),
+                            Text(event != null ? event['eventDTO']['name'] : "Tên sự kiện", style: theme.textTheme.titleMedium),
                             Text(event != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(event['createdAt'])) : "Ngày & Giờ", style: theme.textTheme.bodySmall), // Định dạng ngày
                           ],
                         ),
@@ -365,12 +365,23 @@ class TicketItemWidget extends StatelessWidget {
               ),
             ),
           ),
-          CustomImageView(
-            imagePath: 'assets/images/placeholder.png',
-            height: 96.h,
-            width: 140.h,
-            radius: BorderRadius.horizontal(right: Radius.circular(5.h)),
+          Container(
+          width: 88.h,
+          height: 84.h,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.h),
+            image: DecorationImage(
+              image: NetworkImage(
+                             'http://162.248.102.236:8055/assets/${
+                event != null ? event['eventDTO']['eventPoster'] : 'default_image.png'
+              }',
+
+              ),
+              fit: BoxFit.cover,
+            ),
           ),
+        ),
+
         ],
       ),
     );
