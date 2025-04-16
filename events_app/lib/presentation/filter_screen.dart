@@ -20,8 +20,6 @@ class FilterScreen extends StatefulWidget {
 class _FilterScreenState extends State<FilterScreen> {
   late TextEditingController _searchContentController;
   late TextEditingController _locationController;
-  late TextEditingController _pageController;
-  late TextEditingController _sizeController;
   DateTime? _startDate;
   DateTime? _endDate;
   int? _selectedEventTypeId;
@@ -32,8 +30,6 @@ class _FilterScreenState extends State<FilterScreen> {
     super.initState();
     _searchContentController = TextEditingController(text: widget.initialFilters?['searchContent'] ?? '');
     _locationController = TextEditingController(text: widget.initialFilters?['location'] ?? '');
-    _pageController = TextEditingController(text: (widget.initialFilters?['page'] ?? 0).toString());
-    _sizeController = TextEditingController(text: (widget.initialFilters?['size'] ?? 5).toString());
     _startDate = widget.initialFilters?['startDate'] != null 
         ? DateFormat('dd/MM/yyyy').parse(widget.initialFilters!['startDate'])
         : null;
@@ -74,40 +70,9 @@ class _FilterScreenState extends State<FilterScreen> {
   }
 
   void _applyFilters() {
-    // Kiểm tra các trường bắt buộc
-    if (_pageController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Vui lòng nhập số trang')),
-      );
-      return;
-    }
 
-    if (_sizeController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Vui lòng nhập số lượng mỗi trang')),
-      );
-      return;
-    }
-
-    final page = int.tryParse(_pageController.text);
-    if (page == null || page < 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Số trang phải là số nguyên không âm')),
-      );
-      return;
-    }
-
-    final size = int.tryParse(_sizeController.text);
-    if (size == null || size <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Số lượng mỗi trang phải là số nguyên dương')),
-      );
-      return;
-    }
 
     final filters = <String, dynamic>{
-      'page': page,
-      'size': size,
     };
 
     // Chỉ thêm filter khi có giá trị thực sự
@@ -140,6 +105,7 @@ class _FilterScreenState extends State<FilterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Bộ lọc'),
         actions: [
@@ -228,53 +194,7 @@ class _FilterScreenState extends State<FilterScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: _pageController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      labelText: 'Trang *',
-                      border: OutlineInputBorder(),
-                      hintText: 'Nhập số trang',
-                    ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Vui lòng nhập số trang';
-                      }
-                      final page = int.tryParse(value);
-                      if (page == null || page < 0) {
-                        return 'Số trang phải là số nguyên không âm';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: TextFormField(
-                    controller: _sizeController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      labelText: 'Số lượng mỗi trang *',
-                      border: OutlineInputBorder(),
-                      hintText: 'Nhập số lượng',
-                    ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Vui lòng nhập số lượng mỗi trang';
-                      }
-                      final size = int.tryParse(value);
-                      if (size == null || size <= 0) {
-                        return 'Số lượng phải là số nguyên dương';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-              ],
-            ),
+           
           ],
         ),
       ),
@@ -285,8 +205,7 @@ class _FilterScreenState extends State<FilterScreen> {
   void dispose() {
     _searchContentController.dispose();
     _locationController.dispose();
-    _pageController.dispose();
-    _sizeController.dispose();
+
     super.dispose();
   }
 } 

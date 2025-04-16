@@ -15,17 +15,21 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   int selectTab = 0;
+  void _refreshDashboard() {
+    setState(() {});
+  }
 
-  final List<Widget> _widgetOptions = <Widget>[
-    HomeScreen(selectedLocation: 'Barcelona'),
-    SearchScreen(),
-    const TicketScreen(),
-    const FavouritesScreen(),
-    const ProfileScreen(),
-  ];
+
 
   @override
   Widget build(BuildContext context) {
+      final List<Widget> _widgetOptions = <Widget>[
+    HomeScreen(selectedLocation: 'Barcelona'),
+    SearchScreen(),
+     TicketScreen(),
+     FavouritesScreen(),
+     ProfileScreen(),
+  ];
     return Scaffold(
       backgroundColor: appTheme.gray900,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -136,7 +140,6 @@ class TabButton extends StatelessWidget {
               return const Icon(Icons.error, size: 25, color: Colors.red);
             },
           ),
-          
           SizedBox(height: isActive ? 22 : 8),
           Visibility(
             visible: isActive,

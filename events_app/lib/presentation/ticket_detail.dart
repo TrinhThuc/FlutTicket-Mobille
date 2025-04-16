@@ -1,3 +1,4 @@
+import 'package:events_app/app_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -145,29 +146,13 @@ class _TicketPageState extends State<TicketPage> {
         child: Column(
           children: [
             SizedBox(height: 16),
-            // QR Code Section
-            Card(
-              margin: EdgeInsets.symmetric(horizontal: 16),
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
-              child: Container(
-                padding: EdgeInsets.all(16),
-                width: 200,
-                height: 200,
-                child: Center(
-                  child: Text(
-                    'QR Code',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 16),
-            // Event detail section
+            
             buildSectionCard('Event Detail', [
               buildDetailRow('Event', orderData!.event.name),
-              buildDetailRow('Date & Time', orderData!.event.startTime),
+              buildDetailRow(
+                  'Date & Time',
+                  DateFormat('dd/MM/yyyy HH:mm')
+                      .format(DateTime.parse(orderData!.event.startTime))),
               buildDetailRow('Location', orderData!.event.location),
               buildDetailRow('Organizer', orderData!.event.organizer),
             ]),
@@ -191,15 +176,38 @@ class _TicketPageState extends State<TicketPage> {
               buildDetailRow('Ref ID', orderData!.orderCode),
             ]),
             // Ticket details section
+            // buildSectionCard('Ticket Details', [
+            //   ...orderData!.tickets.map((ticket) => buildDetailRow(
+            //         ticket.ticketType,
+            //         '${ticket.quantity} x ${NumberFormat('#,###').format(ticket.price)}đ',
+            //       )),
+            //   Divider(thickness: 1, color: Colors.grey[300]),
+            //   buildDetailRow('Total Amount',
+            //       '${NumberFormat('#,###').format(orderData!.totalAmount)}đ'),
+            // ]),
+
             buildSectionCard('Ticket Details', [
-              ...orderData!.tickets.map((ticket) => buildDetailRow(
-                    ticket.ticketType,
-                    '${ticket.quantity} x ${NumberFormat('#,###').format(ticket.price)}đ',
+              ...orderData!.tickets.map((ticket) => InkWell(
+                    onTap: () {
+                      if (ticket.qrCode != null &&
+                          ticket.qrCode!.isNotEmpty) {
+                        showImageQRDialog(context, ticket.qrCode!);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Không có mã QR cho vé này')),
+                        );
+                      }
+                    },
+                    child: buildDetailRow(
+                      ticket.ticketType,
+                      '${ticket.quantity} x ${NumberFormat('#,###').format(ticket.price)}đ',
+                    ),
                   )),
               Divider(thickness: 1, color: Colors.grey[300]),
               buildDetailRow('Total Amount',
                   '${NumberFormat('#,###').format(orderData!.totalAmount)}đ'),
             ]),
+
             SizedBox(height: 16),
 
             // ACTION BUTTONS
@@ -363,11 +371,13 @@ class Ticket {
   final String ticketType;
   final double price;
   final int quantity;
+  final String? qrCode; // Nullable
 
   Ticket({
     required this.ticketType,
     required this.price,
     required this.quantity,
+    this.qrCode,
   });
 
   factory Ticket.fromJson(Map<String, dynamic> json) {
@@ -375,9 +385,11 @@ class Ticket {
       ticketType: json['ticketType'] ?? '',
       price: (json['price'] as num?)?.toDouble() ?? 0.0,
       quantity: json['quantity'] ?? 0,
+      qrCode: json['qrCodeUrl'] as String?, // Trả về null nếu không có
     );
   }
 }
+
 
 class Event {
   final String name;
@@ -402,4 +414,31 @@ class Event {
           : '',
     );
   }
+}
+
+void showImageQRDialog(BuildContext context, String imageUrl) {
+  
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      content:  Container(
+            width: 180.h,
+            height: 180.h,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(
+                  imageUrl,
+                ),
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text('Đóng'),
+        ),
+      ],
+    ),
+  );
 }

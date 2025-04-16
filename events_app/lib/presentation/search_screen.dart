@@ -1,3 +1,4 @@
+import 'package:events_app/presentation/single_event_screen.dart';
 import 'package:events_app/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -35,8 +36,8 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<void> _getPopularEvents() async {
-    final response = await ApiService.requestGetApi(
-        'event/public/get-popular-event');
+    final response =
+        await ApiService.requestGetApi('event/public/get-popular-event');
 
     if (response != null) {
       setState(() {
@@ -48,8 +49,8 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<void> _getEventTypes() async {
-    final response = await ApiService.requestGetApi(
-        'event/public/get-event-type');
+    final response =
+        await ApiService.requestGetApi('event/public/get-event-type');
 
     if (response != null) {
       setState(() {
@@ -72,7 +73,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Future<void> _searchEvents(String query) async {
     final response = await ApiService.requestApi(
-        'event/public/search-event?sort=name,asc',  {});
+        'event/public/search-event?sort=name,asc', {});
 
     if (response != null) {
       debugPrint('Search response data: ${response['data']}');
@@ -109,6 +110,16 @@ class _SearchScreenState extends State<SearchScreen> {
                     left: 12,
                     top: 6,
                     bottom: 6,
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      filters['searchContent'] = value;
+                    });
+                    _searchEventsWithFilters(); // Gọi tìm kiếm với bộ lọc sau khi nhập
+                  },
+                  prefix: Padding(
+                    padding: EdgeInsets.only(left: 20),
+                    child: Icon(Icons.search, size: 20),
                   )),
             ),
             SizedBox(height: 12),
@@ -267,35 +278,50 @@ class _SearchScreenState extends State<SearchScreen> {
     // Tạo query string từ các filter
     final queryParams = <String, String>{};
 
-    if (filters['eventTypeId'] != null) {
-      queryParams['eventTypeId'] = filters['eventTypeId'].toString();
-    }
-    if (filters['startDate'] != null) {
-      queryParams['startDate'] = filters['startDate'];
-    }
-    if (filters['endDate'] != null) {
-      queryParams['endDate'] = filters['endDate'];
-    }
-    if (filters['location'] != null) {
-      queryParams['location'] = filters['location'];
-    }
-    if (filters['searchContent'] != null) {
-      queryParams['searchContent'] = filters['searchContent'];
-    }
+    // if (filters['eventTypeId'] != null) {
+    //   queryParams['eventTypeId'] = filters['eventTypeId'].toString();
+    // }
+    // if (filters['startDate'] != null) {
+    //   queryParams['startDate'] = filters['startDate'];
+    // }
+    // if (filters['endDate'] != null) {
+    //   queryParams['endDate'] = filters['endDate'];
+    // }
+    // if (filters['location'] != null) {
+    //   queryParams['location'] = filters['location'];
+    // }
+    // if (filters['searchContent'] != null) {
+    //   queryParams['searchContent'] = filters['searchContent'];
+    // }
+    final Map<String, dynamic> body = {};
 
-    // Thêm các tham số bắt buộc
-    queryParams['page'] = (filters['page'] ?? 0).toString();
-    queryParams['size'] = (filters['size'] ?? 5).toString();
+  if (filters['eventTypeId'] != null) {
+    body['eventTypeId'] = filters['eventTypeId'];
+  }
+  if (filters['startDate'] != null) {
+    body['startDate'] = filters['startDate'];
+  }
+  if (filters['endDate'] != null) {
+    body['endDate'] = filters['endDate'];
+  }
+  if (filters['location'] != null) {
+    body['location'] = filters['location'];
+  }
+  if (filters['searchContent'] != null) {
+    body['searchContent'] = filters['searchContent'];
+  }
+    body['page'] = filters['page'] ?? 0;
+  body['size'] = filters['size'] ?? 99;
+
     queryParams['sort'] = 'name,asc';
 
     // Tạo URL với query parameters
     final queryString = Uri(queryParameters: queryParams).query;
     final url = 'event/public/search-event?$queryString';
-
-    final response = await ApiService.requestApi(
-      url,
-      {},
-    );
+  final response = await ApiService.requestApi(
+    url,
+    body,
+  );
 
     if (response != null) {
       setState(() {
@@ -320,94 +346,102 @@ class _EventListItemWidgetState extends State<EventListItemWidget> {
   @override
   Widget build(BuildContext context) {
     print('Event List assets:${widget.event['eventPoster']}');
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Image.network(
-
-            'http://162.248.102.236:8055/assets/${widget.event['eventPoster']}',
-            width: 88,
-            height: 84,
-            fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => CustomImageView(
-              
-                            imagePath: 'assets/images/No-Image.png',
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context)  => EventPage(eventId: widget.event['id']),
+          ),
+        );
+      },
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.network(
+              'http://162.248.102.236:8055/assets/${widget.event['eventPoster']}',
               width: 88,
               height: 84,
               fit: BoxFit.cover,
-              radius: BorderRadius.circular(8),
+              errorBuilder: (_, __, ___) => CustomImageView(
+                imagePath: 'assets/images/No-Image.png',
+                width: 88,
+                height: 84,
+                fit: BoxFit.cover,
+                radius: BorderRadius.circular(8),
+              ),
             ),
           ),
-        ),
-        SizedBox(width: 10),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                DateFormat('EEE, MMM d · HH:mm a')
-                    .format(DateTime.parse(widget.event['startTime'])),
-                style: theme.textTheme.bodySmall,
-              ),
-              SizedBox(height: 2),
-              Text(
-                widget.event['name'],
-                style: CustomTextStyles.titleMediumGray900_1,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              SizedBox(height: 10),
-              Row(
-                children: [
-                  Icon(Icons.location_on, size: 14),
-                  SizedBox(width: 4),
-                  Expanded(
-                    child: Text(
-                      widget.event['location'],
-                      style: theme.textTheme.bodySmall,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+          SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  DateFormat('EEE, MMM d · HH:mm a')
+                      .format(DateTime.parse(widget.event['startTime'])),
+                  style: theme.textTheme.bodySmall,
+                ),
+                SizedBox(height: 2),
+                Text(
+                  widget.event['name'],
+                  style: CustomTextStyles.titleMediumGray900_1,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    Icon(Icons.location_on, size: 14),
+                    SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        widget.event['location'],
+                        style: theme.textTheme.bodySmall,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Column(
+            children: [
+              IconButton(
+                icon: Icon(
+                  widget.event['isFav'] == true
+                      ? Icons.favorite
+                      : Icons.favorite_border_outlined,
+                  color: widget.event['isFav'] == true
+                      ? Colors.red
+                      : appTheme.gray900,
+                  size: 18,
+                ),
+                onPressed: () {
+                  ApiService.requestApi(
+                    widget.event['isFav']
+                        ? 'event/private/remove-favourite-event/${widget.event['id']}'
+                        : 'event/private/add-favourite-event/${widget.event['id']}',
+                    {},
+                    useAuth: true,
+                  ).then((response) {
+                    if (response != null) {
+                      setState(() {
+                        widget.event['isFav'] = !widget.event['isFav'];
+                      });
+                    }
+                  });
+                },
               ),
+              Icon(Icons.share, color: Colors.grey, size: 18),
             ],
           ),
-        ),
-        Column(
-          children: [
-            IconButton(
-              icon: Icon(
-                widget.event['isFav'] == true
-                    ? Icons.favorite
-                    : Icons.favorite_border_outlined,
-                color: widget.event['isFav'] == true
-                    ? Colors.red
-                    : appTheme.gray900,
-                size: 18,
-              ),
-              onPressed: () {
-                ApiService.requestApi(
-                  widget.event['isFav']
-                      ? 'event/private/remove-favourite-event/${widget.event['id']}'
-                      : 'event/private/add-favourite-event/${widget.event['id']}',
-                  {},
-                  useAuth: true,
-                ).then((response) {
-                  if (response != null) {
-                    setState(() {
-                      widget.event['isFav'] = !widget.event['isFav'];
-                    });
-                  }
-                });
-              },
-            ),
-            Icon(Icons.share, color: Colors.grey, size: 18),
-          ],
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
