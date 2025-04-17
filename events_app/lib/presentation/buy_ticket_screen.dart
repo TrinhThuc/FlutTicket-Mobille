@@ -43,7 +43,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
     final ticketOptions = widget.eventDetails['listTicket'] ?? [];
 
     return Scaffold(
-      backgroundColor: appTheme.whiteA700,
+      backgroundColor: Colors.white,
       appBar: CustomAppBar(
         height: 56.h,
         actions: [
@@ -180,9 +180,9 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
       child: TextField(
         decoration: InputDecoration(
           labelText: 'Nhập mã voucher',
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
           suffixIcon: IconButton(
-            icon: Icon(Icons.check),
+            icon: const Icon(Icons.check),
             onPressed: () {
               // Xử lý mã voucher ở đây
             },
@@ -253,37 +253,37 @@ class _TicketPurchaseSectionItemState extends State<TicketPurchaseSectionItem> {
           ],
         )),
         widget.ticketOption['soldQuantity'] >= widget.ticketOption['quantity']
-            ? const Text('Sold Out!', style: TextStyle(color: Colors.grey))
-            : Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey, width: 1.5),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: DropdownButtonHideUnderline(
-                    child: DropdownButton<int>(
-                  value: selectedQuantity,
-                  hint: const Text('Chọn'),
-                  items: [
-                    const DropdownMenuItem(
-                        value: 0, child: Text('0')), // or 'Chọn'
-                    ...List.generate(
-                      widget.ticketOption['quantity'] -
-                          widget.ticketOption['soldQuantity'],
-                      (index) => DropdownMenuItem(
-                        value: index + 1,
-                        child: Text('${index + 1}'),
-                      ),
-                    )
-                  ],
-                  onChanged: (value) {
+    ? const Text('Sold Out!', style: TextStyle(color: Colors.grey))
+    : Row(
+        children: [
+          IconButton(
+            onPressed: selectedQuantity > 0
+                ? () {
                     setState(() {
-                      selectedQuantity = value ?? 0;
+                      selectedQuantity--;
                     });
-                    widget.onQuantityChanged?.call(value ?? 0);
-                  },
-                )),
-              ),
+                    widget.onQuantityChanged?.call(selectedQuantity);
+                  }
+                : null,
+            icon: const Icon(Icons.remove),
+          ),
+          Text('$selectedQuantity', style: theme.textTheme.titleMedium),
+          IconButton(
+            onPressed: selectedQuantity <
+                    (widget.ticketOption['quantity'] -
+                        widget.ticketOption['soldQuantity'])
+                ? () {
+                    setState(() {
+                      selectedQuantity++;
+                    });
+                    widget.onQuantityChanged?.call(selectedQuantity);
+                  }
+                : null,
+            icon: const Icon(Icons.add),
+          ),
+        ],
+      )
+
       ],
     );
   }

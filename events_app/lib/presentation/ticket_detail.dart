@@ -8,7 +8,7 @@ import 'web_view_screen.dart';
 
 class TicketPage extends StatefulWidget {
   final int id;
-  const TicketPage({Key? key, this.id = 0}) : super(key: key);
+  const TicketPage({super.key, this.id = 0});
 
   @override
   State<TicketPage> createState() => _TicketPageState();
@@ -18,7 +18,7 @@ class _TicketPageState extends State<TicketPage> {
   OrderData? orderData;
   bool isLoading = true;
   String? errorMessage;
-  bool _dialogDismissed = false;
+  final bool _dialogDismissed = false;
 
   @override
   void initState() {
@@ -61,7 +61,7 @@ class _TicketPageState extends State<TicketPage> {
         children: [
           Text(
             '$title: ',
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
             ),
@@ -69,7 +69,7 @@ class _TicketPageState extends State<TicketPage> {
           Expanded(
             child: Text(
               detail,
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
           ),
         ],
@@ -79,7 +79,7 @@ class _TicketPageState extends State<TicketPage> {
 
   Widget buildSectionCard(String title, List<Widget> children) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       child: Padding(
@@ -88,7 +88,7 @@ class _TicketPageState extends State<TicketPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(title,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             Divider(thickness: 1, color: Colors.grey[300]),
             ...children,
           ],
@@ -100,7 +100,7 @@ class _TicketPageState extends State<TicketPage> {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return Scaffold(
+      return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
     }
@@ -112,7 +112,7 @@ class _TicketPageState extends State<TicketPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(errorMessage!),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
                   setState(() {
@@ -121,7 +121,7 @@ class _TicketPageState extends State<TicketPage> {
                   });
                   fetchOrderData();
                 },
-                child: Text('Thử lại'),
+                child: const Text('Thử lại'),
               ),
             ],
           ),
@@ -133,10 +133,10 @@ class _TicketPageState extends State<TicketPage> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: Text('Ticket Detail',
+        title: const Text('Ticket Detail',
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
         backgroundColor: Colors.white,
@@ -145,7 +145,7 @@ class _TicketPageState extends State<TicketPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             
             buildSectionCard('Event Detail', [
               buildDetailRow('Event', orderData!.event.name),
@@ -194,7 +194,7 @@ class _TicketPageState extends State<TicketPage> {
                         showImageQRDialog(context, ticket.qrCode!);
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Không có mã QR cho vé này')),
+                          const SnackBar(content: Text('Không có mã QR cho vé này')),
                         );
                       }
                     },
@@ -208,7 +208,7 @@ class _TicketPageState extends State<TicketPage> {
                   '${NumberFormat('#,###').format(orderData!.totalAmount)}đ'),
             ]),
 
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
 
             // ACTION BUTTONS
             Padding(
@@ -222,28 +222,28 @@ class _TicketPageState extends State<TicketPage> {
                           onPressed: () {
                             // TODO: Xử lý share
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("Chia sẻ sự kiện")),
+                              const SnackBar(content: Text("Chia sẻ sự kiện")),
                             );
                           },
-                          icon: Icon(Icons.share),
-                          label: Text("Share Event"),
+                          icon: const Icon(Icons.share),
+                          label: const Text("Share Event"),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blueAccent,
                             foregroundColor: Colors.white,
                           ),
                         ),
                       ),
-                      SizedBox(width: 12),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: ElevatedButton.icon(
                           onPressed: () {
                             // TODO: Xử lý tải xuống
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("Đã tải vé")),
+                              const SnackBar(content: Text("Đã tải vé")),
                             );
                           },
-                          icon: Icon(Icons.download),
-                          label: Text("Download"),
+                          icon: const Icon(Icons.download),
+                          label: const Text("Download"),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green,
                             foregroundColor: Colors.white,
@@ -252,7 +252,7 @@ class _TicketPageState extends State<TicketPage> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
 
                   // Hiển thị nút thanh toán nếu chưa thanh toán hoặc thất bại
                   if (orderData!.status == '0' || orderData!.status == '2')
@@ -297,20 +297,20 @@ class _TicketPageState extends State<TicketPage> {
                             print("Lỗi: $e");
                           }
                         },
-                        icon: Icon(Icons.payment),
-                        label: Text("Thanh toán"),
+                        icon: const Icon(Icons.payment),
+                        label: const Text("Thanh toán"),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.redAccent,
                           foregroundColor: Colors.white,
-                          padding: EdgeInsets.symmetric(vertical: 14),
-                          textStyle: TextStyle(fontSize: 16),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          textStyle: const TextStyle(fontSize: 16),
                         ),
                       ),
                     ),
                 ],
               ),
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
           ],
         ),
       ),
@@ -436,7 +436,7 @@ void showImageQRDialog(BuildContext context, String imageUrl) {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text('Đóng'),
+          child: const Text('Đóng'),
         ),
       ],
     ),

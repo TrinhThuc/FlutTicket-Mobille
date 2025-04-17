@@ -43,7 +43,7 @@ class AppRoutes {
 
   static Map<String, WidgetBuilder> routes = {
     selectLocationScreen: (context) => SelectLocationScreen(),
-    homeScreen: (context) => HomeScreen(
+    homeScreen: (context) => const HomeScreen(
           selectedLocation: '',
         ),
     // singleEventScreen: (context) => SingleEventScreen(),

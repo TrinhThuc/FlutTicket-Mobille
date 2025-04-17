@@ -19,7 +19,50 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
-  int _selectedGender = 0; 
+  int _selectedGender = 0;
+  bool _isLoading = true;
+
+  void initState() {
+    super.initState();
+    _getUserInfo(); // Gọi lấy thông tin user khi widget khởi tạo
+  }
+
+  Future<void> _getUserInfo() async {
+    final response =
+        await ApiService.requestGetApi('oauth/user/get', useAuth: true);
+
+    if (response != null) {
+      setState(() {
+        _fullNameController.text = response['full_name'] ?? '';
+        _phoneController.text = response['phone'] ?? '';
+        _locationController.text = response['location'] ?? '';
+        // Giới tính: từ số -> chuỗi
+        // final int genderCode = response['gender'] ?? -1;
+        // if (genderCode == 0) {
+        //   selectedGender = 'Nam';
+        // } else if (genderCode == 1) {
+        //   selectedGender = 'Nữ';
+        // } else {
+        //   selectedGender = 'Khác';
+        // }
+        // // Giới tính: từ chuỗi -> số
+        // if (selectedGender == 'Nam') {
+        //   _selectedGender = 0;
+        // } else if (selectedGender == 'Nữ') {
+        //   _selectedGender = 1;
+        // } else {
+        //   _selectedGender = -1; // Hoặc giá trị mặc định khác
+        // }
+        _selectedGender = response['gender'] ?? -1;
+        _isLoading = false;
+      });
+    } else {
+      print('Lỗi: Không nhận được dữ liệu user hợp lệ');
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -31,7 +74,9 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return  _isLoading
+    ? const Center(child: CircularProgressIndicator())
+    : Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.background,
@@ -87,9 +132,9 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
               children: [
                 Expanded(
                   child: RadioListTile<int>(
-                    title: Text('Nam', style: AppStyles.h4),
+                    title: const Text('Nam', style: AppStyles.h4),
                     value: 0,
-                    groupValue: _selectedGender,
+                    groupValue: _selectedGender ?? 0,
                     onChanged: (value) {
                       setState(() {
                         _selectedGender = value ?? _selectedGender;
@@ -99,9 +144,9 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
                 ),
                 Expanded(
                   child: RadioListTile<int>(
-                    title: Text('Nữ', style: AppStyles.h4),
+                    title: const Text('Nữ', style: AppStyles.h4),
                     value: 1,
-                    groupValue: _selectedGender,
+                    groupValue: _selectedGender ?? 0,
                     onChanged: (value) {
                       setState(() {
                         _selectedGender = value ?? _selectedGender;
@@ -122,10 +167,11 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
                   "gender": _selectedGender
                 };
                 print(updateData);
-                ApiService.requestApi(
-                        'oauth/user/update-info',updateData, useAuth: true)
+                ApiService.requestApi('oauth/user/update-info', updateData,
+                        useAuth: true)
                     .then((response) {
-                  if (response != null && response['status']['success'] == true) {
+                  if (response != null &&
+                      response['status']['success'] == true) {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(

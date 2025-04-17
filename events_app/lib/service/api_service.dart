@@ -168,7 +168,7 @@ class ApiService {
       return {"error": "Unauthorized"};
     }
     headers['Authorization'] = 'Bearer $accessToken';
-  };
+  }
   
   try {
     final response = await http.post(

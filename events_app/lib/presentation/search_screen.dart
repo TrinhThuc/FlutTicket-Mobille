@@ -88,7 +88,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: appTheme.whiteA700,
+      backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -96,17 +96,17 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
       body: Container(
         width: double.maxFinite,
-        padding: EdgeInsets.only(top: 8),
+        padding: const EdgeInsets.only(top: 8),
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [
-            SizedBox(height: 22),
+            const SizedBox(height: 22),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24),
+              padding: const EdgeInsets.symmetric(horizontal: 24),
               child: CustomSearchView(
                   controller: searchController,
                   hintText: 'Search For....',
-                  contentPadding: EdgeInsets.only(
+                  contentPadding: const EdgeInsets.only(
                     left: 12,
                     top: 6,
                     bottom: 6,
@@ -117,18 +117,18 @@ class _SearchScreenState extends State<SearchScreen> {
                     });
                     _searchEventsWithFilters(); // Gọi tìm kiếm với bộ lọc sau khi nhập
                   },
-                  prefix: Padding(
+                  prefix: const Padding(
                     padding: EdgeInsets.only(left: 20),
                     child: Icon(Icons.search, size: 20),
                   )),
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
 
             // Filters Section
             Align(
               alignment: Alignment.centerLeft,
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -159,7 +159,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Wrap(
                       spacing: 6,
                       runSpacing: 6,
@@ -215,13 +215,13 @@ class _SearchScreenState extends State<SearchScreen> {
             Expanded(
               child: Container(
                 width: double.maxFinite,
-                margin: EdgeInsets.symmetric(horizontal: 14),
+                margin: const EdgeInsets.symmetric(horizontal: 14),
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Container(
                       width: double.maxFinite,
-                      margin: EdgeInsets.symmetric(horizontal: 8),
+                      margin: const EdgeInsets.symmetric(horizontal: 8),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -230,7 +230,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           const Spacer(),
                           Text('Sort by relevant',
                               style: CustomTextStyles.bodySmallBlack900),
-                          Icon(
+                          const Icon(
                             Icons.arrow_drop_down,
                             size: 18,
                           ),
@@ -239,14 +239,14 @@ class _SearchScreenState extends State<SearchScreen> {
                     ),
                     Expanded(
                       child: Padding(
-                        padding: EdgeInsets.only(left: 6),
+                        padding: const EdgeInsets.only(left: 6),
                         child: ListView.separated(
                           padding: EdgeInsets.zero,
                           physics: const BouncingScrollPhysics(),
                           shrinkWrap: true,
                           itemCount: events.length,
                           separatorBuilder: (context, index) {
-                            return SizedBox(height: 18);
+                            return const SizedBox(height: 18);
                           },
                           itemBuilder: (context, index) {
                             final event = events[index];
@@ -374,7 +374,7 @@ class _EventListItemWidgetState extends State<EventListItemWidget> {
               ),
             ),
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -384,18 +384,18 @@ class _EventListItemWidgetState extends State<EventListItemWidget> {
                       .format(DateTime.parse(widget.event['startTime'])),
                   style: theme.textTheme.bodySmall,
                 ),
-                SizedBox(height: 2),
+                const SizedBox(height: 2),
                 Text(
                   widget.event['name'],
                   style: CustomTextStyles.titleMediumGray900_1,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   children: [
-                    Icon(Icons.location_on, size: 14),
-                    SizedBox(width: 4),
+                    const Icon(Icons.location_on, size: 14),
+                    const SizedBox(width: 4),
                     Expanded(
                       child: Text(
                         widget.event['location'],
@@ -437,7 +437,7 @@ class _EventListItemWidgetState extends State<EventListItemWidget> {
                   });
                 },
               ),
-              Icon(Icons.share, color: Colors.grey, size: 18),
+              const Icon(Icons.share, color: Colors.grey, size: 18),
             ],
           ),
         ],
@@ -460,7 +460,7 @@ class FilterChipviewItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RawChip(
-      padding: EdgeInsets.only(left: 12, top: 4, bottom: 4),
+      padding: const EdgeInsets.only(left: 12, top: 4, bottom: 4),
       showCheckmark: false,
       labelPadding: EdgeInsets.zero,
       label: Text(
@@ -504,7 +504,7 @@ class EventItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: Row(
         children: [
           ClipRRect(
@@ -512,19 +512,19 @@ class EventItem extends StatelessWidget {
             child:
                 Image.asset(imageUrl, width: 88, height: 84, fit: BoxFit.cover),
           ),
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(date, style: theme.textTheme.bodySmall),
                 Text(title, style: CustomTextStyles.titleMediumGray900_1),
-                SizedBox(height: 6),
+                const SizedBox(height: 6),
                 Row(
                   children: [
                     const Icon(Icons.location_on_outlined,
                         size: 16, color: Colors.grey),
-                    SizedBox(width: 4),
+                    const SizedBox(width: 4),
                     Text(location, style: theme.textTheme.bodySmall),
                   ],
                 ),
@@ -535,7 +535,7 @@ class EventItem extends StatelessWidget {
             isFavorite ? Icons.favorite : Icons.favorite_border,
             color: isFavorite ? Colors.red : Colors.grey,
           ),
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
           const Icon(Icons.share, color: Colors.grey),
         ],
       ),

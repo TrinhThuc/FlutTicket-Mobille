@@ -66,7 +66,7 @@ class TicketEmptyScreenState extends State<TicketScreen>
             child: TabBar(
               controller: tabviewController,
               labelPadding: EdgeInsets.zero,
-              labelColor: appTheme.whiteA700,
+              labelColor: Colors.white,
               labelStyle: TextStyle(
                 fontSize: 16.fSize,
                 fontWeight: FontWeight.w700,
@@ -78,7 +78,7 @@ class TicketEmptyScreenState extends State<TicketScreen>
                 fontWeight: FontWeight.w400,
                 fontFamily: 'Inter',
               ),
-              indicatorColor: appTheme.whiteA700,
+              indicatorColor: Colors.white,
               tabs: const [
                 Tab(text: 'Upcoming'),
                 Tab(text: 'Past Tickets'),
@@ -101,6 +101,7 @@ class TicketPastTabPage extends StatefulWidget {
 
 class _TicketPastTabPageState extends State<TicketPastTabPage> {
   List pastEvents = [];
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -109,6 +110,9 @@ class _TicketPastTabPageState extends State<TicketPastTabPage> {
   }
 
   Future<void> getPastEvents() async {
+    setState(() {
+      isLoading = true;
+    });
     final response = await ApiService.requestApi(
       'order/private/search-event',
       {
@@ -123,6 +127,8 @@ class _TicketPastTabPageState extends State<TicketPastTabPage> {
 
     if (response != null && response['data'] != null) {
       setState(() {
+        isLoading = false;
+
         pastEvents = response['data']['content'];
       });
     } else {
@@ -132,7 +138,11 @@ class _TicketPastTabPageState extends State<TicketPastTabPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+     return isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : RefreshIndicator(
+            onRefresh: getPastEvents,
+            child: Padding(
       padding: EdgeInsets.symmetric(horizontal: 24.h, vertical: 30.h),
       child: pastEvents.isNotEmpty 
         ? ListView.separated(
@@ -144,6 +154,8 @@ class _TicketPastTabPageState extends State<TicketPastTabPage> {
             },
           )
         : Center(child: Text('Không có sự kiện nào', style: theme.textTheme.titleMedium)),
+    )
+
     );
   }
 
@@ -189,6 +201,7 @@ class TicketUpcomingTabPage extends StatefulWidget {
 class _TicketUpcomingTabPageState extends State<TicketUpcomingTabPage> {
   int? selectedIndex;
   List upcomingEvents = [];
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -197,6 +210,9 @@ class _TicketUpcomingTabPageState extends State<TicketUpcomingTabPage> {
   }
 
   Future<void> getUpcomingEvent() async {
+    setState(() {
+      isLoading = true;
+    });
     final response = await ApiService.requestApi(
       'order/private/search-event',
       {
@@ -208,6 +224,7 @@ class _TicketUpcomingTabPageState extends State<TicketUpcomingTabPage> {
     if (!mounted) return;
     if (response != null && response['data'] != null) {
       setState(() {
+        isLoading = false;
         upcomingEvents = response['data']['content'];
       });
     } else {
@@ -217,7 +234,11 @@ class _TicketUpcomingTabPageState extends State<TicketUpcomingTabPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : RefreshIndicator(
+            onRefresh: getUpcomingEvent,
+            child:  Padding(
       padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 30.h),
       child: upcomingEvents.isNotEmpty 
         ? ListView.separated(
@@ -249,6 +270,7 @@ class _TicketUpcomingTabPageState extends State<TicketUpcomingTabPage> {
             },
           )
         : Center(child: Text('Không có sự kiện nào', style: theme.textTheme.titleMedium)),
+    )
     );
   }
 }
@@ -261,7 +283,7 @@ class AllTicketTabPage extends StatefulWidget {
 }
 
 class _AllTicketTabPageState extends State<AllTicketTabPage> {
-
+  bool isLoading = false;
   List allEvents = [];
 
   @override
@@ -271,6 +293,9 @@ class _AllTicketTabPageState extends State<AllTicketTabPage> {
   }
 
   Future<void> getAllEvents() async {
+    setState(() {
+      isLoading = true;
+    });
     final response = await ApiService.requestApi(
       'order/private/search-event',
       {
@@ -281,6 +306,7 @@ class _AllTicketTabPageState extends State<AllTicketTabPage> {
     );
     if (response != null && response['data'] != null) {
       setState(() {
+        isLoading = false;
         allEvents = response['data']['content'];
       });
     } else {
@@ -290,9 +316,14 @@ class _AllTicketTabPageState extends State<AllTicketTabPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : RefreshIndicator(
+            onRefresh: getAllEvents,
+            child: Padding(
       padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 30.h),
-      child: ListView.separated(
+      child: allEvents.isNotEmpty 
+        ? ListView.separated(
         physics: const BouncingScrollPhysics(),
         itemCount: allEvents.length,
         itemBuilder: (context, index) {
@@ -307,7 +338,9 @@ class _AllTicketTabPageState extends State<AllTicketTabPage> {
           );
         },
         separatorBuilder: (_, __) => SizedBox(height: 8.h),
-      ),
+      )
+        : Center(child: Text('Không có sự kiện nào', style: theme.textTheme.titleMedium)),
+    )
     );
   }
 }
@@ -359,7 +392,7 @@ class TicketItemWidget extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.only(left: 4.h),
                     // child: Text(event != null ? "${event['totalAmount']} VND" : "2 vé", style: CustomTextStyles.bodySmallBlack900),
-                    child: _buildTicketItem(event != null ? event : 0),
+                    child: _buildTicketItem(event ?? 0),
                   ),
                 ],
               ),

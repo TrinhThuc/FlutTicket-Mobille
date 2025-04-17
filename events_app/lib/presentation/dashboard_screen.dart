@@ -23,19 +23,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-      final List<Widget> _widgetOptions = <Widget>[
-    HomeScreen(selectedLocation: 'Barcelona'),
-    SearchScreen(),
-     TicketScreen(),
-     FavouritesScreen(),
-     ProfileScreen(),
+      final List<Widget> widgetOptions = <Widget>[
+    const HomeScreen(selectedLocation: 'Barcelona'),
+    const SearchScreen(),
+     const TicketScreen(),
+     const FavouritesScreen(),
+     const ProfileScreen(),
   ];
     return Scaffold(
       backgroundColor: appTheme.gray900,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: IndexedStack(
         index: selectTab,
-        children: _widgetOptions,
+        children: widgetOptions,
       ),
       bottomNavigationBar: BottomAppBar(
         color: appTheme.gray900,

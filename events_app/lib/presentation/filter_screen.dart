@@ -136,7 +136,7 @@ class _FilterScreenState extends State<FilterScreen> {
                     value: type['id'],
                     child: Text(type['name']),
                   );
-                }).toList(),
+                }),
               ],
               onChanged: (value) {
                 setState(() {

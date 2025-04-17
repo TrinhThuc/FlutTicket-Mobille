@@ -98,7 +98,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: appTheme.whiteA700,
+      backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true,
       appBar: CustomAppBar(
         leadingWidth: 33.h,
@@ -288,7 +288,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       showLoadingDialog(context); // Show loading dialog
 
                       try {
-                        int _genderToInt(String gender) {
+                        int genderToInt(String gender) {
                           switch (gender) {
                             case 'Nam':
                               return 1;
@@ -300,7 +300,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         }
 
                         // 1. Gọi API tạo order
-                        Map<String, dynamic> _buildOrderBody() {
+                        Map<String, dynamic> buildOrderBody() {
                           return {
                             "eventId": widget.eventDetails["id"],
                             "listOrderTicketReq": widget
@@ -313,17 +313,17 @@ class _PaymentScreenState extends State<PaymentScreen> {
                               };
                             }).toList(),
                             "fullName": fullnameController.text,
-                            "gender": _genderToInt(genderController.text),
+                            "gender": genderToInt(genderController.text),
                             "address": addressController.text,
                             "phoneNumber": phoneController.text,
                             "email": emailController.text,
                           };
                         }
 
-                        print("Body: ${_buildOrderBody()}");
+                        print("Body: ${buildOrderBody()}");
                         final orderRes = await ApiService.requestPostOder(
                           'saga/event/order/create-order',
-                          _buildOrderBody(),
+                          buildOrderBody(),
                           useAuth: true,
                         );
                         log("Chi tiết phản hồi từ server: $orderRes"); // 👈 THÊM DÒNG NÀY

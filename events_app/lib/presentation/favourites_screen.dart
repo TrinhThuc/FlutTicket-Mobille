@@ -48,7 +48,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
     return RefreshIndicator(
       onRefresh: _onRefresh,
       child: Scaffold(
-        backgroundColor: appTheme.whiteA700,
+        backgroundColor: Colors.white,
         body: SafeArea(
           child:
               favEvents.isEmpty ? _buildEmptyFavourites() : _buildFavoriteItem(),

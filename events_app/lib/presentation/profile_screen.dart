@@ -44,6 +44,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SizedBox(
           width: double.maxFinite,
@@ -64,7 +66,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           alignment: Alignment.center,
                           children: [
                             Image.network(
-                              'http://162.248.102.236:8055/assets/${avatar}',
+                              'http://162.248.102.236:8055/assets/$avatar',
                               width: 60,
                               height: 60,
                               fit: BoxFit.cover,
