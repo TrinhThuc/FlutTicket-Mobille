@@ -260,7 +260,7 @@ class _TicketPageState extends State<TicketPage> {
                       width: double.infinity,
                       child: ElevatedButton.icon(
                         onPressed: () async {
-                          showLoadingDialog(context); // 👈 Bắt đầu loading
+                          // showLoadingDialog(context); // 👈 Bắt đầu loading
                           try {
                             final vnpayRes = await ApiService.requestPostOder(
                               'payment/private/vn-pay',

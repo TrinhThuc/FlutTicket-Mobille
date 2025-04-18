@@ -55,7 +55,7 @@ class SelectLocation extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 109.15),
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => SelectLocationScreen()));
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SelectLocationScreen()));
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF0DCDAA),
