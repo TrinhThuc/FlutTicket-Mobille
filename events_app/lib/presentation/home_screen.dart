@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 //
 import '../app_theme.dart';
 import '../app_utils.dart';
 import '../service/api_service.dart';
+import '../src/localization/app_vietnamese_strings.dart';
 import '../widgets.dart';
 import 'single_event_screen.dart';
 
@@ -158,7 +160,7 @@ bool get isFav => widget.favEvents.contains(widget.event['id']);
                 child: CustomElevatedButton(
                   height: 26.h,
                   width: 36.h,
-                  text: "New",
+                  text: AppVietnameseStrings.newLabel,
                   buttonStyle: CustomButtonStyles.fillGreenA,
                   buttonTextStyle: CustomTextStyles.bodySmallWhiteA700,
                 ),
@@ -198,7 +200,7 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
       favEvents = List<int>.from(response['data'].map((e) => e['id']));
       });
     } else {
-      print('Lỗi: Không nhận được dữ liệu favourite events');
+      print(AppVietnameseStrings.errorNoFavoriteEvents);
     }
   }
 
@@ -226,7 +228,7 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
         popularEvents = response['data']['content'] ?? [];
       });
     } else {
-      debugPrint('Lỗi: Không nhận được dữ liệu hợp lệ');
+      debugPrint(AppVietnameseStrings.eventDataEmptyOrInvalid);
     }
   }
 
@@ -284,7 +286,7 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
                       child: CustomElevatedButton(
                         height: 26.h,
                         width: 38.h,
-                        text: "New",
+                        text: AppVietnameseStrings.newLabel,
                         buttonStyle: CustomButtonStyles.fillGreenA,
                         buttonTextStyle: CustomTextStyles.bodySmallWhiteA700,
                       ),
@@ -439,7 +441,7 @@ final isFav = favEvents.contains(event['id'])
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Popular in $selectedLocation",
+                        "${AppVietnameseStrings.popularInPrefix}$selectedLocation",
                         style: theme.textTheme.bodyLarge,
                       ),
                       SizedBox(height: 14.h),

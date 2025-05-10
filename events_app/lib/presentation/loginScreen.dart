@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Thêm import để lưu access token
 
 import '../service/api_service.dart'; // Thêm import ApiService
+import '../src/localization/app_vietnamese_strings.dart'; // Import tệp chuỗi tiếng Việt
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -22,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Vui lòng nhập email và mật khẩu')),
+        const SnackBar(content: Text(AppVietnameseStrings.plsEnterEmailPassword)),
       );
       return;
     }
@@ -62,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       Navigator.of(context, rootNavigator: true).pop(); // Đóng dialog
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Có lỗi xảy ra, vui lòng thử lại')),
+        const SnackBar(content: Text(AppVietnameseStrings.errorOccurredPleaseTryAgain)),
       );
     }
   }
@@ -87,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 26),
               const Text(
-                'Welcome Back!',
+                AppVietnameseStrings.welcomeBack,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w600,
@@ -101,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Email adress',
+                    AppVietnameseStrings.emailAddress,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
@@ -111,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextField(
                     controller: _emailController,
                     decoration: const InputDecoration(
-                      hintText: 'name@example.com',
+                      hintText: AppVietnameseStrings.emailHint,
                       hintStyle: TextStyle(
                         fontSize: 14,
                         color: Color(0xFFC0BCBC),
@@ -131,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Password',
+                    AppVietnameseStrings.password,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
@@ -142,7 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: _passwordController,
                     obscureText: !_passwordVisible,
                     decoration: InputDecoration(
-                      hintText: 'Enter your password',
+                      hintText: AppVietnameseStrings.enterYourPasswordHint,
                       hintStyle: const TextStyle(
                         fontSize: 14,
                         color: Color(0xFFC0BCBC),
@@ -183,7 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   child: const Text(
-                    'Sign in',
+                    AppVietnameseStrings.signIn,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,

@@ -7,6 +7,7 @@ import 'package:events_app/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
 
 import '../service/api_service.dart';
+import '../src/localization/app_vietnamese_strings.dart';
 
 class UpdateInfoScreen extends StatefulWidget {
   const UpdateInfoScreen({super.key});
@@ -57,7 +58,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
         _isLoading = false;
       });
     } else {
-      print('Lỗi: Không nhận được dữ liệu user hợp lệ');
+      print(AppVietnameseStrings.errorNoValidUserData);
       setState(() {
         _isLoading = false;
       });
@@ -82,7 +83,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
         backgroundColor: AppColors.background,
         elevation: 0,
         title: Text(
-          'Cập nhật thông tin',
+          AppVietnameseStrings.updateInfoTitle,
           style: AppStyles.h2.copyWith(color: AppColors.text),
         ),
         centerTitle: true,
@@ -93,38 +94,38 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Số điện thoại',
+              AppVietnameseStrings.phoneNumberLabel,
               style: AppStyles.h3.copyWith(color: AppColors.text),
             ),
             const SizedBox(height: AppValues.spacing),
             TextFieldWidget(
               controller: _phoneController,
-              hintText: 'Nhập số điện thoại',
+              hintText: AppVietnameseStrings.enterPhoneNumberHint,
               keyboardType: TextInputType.phone,
             ),
             const SizedBox(height: AppValues.spacing * 2),
             Text(
-              'Họ và tên',
+              AppVietnameseStrings.fullName,
               style: AppStyles.h3.copyWith(color: AppColors.text),
             ),
             const SizedBox(height: AppValues.spacing),
             TextFieldWidget(
               controller: _fullNameController,
-              hintText: 'Nhập họ và tên',
+              hintText: AppVietnameseStrings.enterYourNameHint,
             ),
             const SizedBox(height: AppValues.spacing * 2),
             Text(
-              'Địa chỉ',
+              AppVietnameseStrings.addressLabel,
               style: AppStyles.h3.copyWith(color: AppColors.text),
             ),
             const SizedBox(height: AppValues.spacing),
             TextFieldWidget(
               controller: _locationController,
-              hintText: 'Nhập địa chỉ',
+              hintText: AppVietnameseStrings.enterAddressHint,
             ),
             const SizedBox(height: AppValues.spacing * 2),
             Text(
-              'Giới tính',
+              AppVietnameseStrings.genderLabel,
               style: AppStyles.h3.copyWith(color: AppColors.text),
             ),
             const SizedBox(height: AppValues.spacing),
@@ -132,7 +133,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
               children: [
                 Expanded(
                   child: RadioListTile<int>(
-                    title: const Text('Nam', style: AppStyles.h4),
+                    title: const Text(AppVietnameseStrings.male, style: AppStyles.h4),
                     value: 0,
                     groupValue: _selectedGender ?? 0,
                     onChanged: (value) {
@@ -144,7 +145,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
                 ),
                 Expanded(
                   child: RadioListTile<int>(
-                    title: const Text('Nữ', style: AppStyles.h4),
+                    title: const Text(AppVietnameseStrings.female, style: AppStyles.h4),
                     value: 1,
                     groupValue: _selectedGender ?? 0,
                     onChanged: (value) {
@@ -158,7 +159,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
             ),
             const SizedBox(height: AppValues.spacing * 3),
             ButtonWidget(
-              text: 'Cập nhật',
+              text: AppVietnameseStrings.updateButton,
               onPressed: () {
                 final updateData = {
                   "phone": _phoneController.text,
@@ -179,10 +180,10 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
                       ),
                     );
                   } else {
-                    print('Lỗi: Cập nhật thông tin không thành công');
+                    print(AppVietnameseStrings.errorUpdateInfoFailed);
                   }
                 }).catchError((error) {
-                  print('Lỗi: $error');
+                  print('${AppVietnameseStrings.errorPrefix}: $error');
                 });
               },
             ),

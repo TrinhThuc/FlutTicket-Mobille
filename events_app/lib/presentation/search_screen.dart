@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../app_theme.dart';
 import '../service/api_service.dart';
+import '../src/localization/app_vietnamese_strings.dart';
 import 'filter_screen.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -44,7 +45,7 @@ class _SearchScreenState extends State<SearchScreen> {
         events = response['data']['content'];
       });
     } else {
-      print('Lỗi: Không nhận được dữ liệu sự kiện phổ biến');
+      print(AppVietnameseStrings.errorNoPopularEvents);
     }
   }
 
@@ -57,7 +58,7 @@ class _SearchScreenState extends State<SearchScreen> {
         eventTypes = List<Map<String, dynamic>>.from(response['data']);
       });
     } else {
-      print('Lỗi: Không nhận được dữ liệu loại sự kiện hợp lệ');
+      print(AppVietnameseStrings.errorNoEventTypes);
     }
   }
 
@@ -81,7 +82,7 @@ class _SearchScreenState extends State<SearchScreen> {
         events = response['data']['content'];
       });
     } else {
-      print('Lỗi: Không nhận được dữ liệu search events');
+      print(AppVietnameseStrings.errorNoSearchResults);
     }
   }
 
@@ -105,7 +106,7 @@ class _SearchScreenState extends State<SearchScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: CustomSearchView(
                   controller: searchController,
-                  hintText: 'Search For....',
+                  hintText: AppVietnameseStrings.searchForHint,
                   contentPadding: const EdgeInsets.only(
                     left: 12,
                     top: 6,
@@ -134,7 +135,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   children: [
                     Row(
                       children: [
-                        Text('Filters',
+                        Text(AppVietnameseStrings.filtersTitle,
                             style: CustomTextStyles.titleMediumSemiBold),
                         const Spacer(),
                         TextButton.icon(
@@ -155,7 +156,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             );
                           },
                           icon: const Icon(Icons.filter_list),
-                          label: const Text('Mở bộ lọc'),
+                          label: const Text(AppVietnameseStrings.openFiltersButton),
                         ),
                       ],
                     ),
@@ -167,7 +168,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         if (filters['eventTypeId'] != null)
                           FilterChipviewItemWidget(
                             label:
-                                'Event Type: ${_getEventTypeName(filters['eventTypeId'])}',
+                                '${AppVietnameseStrings.eventTypeFilterPrefix}${_getEventTypeName(filters['eventTypeId'])}',
                             onSelected: (selected) {
                               setState(() {
                                 filters['eventTypeId'] = null;
@@ -177,7 +178,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                         if (filters['startDate'] != null)
                           FilterChipviewItemWidget(
-                            label: 'Start Date: ${filters['startDate']}',
+                            label: '${AppVietnameseStrings.startDateFilterPrefix}${filters['startDate']}',
                             onSelected: (selected) {
                               setState(() {
                                 filters['startDate'] = null;
@@ -187,7 +188,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                         if (filters['endDate'] != null)
                           FilterChipviewItemWidget(
-                            label: 'End Date: ${filters['endDate']}',
+                            label: '${AppVietnameseStrings.endDateFilterPrefix}${filters['endDate']}',
                             onSelected: (selected) {
                               setState(() {
                                 filters['endDate'] = null;
@@ -197,7 +198,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                         if (filters['location'] != null)
                           FilterChipviewItemWidget(
-                            label: 'Location: ${filters['location']}',
+                            label: '${AppVietnameseStrings.locationFilterPrefix}${filters['location']}',
                             onSelected: (selected) {
                               setState(() {
                                 filters['location'] = null;
@@ -225,10 +226,10 @@ class _SearchScreenState extends State<SearchScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('${events.length} Events',
+                          Text('${events.length}${AppVietnameseStrings.eventsSuffix}',
                               style: CustomTextStyles.bodyLargeBlack900),
                           const Spacer(),
-                          Text('Sort by relevant',
+                          Text(AppVietnameseStrings.sortByRelevant,
                               style: CustomTextStyles.bodySmallBlack900),
                           const Icon(
                             Icons.arrow_drop_down,
@@ -250,7 +251,18 @@ class _SearchScreenState extends State<SearchScreen> {
                           },
                           itemBuilder: (context, index) {
                             final event = events[index];
-                            return EventListItemWidget(event: event);
+                            return event['name'] != null ? GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => EventPage(eventId: event['id'] ?? 0),
+                                  ),
+                                );
+                              },
+                              child: EventListItemWidget(event: event),
+                            ) :
+                            Center(child: Text(AppVietnameseStrings.noEvents));
                           },
                         ),
                       ),
@@ -328,7 +340,10 @@ class _SearchScreenState extends State<SearchScreen> {
         events = response['data']['content'] ?? [];
       });
     } else {
-      print('Lỗi: Không nhận được dữ liệu sự kiện hợp lệ');
+      print(AppVietnameseStrings.errorNoSearchResults);
+      setState(() {
+        events = [];
+      });
     }
   }
 }

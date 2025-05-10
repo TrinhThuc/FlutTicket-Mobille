@@ -4,6 +4,7 @@ import 'package:events_app/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Thêm thư viện để định dạng ngày tháng
 
+import '../src/localization/app_vietnamese_strings.dart'; // Import
 import 'payment_screen.dart';
 
 class BuyTicketScreen extends StatefulWidget {
@@ -71,17 +72,17 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                           children: [
                             Text(
                               widget.eventDetails['name'] ??
-                                  'Tên sự kiện không có',
+                                  AppVietnameseStrings.eventNameUnavailable,
                               style: theme.textTheme.titleLarge,
                             ),
                             SizedBox(height: 8.h),
                             Text(
-                              'Thời gian: ${widget.eventDetails['startTime'] != null ? DateFormat('dd-MM-yyyy').format(DateTime.parse(widget.eventDetails['startTime'])) : 'Không có thông tin'}',
+                              '${AppVietnameseStrings.timePrefix}${widget.eventDetails['startTime'] != null ? DateFormat('dd-MM-yyyy').format(DateTime.parse(widget.eventDetails['startTime'])) : AppVietnameseStrings.noInformationAvailable}',
                               style: theme.textTheme.bodySmall,
                             ),
                             Text(
                               widget.eventDetails['location'] ??
-                                  'Địa điểm không có',
+                                  AppVietnameseStrings.locationUnavailable,
                               style: theme.textTheme.bodySmall,
                             ),
                             SizedBox(height: 82.h),
@@ -132,13 +133,13 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
             Text(formatCurrencyVND(totalPrice),
                 style: theme.textTheme.titleMedium),
             CustomElevatedButton(
-              text: 'Mua',
+              text: AppVietnameseStrings.buyNowButtonShort,
               onPressed: () {
                 bool hasTickets =
                     ticketQuantities.values.any((quantity) => quantity > 0);
                 if (!hasTickets) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Vui lòng chọn ít nhất 1 vé')),
+                    const SnackBar(content: Text(AppVietnameseStrings.plsSelectAtLeastOneTicket)),
                   );
                   return;
                 }
@@ -179,7 +180,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
       padding: EdgeInsets.symmetric(horizontal: 8.h, vertical: 18.h),
       child: TextField(
         decoration: InputDecoration(
-          labelText: 'Nhập mã voucher',
+          labelText: AppVietnameseStrings.enterVoucherCodeLabel,
           border: const OutlineInputBorder(),
           suffixIcon: IconButton(
             icon: const Icon(Icons.check),
@@ -229,7 +230,7 @@ class _TicketPurchaseSectionItemState extends State<TicketPurchaseSectionItem> {
             child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(widget.ticketOption['ticketType'] ?? 'Loại vé không có',
+            Text(widget.ticketOption['ticketType'] ?? AppVietnameseStrings.ticketTypeUnavailable,
                 style: theme.textTheme.titleMedium),
             SizedBox(height: 10.h),
             RichText(
@@ -246,7 +247,7 @@ class _TicketPurchaseSectionItemState extends State<TicketPurchaseSectionItem> {
             Padding(
               padding: EdgeInsets.only(right: 18.h),
               child: Text(
-                'Bán đến: ${widget.ticketOption['saleEndTime'] != null ? DateFormat('dd-MM-yyyy').format(DateTime.parse(widget.ticketOption['saleEndTime'])) : 'Không có thông tin'}',
+                '${AppVietnameseStrings.onSaleUntilPrefix}${widget.ticketOption['saleEndTime'] != null ? DateFormat('dd-MM-yyyy').format(DateTime.parse(widget.ticketOption['saleEndTime'])) : AppVietnameseStrings.noInformationAvailable}',
                 style: CustomTextStyles.bodySmallGray600_1,
               ),
             ),

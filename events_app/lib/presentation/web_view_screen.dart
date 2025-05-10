@@ -5,6 +5,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../src/localization/app_vietnamese_strings.dart';
+
 class WebViewPaymentScreen extends StatefulWidget {
   final String paymentUrl;
 
@@ -36,10 +38,10 @@ class _WebViewPaymentScreenState extends State<WebViewPaymentScreen> {
               await _callCallbackUrl(uri);
 
               if (responseCode == '00') {
-                showToast("Thanh toán thành công");
+                showToast(AppVietnameseStrings.bookingSuccessfulToast);
                 Navigator.of(context).popUntil((route) => route.isFirst);
               } else {
-                showToast("Thanh toán thất bại hoặc bị huỷ");
+                showToast(AppVietnameseStrings.bookingFailedToastPrefix);
                 Navigator.pop(context);
               }
               return NavigationDecision.prevent;
@@ -62,7 +64,7 @@ class _WebViewPaymentScreenState extends State<WebViewPaymentScreen> {
       log("Callback response body: ${response.body}");
     } catch (e) {
       log("Lỗi khi gọi callback URL: $e");
-      showToast("Lỗi khi xác nhận thanh toán từ server");
+      showToast(AppVietnameseStrings.errorPrefix);
     }
   }
 
@@ -77,7 +79,7 @@ class _WebViewPaymentScreenState extends State<WebViewPaymentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Thanh toán VNPay")),
+      appBar: AppBar(title: const Text(AppVietnameseStrings.payNowButton)),
       body: Stack(
         children: [
           WebViewWidget(controller: _controller),

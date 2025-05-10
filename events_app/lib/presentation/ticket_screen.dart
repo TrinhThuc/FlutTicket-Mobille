@@ -6,6 +6,7 @@ import 'package:intl/intl.dart'; // Thêm thư viện để định dạng ngày
 
 import '../app_theme.dart';
 import '../service/api_service.dart';
+import '../src/localization/app_vietnamese_strings.dart'; // Import
 
 class TicketScreen extends StatefulWidget {
   const TicketScreen({super.key});
@@ -56,7 +57,7 @@ class TicketEmptyScreenState extends State<TicketScreen>
         children: [
           CustomAppBar(
             title: AppbarTitle(
-              text: 'Tickets',
+              text: AppVietnameseStrings.ticketsTitle,
               margin: EdgeInsets.symmetric(horizontal: 14.h, vertical: 22.h),
             ),
           ),
@@ -80,9 +81,9 @@ class TicketEmptyScreenState extends State<TicketScreen>
               ),
               indicatorColor: Colors.white,
               tabs: const [
-                Tab(text: 'Upcoming'),
-                Tab(text: 'Past Tickets'),
-                Tab(text: 'All'),
+                Tab(text: AppVietnameseStrings.upcomingTab),
+                Tab(text: AppVietnameseStrings.pastTicketsTab),
+                Tab(text: AppVietnameseStrings.allTab),
               ],
             ),
           ),
@@ -132,7 +133,7 @@ class _TicketPastTabPageState extends State<TicketPastTabPage> {
         pastEvents = response['data']['content'];
       });
     } else {
-      print('No data found');
+      print(AppVietnameseStrings.noDataFound);
     }
   }
 
@@ -153,7 +154,7 @@ class _TicketPastTabPageState extends State<TicketPastTabPage> {
               return _buildTicketItem(event);
             },
           )
-        : Center(child: Text('Không có sự kiện nào', style: theme.textTheme.titleMedium)),
+        : Center(child: Text(AppVietnameseStrings.noEvents, style: theme.textTheme.titleMedium)),
     )
 
     );
@@ -165,16 +166,16 @@ class _TicketPastTabPageState extends State<TicketPastTabPage> {
     String status;
     switch (event['status']) {
       case 0:
-        status = 'Chờ thanh toán';
+        status = AppVietnameseStrings.statusPendingPayment;
         break;
       case 1:
-        status = 'Đã thanh toán';
+        status = AppVietnameseStrings.statusPaid;
         break;
       case 2:
-        status = 'Thanh toán thất bại';
+        status = AppVietnameseStrings.statusPaymentFailed;
         break;
       default:
-        status = 'Trạng thái không xác định';
+        status = AppVietnameseStrings.statusUndefined;
     }
 
     return Container(
@@ -228,7 +229,7 @@ class _TicketUpcomingTabPageState extends State<TicketUpcomingTabPage> {
         upcomingEvents = response['data']['content'];
       });
     } else {
-      print('No data found');
+      print(AppVietnameseStrings.noDataFound);
     }
   }
 
@@ -269,7 +270,7 @@ class _TicketUpcomingTabPageState extends State<TicketUpcomingTabPage> {
               );
             },
           )
-        : Center(child: Text('Không có sự kiện nào', style: theme.textTheme.titleMedium)),
+        : Center(child: Text(AppVietnameseStrings.noEvents, style: theme.textTheme.titleMedium)),
     )
     );
   }
@@ -310,7 +311,7 @@ class _AllTicketTabPageState extends State<AllTicketTabPage> {
         allEvents = response['data']['content'];
       });
     } else {
-      print('No data found');
+      print(AppVietnameseStrings.noDataFound);
     }
   }
 
@@ -339,7 +340,7 @@ class _AllTicketTabPageState extends State<AllTicketTabPage> {
         },
         separatorBuilder: (_, __) => SizedBox(height: 8.h),
       )
-        : Center(child: Text('Không có sự kiện nào', style: theme.textTheme.titleMedium)),
+        : Center(child: Text(AppVietnameseStrings.noEvents, style: theme.textTheme.titleMedium)),
     )
     );
   }

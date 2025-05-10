@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../service/api_service.dart';
+import '../src/localization/app_vietnamese_strings.dart';
 import 'web_view_screen.dart';
   void hideLoadingDialog(BuildContext context) {
     Navigator.of(context, rootNavigator: true).pop();
@@ -81,17 +82,17 @@ class _PaymentScreenState extends State<PaymentScreen> {
         // Giới tính: từ số -> chuỗi
         final int genderCode = response['gender'] ?? -1;
         if (genderCode == 0) {
-          selectedGender = 'Nam';
+          selectedGender = AppVietnameseStrings.male;
         } else if (genderCode == 1) {
-          selectedGender = 'Nữ';
+          selectedGender = AppVietnameseStrings.female;
         } else {
-          selectedGender = 'Khác';
+          selectedGender = AppVietnameseStrings.otherGender;
         }
 
         genderController.text = selectedGender ?? '';
       });
     } else {
-      print('Lỗi: Không nhận được dữ liệu user hợp lệ');
+      print(AppVietnameseStrings.errorNoValidUserData);
     }
   }
 
@@ -151,41 +152,41 @@ class _PaymentScreenState extends State<PaymentScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Nhập các thông tin', style: theme.textTheme.titleMedium),
+        Text(AppVietnameseStrings.enterContactInfoTitle, style: theme.textTheme.titleMedium),
         SizedBox(height: 16.h),
         CustomTextFormField(
           controller: fullnameController,
-          hintText: 'Họ và tên',
+          hintText: AppVietnameseStrings.fullName,
           contentPadding:
               EdgeInsets.symmetric(vertical: 12.h, horizontal: 14.h),
-          validator: (value) => value!.isEmpty ? 'Nhập họ và tên' : null,
+          validator: (value) => value!.isEmpty ? AppVietnameseStrings.plsEnterFullName : null,
         ),
         SizedBox(height: 12.h),
         CustomTextFormField(
           controller: phoneController,
-          hintText: 'Số điện thoại',
+          hintText: AppVietnameseStrings.phoneNumberLabel,
           contentPadding:
               EdgeInsets.symmetric(vertical: 12.h, horizontal: 14.h),
-          validator: (value) => value!.isEmpty ? 'Nhập số điện thoại' : null,
+          validator: (value) => value!.isEmpty ? AppVietnameseStrings.plsEnterPhoneNumber : null,
         ),
         SizedBox(height: 12.h),
-        Text('Giới tính', style: theme.textTheme.bodyLarge),
+        Text(AppVietnameseStrings.genderLabel, style: theme.textTheme.bodyLarge),
         SizedBox(height: 8.h),
         RadioListTile<String>(
-          title: const Text('Nam'),
-          value: 'Nam',
+          title: const Text(AppVietnameseStrings.male),
+          value: AppVietnameseStrings.male,
           groupValue: selectedGender,
           onChanged: (value) {
             setState(() {
               selectedGender = value;
               genderController.text =
-                  value!; // vẫn dùng controller để gửi đi API
+                  value!;
             });
           },
         ),
         RadioListTile<String>(
-          title: const Text('Nữ'),
-          value: 'Nữ',
+          title: const Text(AppVietnameseStrings.female),
+          value: AppVietnameseStrings.female,
           groupValue: selectedGender,
           onChanged: (value) {
             setState(() {
@@ -198,25 +199,25 @@ class _PaymentScreenState extends State<PaymentScreen> {
           Padding(
             padding: EdgeInsets.only(left: 12.h),
             child: Text(
-              'Vui lòng chọn giới tính',
+              AppVietnameseStrings.plsSelectGender,
               style: TextStyle(color: Colors.red, fontSize: 12.h),
             ),
           ),
         SizedBox(height: 12.h),
         CustomTextFormField(
           controller: emailController,
-          hintText: 'Email',
+          hintText: AppVietnameseStrings.emailLabel,
           contentPadding:
               EdgeInsets.symmetric(vertical: 12.h, horizontal: 14.h),
-          validator: (value) => value!.isEmpty ? 'Nhập email' : null,
+          validator: (value) => value!.isEmpty ? AppVietnameseStrings.plsEnterEmail : null,
         ),
         SizedBox(height: 12.h),
         CustomTextFormField(
           controller: addressController,
-          hintText: 'Địa chỉ',
+          hintText: AppVietnameseStrings.addressLabel,
           contentPadding:
               EdgeInsets.symmetric(vertical: 12.h, horizontal: 14.h),
-          validator: (value) => value!.isEmpty ? 'Nhập địa chỉ' : null,
+          validator: (value) => value!.isEmpty ? AppVietnameseStrings.plsEnterAddress : null,
         ),
       ],
     );
@@ -227,7 +228,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Payment Methods', style: theme.textTheme.titleMedium),
+        Text(AppVietnameseStrings.paymentMethodsTitle, style: theme.textTheme.titleMedium),
         SizedBox(height: 12.h),
         PaymentMethodTile(
           index: 0,
@@ -245,7 +246,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   /// **Terms & Conditions**
   Widget _buildTermsAndConditions() {
     return Text(
-      'By proceeding, you agree to the Terms & Conditions and Refund Policy.',
+      AppVietnameseStrings.termsAndConditionsMessage,
       style: theme.textTheme.bodySmall!.copyWith(color: Colors.grey),
       textAlign: TextAlign.center,
     );
@@ -280,7 +281,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 child: ElevatedButton.icon(
                   onPressed: () async {
                     if (selectedGender == null) {
-                      showToast("Vui lòng chọn giới tính");
+                      showToast(AppVietnameseStrings.plsFillAllInfoToast);
                       return;
                     }
 
@@ -290,9 +291,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       try {
                         int genderToInt(String gender) {
                           switch (gender) {
-                            case 'Nam':
+                            case AppVietnameseStrings.male:
                               return 1;
-                            case 'Nữ':
+                            case AppVietnameseStrings.female:
                               return 0;
                             default:
                               return -1;
@@ -326,16 +327,15 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           buildOrderBody(),
                           useAuth: true,
                         );
-                        log("Chi tiết phản hồi từ server: $orderRes"); // 👈 THÊM DÒNG NÀY
+                        log("Chi tiết phản hồi từ server: $orderRes");
                         if (orderRes == null) {
-                          showToast("Không nhận được phản hồi từ server");
+                          showToast(AppVietnameseStrings.bookingFailedToastPrefix + (orderRes['message'] ?? "Tạo đơn hàng thất bại"));
                           print(
-                              "Không nhận được phản hồi từ server"); // 👈 THÊM DÒNG NÀY
+                              "Không nhận được phản hồi từ server");
                         } else if (orderRes['data']["id"] == null) {
                           print(
-                              "Chi tiết lỗi từ server: $orderRes"); // 👈 THÊM DÒNG NÀY
-                          showToast(
-                              orderRes['message'] ?? "Tạo đơn hàng thất bại");
+                              "Chi tiết lỗi từ server: $orderRes");
+                          showToast(AppVietnameseStrings.bookingFailedToastPrefix + (orderRes['message'] ?? "Tạo đơn hàng thất bại"));
                           return;
                         }
                         if (orderRes != null &&
@@ -351,7 +351,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             useAuth: true,
                           );
                           print(
-                              "Chi tiết phản hồi từ server: $vnpayRes"); // 👈 THÊM DÒNG NÀY
+                              "Chi tiết phản hồi từ server: $vnpayRes");
                           if (vnpayRes != null &&
                               vnpayRes["data"]?['paymentUrl'] != null) {
                             final paymentUrl = vnpayRes["data"]['paymentUrl'];
@@ -370,25 +370,24 @@ class _PaymentScreenState extends State<PaymentScreen> {
                               ),
                             );
                           } else {
-                            showToast("Không tạo được URL thanh toán");
+                            showToast(AppVietnameseStrings.bookingFailedToastPrefix + AppVietnameseStrings.bookingFailedToastNoPaymentUrl);
                           }
                         } else {
-                          showToast("Tạo đơn hàng thất bại");
+                          showToast(AppVietnameseStrings.bookingFailedToastPrefix + AppVietnameseStrings.bookingFailedToastNoOrderId);
                         }
                       } catch (e) {
                         print("Error: $e");
-                        showToast("Đã xảy ra lỗi khi thanh toán");
+                        showToast(AppVietnameseStrings.bookingFailedToastPrefix + AppVietnameseStrings.bookingFailedToastGeneralError);
                       } finally {
                         if (!_dialogDismissed) {
                           hideLoadingDialog(context);
                         }
-                        // Optionally, reset the flag here if needed.
                         _dialogDismissed = false;
+                        showToast(AppVietnameseStrings.bookingSuccessfulToast);
                       }
                     }
                   },
 
-                  // icon: Image.asset(paymentIcons[selectedMethod], height: 24.h, width: 40.h, color: Colors.white),
                   label: Text(
                     "Pay with ${paymentMethods[selectedMethod]}",
                     overflow: TextOverflow.ellipsis,

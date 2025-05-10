@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../app_theme.dart';
 import '../service/api_service.dart';
+import '../src/localization/app_vietnamese_strings.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -37,7 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         avatar = response['avatar'] ?? '';
       });
     } else {
-      print('Lỗi: Không nhận được dữ liệu user hợp lệ');
+      print(AppVietnameseStrings.errorNoValidUserData);
     }
   }
 
@@ -85,11 +86,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         context);
 
                                 if (pickedFile.isEmpty) {
-                                  debugPrint('Error: No file was selected.');
+                                  debugPrint(AppVietnameseStrings.errorNoFileSelected);
                                   return;
                                 }
 
-                                debugPrint('Picked file path: $pickedFile');
+                                debugPrint('${AppVietnameseStrings.pickedFilePathDebug}$pickedFile');
 
                                 final apiService = ApiService();
                                 final Map<String, dynamic>? response =
@@ -103,7 +104,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   });
                                 } else {
                                   debugPrint(
-                                      'Error: Failed to upload the image.');
+                                      AppVietnameseStrings.errorFailedToUploadImage);
                                 }
                               },
                               height: 48.h,
@@ -150,7 +151,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         alignment: Alignment.centerLeft,
                         child: Padding(
                           padding: EdgeInsets.only(left: 4.h),
-                          child: Text('Settings',
+                          child: Text(AppVietnameseStrings.settingsTitle,
                               style: CustomTextStyles.titleMediumSemiBold),
                         ),
                       ),
@@ -165,11 +166,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 const Spacer(),
                 CustomOutlinedButton(
-                  text: 'Log Out',
+                  text: AppVietnameseStrings.logOutButton,
                   onPressed: () {
                     AppUtils.showConfirmDialog(
                       context,
-                      'Are you sure you want to log out?',
+                      AppVietnameseStrings.confirmLogOutMessage,
                       onConfirm: () {
                         AppUtils.logout(context);
                       },
@@ -203,7 +204,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: EdgeInsets.only(left: 8.h, top: 2.h),
-              child: Text('Primary City',
+              child: Text(AppVietnameseStrings.primaryCityLabel,
                   style: CustomTextStyles.bodySmallBlack900),
             ),
           ),
@@ -226,7 +227,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: EdgeInsets.only(left: 2.h),
-              child: Text('Copy Event to calendar',
+              child: Text(AppVietnameseStrings.copyEventToCalendarLabel,
                   style: CustomTextStyles.bodySmallBlack900),
             ),
           ),

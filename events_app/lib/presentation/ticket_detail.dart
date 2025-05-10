@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../service/api_service.dart';
+import '../src/localization/app_vietnamese_strings.dart';
 import 'payment_screen.dart';
 import 'web_view_screen.dart';
 
@@ -18,7 +19,6 @@ class _TicketPageState extends State<TicketPage> {
   OrderData? orderData;
   bool isLoading = true;
   String? errorMessage;
-  final bool _dialogDismissed = false;
 
   @override
   void initState() {
@@ -40,14 +40,14 @@ class _TicketPageState extends State<TicketPage> {
         });
       } else {
         setState(() {
-          errorMessage = 'Error: No data received';
+          errorMessage = AppVietnameseStrings.errorNoDataReceived;
           isLoading = false;
         });
       }
     } catch (e) {
       print('Lỗi parse JSON: $e');
       setState(() {
-        errorMessage = 'Lỗi: $e';
+        errorMessage = '${AppVietnameseStrings.errorPrefix}: $e';
         isLoading = false;
       });
     }
@@ -121,7 +121,7 @@ class _TicketPageState extends State<TicketPage> {
                   });
                   fetchOrderData();
                 },
-                child: const Text('Thử lại'),
+                child: const Text(AppVietnameseStrings.retry),
               ),
             ],
           ),
@@ -133,7 +133,7 @@ class _TicketPageState extends State<TicketPage> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text('Ticket Detail',
+        title: const Text(AppVietnameseStrings.ticketDetailTitle,
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
@@ -147,64 +147,64 @@ class _TicketPageState extends State<TicketPage> {
           children: [
             const SizedBox(height: 16),
             
-            buildSectionCard('Event Detail', [
-              buildDetailRow('Event', orderData!.event.name),
+            buildSectionCard(AppVietnameseStrings.eventDetailSectionTitle, [
+              buildDetailRow(AppVietnameseStrings.eventLabel, orderData!.event.name),
               buildDetailRow(
-                  'Date & Time',
+                  AppVietnameseStrings.dateTimeLabel,
                   DateFormat('dd/MM/yyyy HH:mm')
                       .format(DateTime.parse(orderData!.event.startTime))),
-              buildDetailRow('Location', orderData!.event.location),
-              buildDetailRow('Organizer', orderData!.event.organizer),
+              buildDetailRow(AppVietnameseStrings.locationLabel, orderData!.event.location),
+              buildDetailRow(AppVietnameseStrings.organizerLabel, orderData!.event.organizer),
             ]),
             // Order info section
-            buildSectionCard('Order Information', [
-              buildDetailRow('Full Name', orderData!.fullName),
-              buildDetailRow('Email', orderData!.email),
-              buildDetailRow('Phone', orderData!.phoneNumber),
+            buildSectionCard(AppVietnameseStrings.orderInformationSectionTitle, [
+              buildDetailRow(AppVietnameseStrings.fullName, orderData!.fullName),
+              buildDetailRow(AppVietnameseStrings.emailLabel, orderData!.email),
+              buildDetailRow(AppVietnameseStrings.phoneLabel, orderData!.phoneNumber),
               buildDetailRow(
-                  'Gender', orderData!.gender == 1 ? 'Female' : 'Male'),
+                  AppVietnameseStrings.genderLabel, orderData!.gender == 1 ? AppVietnameseStrings.female : AppVietnameseStrings.male),
               buildDetailRow(
-                  'Status',
+                  AppVietnameseStrings.statusLabel,
                   orderData!.status == '0'
-                      ? 'Chờ thanh toán'
+                      ? AppVietnameseStrings.statusPendingPayment
                       : orderData!.status == '1'
-                          ? 'Đã thanh toán'
+                          ? AppVietnameseStrings.statusPaid
                           : orderData!.status == '2'
-                              ? 'Thanh toán thất bại'
-                              : 'Không xác định'),
-              buildDetailRow('Payment Method', orderData!.paymentMethod),
-              buildDetailRow('Ref ID', orderData!.orderCode),
+                              ? AppVietnameseStrings.statusPaymentFailed
+                              : AppVietnameseStrings.statusUnknown),
+              buildDetailRow(AppVietnameseStrings.paymentMethodLabel, orderData!.paymentMethod),
+              buildDetailRow(AppVietnameseStrings.refIdLabel, orderData!.orderCode),
             ]),
-            // Ticket details section
-            // buildSectionCard('Ticket Details', [
-            //   ...orderData!.tickets.map((ticket) => buildDetailRow(
-            //         ticket.ticketType,
-            //         '${ticket.quantity} x ${NumberFormat('#,###').format(ticket.price)}đ',
-            //       )),
-            //   Divider(thickness: 1, color: Colors.grey[300]),
-            //   buildDetailRow('Total Amount',
-            //       '${NumberFormat('#,###').format(orderData!.totalAmount)}đ'),
-            // ]),
 
-            buildSectionCard('Ticket Details', [
-              ...orderData!.tickets.map((ticket) => InkWell(
-                    onTap: () {
-                      if (ticket.qrCode != null &&
-                          ticket.qrCode!.isNotEmpty) {
-                        showImageQRDialog(context, ticket.qrCode!);
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Không có mã QR cho vé này')),
-                        );
-                      }
-                    },
-                    child: buildDetailRow(
-                      ticket.ticketType,
-                      '${ticket.quantity} x ${NumberFormat('#,###').format(ticket.price)}đ',
-                    ),
+            buildSectionCard(AppVietnameseStrings.ticketDetailsSectionTitle, [
+              ...orderData!.tickets.map((ticket) => Row(
+                    children: [
+                      Expanded(
+                        child: buildDetailRow(
+                          ticket.ticketType,
+                          '${ticket.quantity} x ${NumberFormat('#,###').format(ticket.price)}đ',
+                        ),
+                      ),
+                      if (ticket.qrCode != null && ticket.qrCode!.isNotEmpty)
+                        IconButton(
+                          icon: const Icon(Icons.qr_code, color: Colors.blue),
+                          onPressed: () {
+                            showImageQRDialog(context, ticket.qrCode!);
+                          },
+                        )
+                      else
+                        IconButton(
+                          icon: const Icon(Icons.qr_code, color: Colors.grey),
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text(AppVietnameseStrings.noQrCodeForTicket)),
+                            );
+                          },
+                        ),
+                    ],
                   )),
               Divider(thickness: 1, color: Colors.grey[300]),
-              buildDetailRow('Total Amount',
+              buildDetailRow(AppVietnameseStrings.totalAmountLabel,
                   '${NumberFormat('#,###').format(orderData!.totalAmount)}đ'),
             ]),
 
@@ -222,11 +222,11 @@ class _TicketPageState extends State<TicketPage> {
                           onPressed: () {
                             // TODO: Xử lý share
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Chia sẻ sự kiện")),
+                              const SnackBar(content: Text(AppVietnameseStrings.shareEventButton)),
                             );
                           },
                           icon: const Icon(Icons.share),
-                          label: const Text("Share Event"),
+                          label: const Text(AppVietnameseStrings.shareEventButton),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blueAccent,
                             foregroundColor: Colors.white,
@@ -239,11 +239,11 @@ class _TicketPageState extends State<TicketPage> {
                           onPressed: () {
                             // TODO: Xử lý tải xuống
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Đã tải vé")),
+                              const SnackBar(content: Text(AppVietnameseStrings.downloadButton)),
                             );
                           },
                           icon: const Icon(Icons.download),
-                          label: const Text("Download"),
+                          label: const Text(AppVietnameseStrings.downloadButton),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green,
                             foregroundColor: Colors.white,
@@ -288,17 +288,17 @@ class _TicketPageState extends State<TicketPage> {
                                 ),
                               );
                             } else {
-                              showToast("Không tạo được URL thanh toán");
+                              showToast(AppVietnameseStrings.errorCreatingPaymentUrl);
                             }
                           } catch (e) {
                             Navigator.pop(
                                 context); // 👈 Đóng loading dialog nếu lỗi
-                            showToast("Đã xảy ra lỗi khi tạo URL thanh toán");
-                            print("Lỗi: $e");
+                            showToast(AppVietnameseStrings.errorOccurredCreatingPaymentUrl);
+                            print("${AppVietnameseStrings.errorPrefix}: $e");
                           }
                         },
                         icon: const Icon(Icons.payment),
-                        label: const Text("Thanh toán"),
+                        label: const Text(AppVietnameseStrings.checkOutButton),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.redAccent,
                           foregroundColor: Colors.white,
@@ -436,7 +436,7 @@ void showImageQRDialog(BuildContext context, String imageUrl) {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Đóng'),
+          child: const Text(AppVietnameseStrings.closeButton),
         ),
       ],
     ),

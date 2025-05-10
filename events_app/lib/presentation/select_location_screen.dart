@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../app_theme.dart';
+import '../src/localization/app_vietnamese_strings.dart';
 import '../widgets.dart';
 import 'dashboard_screen.dart';
 
@@ -33,7 +34,7 @@ class SelectLocationScreen extends StatelessWidget {
                   children: [
                     _buildLocationSelectionRow(context),
                     SizedBox(height: 34.h),
-                    Text("Most Searched",
+                    Text(AppVietnameseStrings.mostSearchedTitle,
                         style: CustomTextStyles.bodySmallGray600_1),
                     SizedBox(height: 20.h),
                     _buildLocationText(context, "Hà Nội"),
@@ -60,10 +61,10 @@ class SelectLocationScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Hello!", style: theme.textTheme.headlineSmall),
+          Text(AppVietnameseStrings.helloGreeting, style: theme.textTheme.headlineSmall),
           SizedBox(height: 10.h),
           Text(
-            "Let's find your next event. \nChoose a location.",
+            AppVietnameseStrings.findYourNextEventMessage,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: CustomTextStyles.bodyLargeGray600.copyWith(height: 1.5),
@@ -78,7 +79,7 @@ class SelectLocationScreen extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 12.h),
       child: CustomSearchView(
         controller: searchController,
-        hintText: "Select location....",
+        hintText: AppVietnameseStrings.selectLocationHint,
         alignment: Alignment.center,
         contentPadding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 12.h),
       ),

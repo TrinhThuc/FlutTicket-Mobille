@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../service/api_service.dart';
+import '../src/localization/app_vietnamese_strings.dart';
 
 class FilterScreen extends StatefulWidget {
   final Map<String, dynamic>? initialFilters;
@@ -107,11 +108,11 @@ class _FilterScreenState extends State<FilterScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Bộ lọc'),
+        title: const Text(AppVietnameseStrings.filtersTitle),
         actions: [
           TextButton(
             onPressed: _applyFilters,
-            child: const Text('Áp dụng'),
+            child: const Text(AppVietnameseStrings.applyButton),
           ),
         ],
       ),
@@ -123,13 +124,13 @@ class _FilterScreenState extends State<FilterScreen> {
             DropdownButtonFormField<int>(
               value: _eventTypes.any((type) => type['id'] == _selectedEventTypeId) ? _selectedEventTypeId : null,
               decoration: const InputDecoration(
-                labelText: 'Loại sự kiện',
+                labelText: AppVietnameseStrings.eventTypeLabel,
                 border: OutlineInputBorder(),
               ),
               items: [
                 const DropdownMenuItem<int>(
                   value: null,
-                  child: Text('Tất cả loại sự kiện'),
+                  child: Text(AppVietnameseStrings.allEventTypes),
                 ),
                 ..._eventTypes.map((type) {
                   return DropdownMenuItem<int>(
@@ -148,13 +149,13 @@ class _FilterScreenState extends State<FilterScreen> {
             TextFormField(
               controller: _locationController,
               decoration: const InputDecoration(
-                labelText: 'Địa điểm *',
+                labelText: AppVietnameseStrings.locationFilterLabel,
                 border: OutlineInputBorder(),
-                hintText: 'Nhập địa điểm',
+                hintText: AppVietnameseStrings.enterLocationHint,
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Vui lòng nhập địa điểm';
+                  return AppVietnameseStrings.plsEnterLocation;
                 }
                 return null;
               },
@@ -167,8 +168,8 @@ class _FilterScreenState extends State<FilterScreen> {
                     onPressed: () => _selectDate(context, true),
                     child: Text(
                       _startDate != null
-                          ? 'Ngày bắt đầu: ${DateFormat('dd/MM/yyyy').format(_startDate!)}'
-                          : 'Chọn ngày bắt đầu',
+                          ? '${AppVietnameseStrings.startDateFilterPrefix}${DateFormat('dd/MM/yyyy').format(_startDate!)}'
+                          : AppVietnameseStrings.selectStartDateButton,
                     ),
                   ),
                 ),
@@ -177,8 +178,8 @@ class _FilterScreenState extends State<FilterScreen> {
                     onPressed: () => _selectDate(context, false),
                     child: Text(
                       _endDate != null
-                          ? 'Ngày kết thúc: ${DateFormat('dd/MM/yyyy').format(_endDate!)}'
-                          : 'Chọn ngày kết thúc',
+                          ? '${AppVietnameseStrings.endDateFilterPrefix}${DateFormat('dd/MM/yyyy').format(_endDate!)}'
+                          : AppVietnameseStrings.selectEndDateButton,
                     ),
                   ),
                 ),
@@ -188,9 +189,9 @@ class _FilterScreenState extends State<FilterScreen> {
             TextFormField(
               controller: _searchContentController,
               decoration: const InputDecoration(
-                labelText: 'Nội dung tìm kiếm',
+                labelText: AppVietnameseStrings.searchContentLabel,
                 border: OutlineInputBorder(),
-                hintText: 'Nhập nội dung tìm kiếm',
+                hintText: AppVietnameseStrings.enterSearchContentHint,
               ),
             ),
             const SizedBox(height: 16),

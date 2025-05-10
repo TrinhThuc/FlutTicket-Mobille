@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../service/api_service.dart';
+import '../src/localization/app_vietnamese_strings.dart';
 import 'loginScreen.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -21,7 +22,7 @@ class _SignupscreenState extends State<SignUpScreen> {
     if (_passwordController.text != _confirmPasswordController.text) {
       Navigator.of(context).pop(); // Đóng dialog nếu đang mở
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Mật khẩu xác nhận không khớp')),
+        const SnackBar(content: Text(AppVietnameseStrings.passwordsDoNotMatch)),
       );
       return;
     }
@@ -68,7 +69,7 @@ class _SignupscreenState extends State<SignUpScreen> {
       if (mounted) {
         Navigator.of(context, rootNavigator: true).pop(); // Đóng dialog trong trường hợp exception
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Có lỗi xảy ra, vui lòng thử lại')),
+          const SnackBar(content: Text(AppVietnameseStrings.errorOccurredPleaseTryAgain)),
         );
       }
     }
@@ -98,7 +99,7 @@ class _SignupscreenState extends State<SignUpScreen> {
                     ),
                     const SizedBox(height: 26),
                     const Text(
-                      'Create new account',
+                      AppVietnameseStrings.createNewAccount,
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w600,
@@ -114,27 +115,27 @@ class _SignupscreenState extends State<SignUpScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildInputField(
-                      label: 'Full name',
-                      hint: 'Enter your name',
+                      label: AppVietnameseStrings.fullName,
+                      hint: AppVietnameseStrings.enterYourNameHint,
                       controller: _nameController,
                     ),
                     const SizedBox(height: 30),
                     _buildInputField(
-                      label: 'Email adress',
-                      hint: 'name@example.com',
+                      label: AppVietnameseStrings.emailAddress,
+                      hint: AppVietnameseStrings.emailHint,
                       controller: _emailController,
                     ),
                     const SizedBox(height: 30),
                     _buildInputField(
-                      label: 'Create password',
-                      hint: 'Enter your password',
+                      label: AppVietnameseStrings.createPassword,
+                      hint: AppVietnameseStrings.enterYourPasswordHint,
                       controller: _passwordController,
                       isPassword: true,
                     ),
                     const SizedBox(height: 30),
                     _buildInputField(
-                      label: 'Repet password',
-                      hint: 'Repeat new passoword',
+                      label: AppVietnameseStrings.repeatPassword,
+                      hint: AppVietnameseStrings.repeatNewPasswordHint,
                       controller: _confirmPasswordController,
                       isPassword: true,
                     ),
@@ -157,7 +158,7 @@ class _SignupscreenState extends State<SignUpScreen> {
                       ),
                     ),
                     child: const Text(
-                      'Sign up',
+                      AppVietnameseStrings.signUp,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,

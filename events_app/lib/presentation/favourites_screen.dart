@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../service/api_service.dart';
+import '../src/localization/app_vietnamese_strings.dart';
 import '../widgets.dart';
 import 'single_event_screen.dart';
 
@@ -36,7 +37,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
         favEvents = response['data'];
       });
     } else {
-      print('Lỗi: Không nhận được dữ liệu favourite events');
+      print(AppVietnameseStrings.errorNoFavoriteEvents);
     }
   }
    Future<void> _onRefresh() async {
@@ -79,12 +80,12 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
               ),
             ),
             SizedBox(height: 44.h),
-            Text('Chưa có mục yêu thích nào', style: theme.textTheme.titleMedium),
+            Text(AppVietnameseStrings.noFavoritesYetTitle, style: theme.textTheme.titleMedium),
             SizedBox(height: 8.h),
             SizedBox(
               width: double.maxFinite,
               child: Text(
-                "Hãy đảm bảo bạn đã đăng nhập để lưu các sự kiện yêu thích của mình",
+                AppVietnameseStrings.loginToSaveFavoritesMessage,
                 maxLines: 2,
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
@@ -94,7 +95,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
             SizedBox(height: 42.h),
             CustomElevatedButton(
               onPressed: () {},
-              text: 'Thêm vào yêu thích',
+              text: AppVietnameseStrings.addToFavoritesButton,
               buttonStyle: CustomButtonStyles.fillGreenA700,
             ),
           ],
@@ -121,7 +122,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                     margin: EdgeInsets.symmetric(horizontal: 6.h),
                     child: Row(
                       children: [
-                        Text("Yêu thích", style: theme.textTheme.titleLarge),
+                        Text(AppVietnameseStrings.favoritesTitle, style: theme.textTheme.titleLarge),
                         Container(
                           width: 26.h,
                           height: 26.h,
@@ -225,7 +226,7 @@ class _FavouritesItemWidgetState extends State<FavouritesItemWidget> {
                   ),
                   SizedBox(height: 4.h),
                   Text(
-                    widget.event['name'] ?? 'Tên sự kiện không xác định',
+                    widget.event['name'] ?? AppVietnameseStrings.eventNameUnavailable,
                     style: CustomTextStyles.titleMediumGray900_1,
                   ),
                   SizedBox(height: 10.h),
@@ -239,7 +240,7 @@ class _FavouritesItemWidgetState extends State<FavouritesItemWidget> {
                           Expanded(
                             child: Text(
                               widget.event['location'] ??
-                                  'Địa điểm không xác định',
+                                  AppVietnameseStrings.locationUnavailable,
                               style: theme.textTheme.bodySmall,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,

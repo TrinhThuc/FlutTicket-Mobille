@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 
 import '../app_theme.dart';
 import '../service/api_service.dart';
+import '../src/localization/app_vietnamese_strings.dart';
 import 'buy_ticket_screen.dart';
 
 class EventPage extends StatefulWidget {
@@ -41,7 +42,7 @@ class _EventPageState extends State<EventPage> {
         eventDetails = response['data'] ?? {};
       });
     } else {
-      print('Dữ liệu sự kiện rỗng hoặc không hợp lệ');
+      print(AppVietnameseStrings.eventDataEmptyOrInvalid);
     }
   }
 
@@ -58,7 +59,7 @@ class _EventPageState extends State<EventPage> {
             Padding(
               padding: EdgeInsets.only(left: 24.h),
               child: Text(
-                eventDetails['name'] ?? 'Tên sự kiện không có',
+                eventDetails['name'] ?? AppVietnameseStrings.eventNameUnavailable,
                 style: CustomTextStyles.headlineSmallBlack900,
               ),
             ),
@@ -75,7 +76,7 @@ class _EventPageState extends State<EventPage> {
                   SizedBox(width: 8.h),
                   Expanded(
                     child: Text(
-                      eventDetails['location'] ?? 'Địa điểm không có',
+                      eventDetails['location'] ?? AppVietnameseStrings.locationUnavailable,
                       style: CustomTextStyles.titleMediumGray900_1
                           .copyWith(color: appTheme.gray900),
                       softWrap: true,
@@ -88,7 +89,7 @@ class _EventPageState extends State<EventPage> {
             Padding(
               padding: EdgeInsets.only(left: 26.h),
               child: Text(
-                'Xem trên bản đồ',
+                AppVietnameseStrings.viewOnMap,
                 style: theme.textTheme.labelLarge,
               ),
             ),
@@ -102,7 +103,7 @@ class _EventPageState extends State<EventPage> {
                   const SizedBox(width: 8),
                   Padding(
                     padding: EdgeInsets.only(left: 10.h),
-                    child: Text('Chính sách hoàn tiền',
+                    child: Text(AppVietnameseStrings.refundPolicyTitle,
                         style: CustomTextStyles.titleMediumGray900_1
                             .copyWith(color: appTheme.gray900)),
                   ),
@@ -113,14 +114,14 @@ class _EventPageState extends State<EventPage> {
             Padding(
               padding: EdgeInsets.only(left: 26.h),
               child: Text(
-                'Phí Flut không hoàn lại.',
+                AppVietnameseStrings.flutFeeNonRefundable,
                 style: theme.textTheme.bodySmall,
               ),
             ),
             SizedBox(height: 30.h),
             Padding(
               padding: EdgeInsets.only(left: 24.h),
-              child: Text('Giới thiệu',
+              child: Text(AppVietnameseStrings.aboutSectionTitle,
                   style: CustomTextStyles.titleMediumGray900_1
                       .copyWith(color: appTheme.gray900)),
             ),
@@ -128,7 +129,7 @@ class _EventPageState extends State<EventPage> {
             Padding(
               padding: EdgeInsets.only(left: 24.h),
               child: Text(
-                eventDetails['description'] ?? 'Mô tả không có',
+                eventDetails['description'] ?? AppVietnameseStrings.descriptionUnavailable,
                 style: theme.textTheme.bodySmall!.copyWith(height: 1.6),
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
@@ -247,7 +248,7 @@ class _EventPageState extends State<EventPage> {
           ),
           SizedBox(height: 4.h),
           Text(
-            'Thêm vào lịch',
+            AppVietnameseStrings.addToCalendar,
             style: theme.textTheme.labelLarge,
           ),
         ],
@@ -279,7 +280,7 @@ class _EventPageState extends State<EventPage> {
           CustomElevatedButton(
             height: 44.h,
             width: 188.h,
-            text: "Mua vé",
+            text: AppVietnameseStrings.getTicketsButton,
             buttonStyle: ElevatedButton.styleFrom(
               backgroundColor: appTheme.greenA700,
               shape: RoundedRectangleBorder(

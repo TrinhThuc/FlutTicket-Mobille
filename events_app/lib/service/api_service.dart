@@ -9,7 +9,7 @@ class ApiService {
   static Future<dynamic> requestApi(
       String endpoint, Map<String, dynamic> body,
       {bool useAuth = false}) async {
-    final url = 'https://39e7-14-224-155-46.ngrok-free.app/apis/$endpoint';
+    final url = 'https://a684-14-224-155-46.ngrok-free.app/apis/$endpoint';
 
     Map<String, String> headers = {
       'Content-Type': 'application/json',
@@ -45,7 +45,7 @@ class ApiService {
 
   static Future<dynamic> requestGetApi(String endpoint, 
       {bool useAuth = true}) async {
-    final url = 'https://39e7-14-224-155-46.ngrok-free.app/apis/$endpoint';
+    final url = 'https://a684-14-224-155-46.ngrok-free.app/apis/$endpoint';
 
     Map<String, String> headers = {
       'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ class ApiService {
   Future<Map<String, dynamic>?> requestLogin(
       String username, String password) async {
     final url =
-        Uri.parse('https://39e7-14-224-155-46.ngrok-free.app/apis/oauth/token');
+        Uri.parse('https://a684-14-224-155-46.ngrok-free.app/apis/oauth/token');
 
     // Tạo request dạng Multipart để gửi dữ liệu form-data
     final request = http.MultipartRequest('POST', url)
@@ -113,7 +113,7 @@ class ApiService {
 
   Future<Map<String, dynamic>?> updateAvatar(String filePath) async {
     final url = Uri.parse(
-        'https://39e7-14-224-155-46.ngrok-free.app/apis/oauth/user/update-avatar');
+        'https://a684-14-224-155-46.ngrok-free.app/apis/oauth/user/update-avatar');
 
     try {
       // Lấy access token từ SharedPreferences
@@ -153,7 +153,7 @@ class ApiService {
  static Future<dynamic> requestPostOder(
     String endpoint, Map<String, dynamic> body,
     {bool useAuth = false}) async {
-  final url = 'https://39e7-14-224-155-46.ngrok-free.app/apis/$endpoint';
+  final url = 'https://a684-14-224-155-46.ngrok-free.app/apis/$endpoint';
 
   Map<String, String> headers = {
     'Accept-Language': 'vi-VN',
@@ -192,7 +192,7 @@ class ApiService {
   // hàm get oder
   static Future<dynamic> requestGetOder(String endpoint,
       {bool useAuth = true}) async {
-    final url = 'https://39e7-14-224-155-46.ngrok-free.app/apis/$endpoint';
+    final url = 'https://a684-14-224-155-46.ngrok-free.app/apis/$endpoint';
 
     Map<String, String> headers = {
       'Content-Type': 'application/json',

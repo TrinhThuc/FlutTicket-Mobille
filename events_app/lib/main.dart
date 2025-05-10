@@ -5,6 +5,7 @@ import 'app_utils.dart';
 import 'presentation/dashboard_screen.dart';
 import 'presentation/loginScreen.dart';
 import 'presentation/signUpScreen.dart';
+import 'src/localization/app_vietnamese_strings.dart';
 
 // void main() {
 //   runApp(const MyApp());
@@ -102,7 +103,7 @@ class _StartScreenState extends State<StartScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Welcome!',
+                      AppVietnameseStrings.welcome,
                       style: TextStyle(
                         fontFamily: 'Inter',
                         fontSize: 32,
@@ -113,7 +114,7 @@ class _StartScreenState extends State<StartScreen> {
                     ),
                     SizedBox(height: 10),
                     Text(
-                      'Sing in or creat a new account',
+                      AppVietnameseStrings.signInOrCreateAccount,
                       style: TextStyle(
                         fontFamily: 'Inter',
                         fontSize: 16,
@@ -158,7 +159,7 @@ class _StartScreenState extends State<StartScreen> {
                         ),
                       ),
                       child: const Text(
-                        'Sign in',
+                        AppVietnameseStrings.signIn,
                         style: TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 16,
@@ -184,7 +185,7 @@ class _StartScreenState extends State<StartScreen> {
                         ),
                       ),
                       child: const Text(
-                        'No account yet? Sign up',
+                        AppVietnameseStrings.noAccountSignUp,
                         style: TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 16,
