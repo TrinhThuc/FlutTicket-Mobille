@@ -9,7 +9,6 @@ import '../widgets.dart';
 import 'single_event_screen.dart';
 
 class FavouritesScreen extends StatefulWidget {
-
   const FavouritesScreen({super.key});
 
   @override
@@ -40,7 +39,8 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
       print(AppVietnameseStrings.errorNoFavoriteEvents);
     }
   }
-   Future<void> _onRefresh() async {
+
+  Future<void> _onRefresh() async {
     await _getFavEvents();
   }
 
@@ -51,8 +51,9 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
-          child:
-              favEvents.isEmpty ? _buildEmptyFavourites() : _buildFavoriteItem(),
+          child: favEvents.isEmpty
+              ? _buildEmptyFavourites()
+              : _buildFavoriteItem(),
         ),
       ),
     );
@@ -61,47 +62,49 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
   Widget _buildEmptyFavourites() {
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(), // bắt buộc scroll được
-    children: [
-       Container(
-        width: double.maxFinite,
-        padding: EdgeInsets.all(24.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(height: 24.h),
-            SizedBox(
-              height: 86.h,
-              child: CustomImageView(
-                imagePath: 'assets/images/empty_favourites.png',
+      children: [
+        Container(
+          width: double.maxFinite,
+          padding: EdgeInsets.all(24.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: 24.h),
+              SizedBox(
+                height: 86.h,
+                child: CustomImageView(
+                  imagePath: 'assets/images/empty_favourites.png',
+                  width: double.maxFinite,
+                  fit: BoxFit.fitHeight,
+                  height: 80.h,
+                ),
+              ),
+              SizedBox(height: 44.h),
+              Text(AppVietnameseStrings.noFavoritesYetTitle,
+                  style: theme.textTheme.titleMedium),
+              SizedBox(height: 8.h),
+              SizedBox(
                 width: double.maxFinite,
-                fit: BoxFit.fitHeight,
-                height: 80.h,
+                child: Text(
+                  AppVietnameseStrings.loginToSaveFavoritesMessage,
+                  maxLines: 2,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  style:
+                      CustomTextStyles.bodyLargeBlack900.copyWith(height: 1.5),
+                ),
               ),
-            ),
-            SizedBox(height: 44.h),
-            Text(AppVietnameseStrings.noFavoritesYetTitle, style: theme.textTheme.titleMedium),
-            SizedBox(height: 8.h),
-            SizedBox(
-              width: double.maxFinite,
-              child: Text(
-                AppVietnameseStrings.loginToSaveFavoritesMessage,
-                maxLines: 2,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-                style: CustomTextStyles.bodyLargeBlack900.copyWith(height: 1.5),
+              SizedBox(height: 42.h),
+              CustomElevatedButton(
+                onPressed: () {},
+                text: AppVietnameseStrings.addToFavoritesButton,
+                buttonStyle: CustomButtonStyles.fillGreenA700,
               ),
-            ),
-            SizedBox(height: 42.h),
-            CustomElevatedButton(
-              onPressed: () {},
-              text: AppVietnameseStrings.addToFavoritesButton,
-              buttonStyle: CustomButtonStyles.fillGreenA700,
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    ],
+      ],
     );
   }
 
@@ -122,7 +125,8 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                     margin: EdgeInsets.symmetric(horizontal: 6.h),
                     child: Row(
                       children: [
-                        Text(AppVietnameseStrings.favoritesTitle, style: theme.textTheme.titleLarge),
+                        Text(AppVietnameseStrings.favoritesTitle,
+                            style: theme.textTheme.titleLarge),
                         Container(
                           width: 26.h,
                           height: 26.h,
@@ -173,12 +177,8 @@ class FavouritesItemWidget extends StatefulWidget {
   final dynamic event;
   final VoidCallback onChanged;
 
-
-  const FavouritesItemWidget({
-    super.key,
-    required this.event,
-    required this.onChanged
-  });
+  const FavouritesItemWidget(
+      {super.key, required this.event, required this.onChanged});
 
   @override
   State<FavouritesItemWidget> createState() => _FavouritesItemWidgetState();
@@ -218,36 +218,35 @@ class _FavouritesItemWidgetState extends State<FavouritesItemWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                     DateFormat('dd/MM/yyyy HH:mm').format(
-    DateTime.parse(widget.event['startTime'] ?? DateTime.now().toIso8601String())
-  ),
+                    DateFormat('dd/MM/yyyy HH:mm').format(DateTime.parse(
+                        widget.event['startTime'] ??
+                            DateTime.now().toIso8601String())),
                     // widget.event['startTime'] ?? 'Ngày không xác định',
                     style: theme.textTheme.bodySmall,
                   ),
                   SizedBox(height: 4.h),
                   Text(
-                    widget.event['name'] ?? AppVietnameseStrings.eventNameUnavailable,
+                    widget.event['name'] ??
+                        AppVietnameseStrings.eventNameUnavailable,
                     style: CustomTextStyles.titleMediumGray900_1,
                   ),
                   SizedBox(height: 10.h),
                   SizedBox(
                     width: double.maxFinite,
-                    child: Flexible(
-                      child: Row(
-                        children: [
-                          Icon(Icons.location_on, size: 16.h),
-                          SizedBox(width: 4.h),
-                          Expanded(
-                            child: Text(
-                              widget.event['location'] ??
-                                  AppVietnameseStrings.locationUnavailable,
-                              style: theme.textTheme.bodySmall,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                            ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.location_on, size: 16.h),
+                        SizedBox(width: 4.h),
+                        Expanded(
+                          child: Text(
+                            widget.event['location'] ??
+                                AppVietnameseStrings.locationUnavailable,
+                            style: theme.textTheme.bodySmall,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -256,22 +255,19 @@ class _FavouritesItemWidgetState extends State<FavouritesItemWidget> {
           ),
           IconButton(
             icon: Icon(
-                   Icons.favorite,
-              color:  Colors.red,
+              Icons.favorite,
+              color: Colors.red,
               size: 18.h,
             ),
             onPressed: () {
-
               ApiService.requestApi(
-                     'event/private/remove-favourite-event/${widget.event['id']}',
+                'event/private/remove-favourite-event/${widget.event['id']}',
                 {},
                 useAuth: true,
               ).then((response) {
                 if (response != null) {
                   widget.onChanged(); // gọi callback để refresh danh sách fav
-                }
-
-                else {
+                } else {
                   print('Lỗi: Không thể xóa sự kiện khỏi danh sách yêu thích');
                 }
               });

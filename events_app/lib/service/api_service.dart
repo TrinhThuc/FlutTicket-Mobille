@@ -6,10 +6,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
   // Hàm để gửi request API
-  static Future<dynamic> requestApi(
-      String endpoint, Map<String, dynamic> body,
+  static Future<dynamic> requestApi(String endpoint, dynamic body,
       {bool useAuth = false}) async {
-    final url = 'https://a684-14-224-155-46.ngrok-free.app/apis/$endpoint';
+    final url = 'http://192.168.0.104:8301/$endpoint';
 
     Map<String, String> headers = {
       'Content-Type': 'application/json',
@@ -43,9 +42,9 @@ class ApiService {
     }
   }
 
-  static Future<dynamic> requestGetApi(String endpoint, 
+  static Future<dynamic> requestGetApi(String endpoint,
       {bool useAuth = true}) async {
-    final url = 'https://a684-14-224-155-46.ngrok-free.app/apis/$endpoint';
+    final url = 'http://192.168.0.104:8301/$endpoint';
 
     Map<String, String> headers = {
       'Content-Type': 'application/json',
@@ -78,8 +77,7 @@ class ApiService {
 
   Future<Map<String, dynamic>?> requestLogin(
       String username, String password) async {
-    final url =
-        Uri.parse('https://a684-14-224-155-46.ngrok-free.app/apis/oauth/token');
+    final url = Uri.parse('http://192.168.0.104:8301/oauth/token');
 
     // Tạo request dạng Multipart để gửi dữ liệu form-data
     final request = http.MultipartRequest('POST', url)
@@ -112,8 +110,7 @@ class ApiService {
   }
 
   Future<Map<String, dynamic>?> updateAvatar(String filePath) async {
-    final url = Uri.parse(
-        'https://a684-14-224-155-46.ngrok-free.app/apis/oauth/user/update-avatar');
+    final url = Uri.parse('http://192.168.0.104:8301/oauth/user/update-avatar');
 
     try {
       // Lấy access token từ SharedPreferences
@@ -150,49 +147,48 @@ class ApiService {
     return null;
   }
 
- static Future<dynamic> requestPostOder(
-    String endpoint, Map<String, dynamic> body,
-    {bool useAuth = false}) async {
-  final url = 'https://a684-14-224-155-46.ngrok-free.app/apis/$endpoint';
+  static Future<dynamic> requestPostOder(
+      String endpoint, Map<String, dynamic> body,
+      {bool useAuth = false}) async {
+    final url = 'http://192.168.0.104:8301/$endpoint';
 
-  Map<String, String> headers = {
-    'Accept-Language': 'vi-VN',
-    'Content-Type': 'application/json',
-  };
+    Map<String, String> headers = {
+      'Accept-Language': 'vi-VN',
+      'Content-Type': 'application/json',
+    };
 
-  if (useAuth) {
-    final prefs = await SharedPreferences.getInstance();
-    String? accessToken = prefs.getString('access_token');
-    if (accessToken == null || accessToken.isEmpty) {
-      print('Error: No access token found');
-      return {"error": "Unauthorized"};
+    if (useAuth) {
+      final prefs = await SharedPreferences.getInstance();
+      String? accessToken = prefs.getString('access_token');
+      if (accessToken == null || accessToken.isEmpty) {
+        print('Error: No access token found');
+        return {"error": "Unauthorized"};
+      }
+      headers['Authorization'] = 'Bearer $accessToken';
     }
-    headers['Authorization'] = 'Bearer $accessToken';
-  }
-  
-  try {
-    final response = await http.post(
-      Uri.parse(url),
-      headers: headers,
-      body: json.encode(body),
-    );
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    } else {
-      // 🔥 Quan trọng: cần return lỗi luôn nếu không phải 200
-      return json.decode(response.body);
-    }
-  } catch (e) {
-    print('Error connecting to API: $e');
-    return {"error": "Connection failed", "exception": e.toString()};
-  }
-}
 
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: json.encode(body),
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        // 🔥 Quan trọng: cần return lỗi luôn nếu không phải 200
+        return json.decode(response.body);
+      }
+    } catch (e) {
+      print('Error connecting to API: $e');
+      return {"error": "Connection failed", "exception": e.toString()};
+    }
+  }
 
   // hàm get oder
   static Future<dynamic> requestGetOder(String endpoint,
       {bool useAuth = true}) async {
-    final url = 'https://a684-14-224-155-46.ngrok-free.app/apis/$endpoint';
+    final url = 'http://192.168.0.104:8301/$endpoint';
 
     Map<String, String> headers = {
       'Content-Type': 'application/json',
@@ -221,5 +217,4 @@ class ApiService {
       print('Error connecting to API: $e');
     }
   }
-
 }

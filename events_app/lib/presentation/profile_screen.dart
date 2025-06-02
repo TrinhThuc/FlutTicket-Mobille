@@ -45,7 +45,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SizedBox(
@@ -72,7 +71,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               height: 60,
                               fit: BoxFit.cover,
                               errorBuilder: (_, __, ___) => CustomImageView(
-                                imagePath: 'assets/images/No-Image.png',
+                                imagePath: 'assets/images/no_avatar.png',
                                 width: double.maxFinite,
                                 height: 120.h,
                                 fit: BoxFit.cover,
@@ -86,11 +85,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         context);
 
                                 if (pickedFile.isEmpty) {
-                                  debugPrint(AppVietnameseStrings.errorNoFileSelected);
+                                  debugPrint(
+                                      AppVietnameseStrings.errorNoFileSelected);
                                   return;
                                 }
 
-                                debugPrint('${AppVietnameseStrings.pickedFilePathDebug}$pickedFile');
+                                debugPrint(
+                                    '${AppVietnameseStrings.pickedFilePathDebug}$pickedFile');
 
                                 final apiService = ApiService();
                                 final Map<String, dynamic>? response =
@@ -103,8 +104,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     avatar = response['data']['avatar'];
                                   });
                                 } else {
-                                  debugPrint(
-                                      AppVietnameseStrings.errorFailedToUploadImage);
+                                  debugPrint(AppVietnameseStrings
+                                      .errorFailedToUploadImage);
                                 }
                               },
                               height: 48.h,
@@ -208,7 +209,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   style: CustomTextStyles.bodySmallBlack900),
             ),
           ),
-          Text('Barcelona', style: CustomTextStyles.bodySmallBlack900),
+          Text('Hà Nội', style: CustomTextStyles.bodySmallBlack900),
         ],
       ),
     );

@@ -144,6 +144,7 @@ class AppVietnameseStrings {
   static const String plsFillAllInfoToast = 'Vui lòng điền đầy đủ thông tin';
   static const String processingToast = 'Đang xử lý...';
   static const String bookingSuccessfulToast = 'Đặt vé thành công!';
+  static const String bookingSuccessfulAnDirectPaymentToast = 'Đặt vé thành công, đang chuyển hướng đến trang thanh toán';
   static const String bookingFailedToastPrefix = 'Đặt vé thất bại: ';
   static const String bookingFailedToastNoPaymentUrl = 'Không thể tạo URL thanh toán';
   static const String bookingFailedToastNoOrderId = 'Không có ID đơn hàng hợp lệ';

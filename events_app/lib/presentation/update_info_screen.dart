@@ -8,6 +8,23 @@ import 'package:flutter/material.dart';
 
 import '../service/api_service.dart';
 import '../src/localization/app_vietnamese_strings.dart';
+import 'profile_screen.dart';
+
+void hideLoadingDialog(BuildContext context) {
+  Navigator.of(context, rootNavigator: true).pop();
+}
+
+void showLoadingDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    },
+  );
+}
 
 class UpdateInfoScreen extends StatefulWidget {
   const UpdateInfoScreen({super.key});
@@ -75,121 +92,126 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return  _isLoading
-    ? const Center(child: CircularProgressIndicator())
-    : Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: AppColors.background,
-        elevation: 0,
-        title: Text(
-          AppVietnameseStrings.updateInfoTitle,
-          style: AppStyles.h2.copyWith(color: AppColors.text),
-        ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppValues.padding),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              AppVietnameseStrings.phoneNumberLabel,
-              style: AppStyles.h3.copyWith(color: AppColors.text),
+    return _isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : Scaffold(
+            backgroundColor: AppColors.background,
+            appBar: AppBar(
+              backgroundColor: AppColors.background,
+              elevation: 0,
+              title: Text(
+                AppVietnameseStrings.updateInfoTitle,
+                style: AppStyles.h2.copyWith(color: AppColors.text),
+              ),
+              centerTitle: true,
             ),
-            const SizedBox(height: AppValues.spacing),
-            TextFieldWidget(
-              controller: _phoneController,
-              hintText: AppVietnameseStrings.enterPhoneNumberHint,
-              keyboardType: TextInputType.phone,
-            ),
-            const SizedBox(height: AppValues.spacing * 2),
-            Text(
-              AppVietnameseStrings.fullName,
-              style: AppStyles.h3.copyWith(color: AppColors.text),
-            ),
-            const SizedBox(height: AppValues.spacing),
-            TextFieldWidget(
-              controller: _fullNameController,
-              hintText: AppVietnameseStrings.enterYourNameHint,
-            ),
-            const SizedBox(height: AppValues.spacing * 2),
-            Text(
-              AppVietnameseStrings.addressLabel,
-              style: AppStyles.h3.copyWith(color: AppColors.text),
-            ),
-            const SizedBox(height: AppValues.spacing),
-            TextFieldWidget(
-              controller: _locationController,
-              hintText: AppVietnameseStrings.enterAddressHint,
-            ),
-            const SizedBox(height: AppValues.spacing * 2),
-            Text(
-              AppVietnameseStrings.genderLabel,
-              style: AppStyles.h3.copyWith(color: AppColors.text),
-            ),
-            const SizedBox(height: AppValues.spacing),
-            Row(
-              children: [
-                Expanded(
-                  child: RadioListTile<int>(
-                    title: const Text(AppVietnameseStrings.male, style: AppStyles.h4),
-                    value: 0,
-                    groupValue: _selectedGender ?? 0,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedGender = value ?? _selectedGender;
-                      });
-                    },
+            body: SingleChildScrollView(
+              padding: const EdgeInsets.all(AppValues.padding),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    AppVietnameseStrings.phoneNumberLabel,
+                    style: AppStyles.h3.copyWith(color: AppColors.text),
                   ),
-                ),
-                Expanded(
-                  child: RadioListTile<int>(
-                    title: const Text(AppVietnameseStrings.female, style: AppStyles.h4),
-                    value: 1,
-                    groupValue: _selectedGender ?? 0,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedGender = value ?? _selectedGender;
-                      });
-                    },
+                  const SizedBox(height: AppValues.spacing),
+                  TextFieldWidget(
+                    controller: _phoneController,
+                    hintText: AppVietnameseStrings.enterPhoneNumberHint,
+                    keyboardType: TextInputType.phone,
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppValues.spacing * 3),
-            ButtonWidget(
-              text: AppVietnameseStrings.updateButton,
-              onPressed: () {
-                final updateData = {
-                  "phone": _phoneController.text,
-                  "fullName": _fullNameController.text,
-                  "location": _locationController.text,
-                  "gender": _selectedGender
-                };
-                print(updateData);
-                ApiService.requestApi('oauth/user/update-info', updateData,
-                        useAuth: true)
-                    .then((response) {
-                  if (response != null &&
-                      response['status']['success'] == true) {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const DashboardScreen(),
+                  const SizedBox(height: AppValues.spacing * 2),
+                  Text(
+                    AppVietnameseStrings.fullName,
+                    style: AppStyles.h3.copyWith(color: AppColors.text),
+                  ),
+                  const SizedBox(height: AppValues.spacing),
+                  TextFieldWidget(
+                    controller: _fullNameController,
+                    hintText: AppVietnameseStrings.enterYourNameHint,
+                  ),
+                  const SizedBox(height: AppValues.spacing * 2),
+                  Text(
+                    AppVietnameseStrings.addressLabel,
+                    style: AppStyles.h3.copyWith(color: AppColors.text),
+                  ),
+                  const SizedBox(height: AppValues.spacing),
+                  TextFieldWidget(
+                    controller: _locationController,
+                    hintText: AppVietnameseStrings.enterAddressHint,
+                  ),
+                  const SizedBox(height: AppValues.spacing * 2),
+                  Text(
+                    AppVietnameseStrings.genderLabel,
+                    style: AppStyles.h3.copyWith(color: AppColors.text),
+                  ),
+                  const SizedBox(height: AppValues.spacing),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: RadioListTile<int>(
+                          title: const Text(AppVietnameseStrings.male,
+                              style: AppStyles.h4),
+                          value: 0,
+                          groupValue: _selectedGender ?? 0,
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedGender = value ?? _selectedGender;
+                            });
+                          },
+                        ),
                       ),
-                    );
-                  } else {
-                    print(AppVietnameseStrings.errorUpdateInfoFailed);
-                  }
-                }).catchError((error) {
-                  print('${AppVietnameseStrings.errorPrefix}: $error');
-                });
-              },
+                      Expanded(
+                        child: RadioListTile<int>(
+                          title: const Text(AppVietnameseStrings.female,
+                              style: AppStyles.h4),
+                          value: 1,
+                          groupValue: _selectedGender ?? 0,
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedGender = value ?? _selectedGender;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppValues.spacing * 3),
+                  ButtonWidget(
+                    text: AppVietnameseStrings.updateButton,
+                    onPressed: () {
+                      final updateData = {
+                        "phone": _phoneController.text,
+                        "fullName": _fullNameController.text,
+                        "location": _locationController.text,
+                        "gender": _selectedGender
+                      };
+                      print(updateData);
+                      showLoadingDialog(context);
+                      ApiService.requestApi(
+                              'oauth/user/update-info', updateData,
+                              useAuth: true)
+                          .then((response) {
+                        if (response != null &&
+                            response['status']['success'] == true) {
+                          hideLoadingDialog(context);
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ProfileScreen(),
+                            ),
+                          );
+                        } else {
+                          print(AppVietnameseStrings.errorUpdateInfoFailed);
+                        }
+                      }).catchError((error) {
+                        print('${AppVietnameseStrings.errorPrefix}: $error');
+                      });
+                    },
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-      ),
-    );
+          );
   }
 }

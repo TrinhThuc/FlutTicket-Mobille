@@ -10,6 +10,7 @@ import '../service/api_service.dart';
 import '../src/localization/app_vietnamese_strings.dart';
 import '../widgets.dart';
 import 'single_event_screen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class HomeScreen extends StatelessWidget {
   final String selectedLocation;
@@ -46,7 +47,7 @@ class EventlistItemWidget extends StatefulWidget {
 class _EventlistItemWidgetState extends State<EventlistItemWidget> {
   bool isProcessing = false;
 
-bool get isFav => widget.favEvents.contains(widget.event['id']);
+  bool get isFav => widget.favEvents.contains(widget.event['id']);
 
   void _toggleFavourite() async {
     if (isProcessing) return;
@@ -74,100 +75,101 @@ bool get isFav => widget.favEvents.contains(widget.event['id']);
   Widget build(BuildContext context) {
     final event = widget.event;
 
-    return  SizedBox(
-        height: 96.h,
-        child: Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            Row(
-              children: [
-                // Hiển thị hình ảnh
-                Image.network(
-                  'http://162.248.102.236:8055/assets/${event['eventPoster'] ?? ''}',
-                  height: 84.h,
+    return SizedBox(
+      height: 96.h,
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          Row(
+            children: [
+              // Hiển thị hình ảnh
+              CachedNetworkImage(
+                imageUrl:
+                    'http://162.248.102.236:8055/assets/${event['eventPoster'] ?? ''}',
+                height: 84.h,
+                width: 88.h,
+                fit: BoxFit.cover,
+                errorWidget: (context, url, error) => CustomImageView(
+                  imagePath: 'assets/images/No-Image.png',
                   width: 88.h,
+                  height: 84.h,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => CustomImageView(
-                    imagePath: 'assets/images/No-Image.png',
-                    width: 88.h,
-                    height: 84.h,
-                    fit: BoxFit.cover,
-                    radius: BorderRadius.circular(10.h),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 10.h),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          DateFormat('dd MMM yyyy • hh:mm a').format(
-                              DateTime.parse(event['startTime'] ??
-                                  DateTime.now().toIso8601String())),
-                          style: theme.textTheme.bodySmall,
-                        ),
-                        SizedBox(height: 2.h),
-                        Text(
-                          event['name'] ?? '',
-                          style: CustomTextStyles.titleMediumGray900_1,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        SizedBox(height: 10.h),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.location_on_outlined,
-                              color: appTheme.gray900,
-                              size: 14.h,
-                            ),
-                            SizedBox(width: 4.h),
-                            Expanded(
-                              child: Text(
-                                event['location'] ?? '',
-                                style: theme.textTheme.bodySmall,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(
-                    isFav ? Icons.favorite : Icons.favorite_border_outlined,
-                    color: isFav ? Colors.red : appTheme.gray900,
-                    size: 18.h,
-                  ),
-                  onPressed: _toggleFavourite,
-                ),
-                Icon(
-                  Icons.share_outlined,
-                  color: appTheme.gray900,
-                  size: 18.h,
-                ),
-              ],
-            ),
-            if (event['isNew'] == true)
-              Positioned(
-                top: 0,
-                left: 46.h,
-                child: CustomElevatedButton(
-                  height: 26.h,
-                  width: 36.h,
-                  text: AppVietnameseStrings.newLabel,
-                  buttonStyle: CustomButtonStyles.fillGreenA,
-                  buttonTextStyle: CustomTextStyles.bodySmallWhiteA700,
+                  radius: BorderRadius.circular(10.h),
                 ),
               ),
-          ],
-        ),
-      );
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 10.h),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        DateFormat('dd MMM yyyy • hh:mm a').format(
+                            DateTime.parse(event['startTime'] ??
+                                DateTime.now().toIso8601String())),
+                        style: theme.textTheme.bodySmall,
+                      ),
+                      SizedBox(height: 2.h),
+                      Text(
+                        event['name'] ?? '',
+                        style: CustomTextStyles.titleMediumGray900_1,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(height: 10.h),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.location_on_outlined,
+                            color: appTheme.gray900,
+                            size: 14.h,
+                          ),
+                          SizedBox(width: 4.h),
+                          Expanded(
+                            child: Text(
+                              event['location'] ?? '',
+                              style: theme.textTheme.bodySmall,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              IconButton(
+                icon: Icon(
+                  isFav ? Icons.favorite : Icons.favorite_border_outlined,
+                  color: isFav ? Colors.red : appTheme.gray900,
+                  size: 18.h,
+                ),
+                onPressed: _toggleFavourite,
+              ),
+              Icon(
+                Icons.share_outlined,
+                color: appTheme.gray900,
+                size: 18.h,
+              ),
+            ],
+          ),
+          if (event['isNew'] == true)
+            Positioned(
+              top: 0,
+              left: 46.h,
+              child: CustomElevatedButton(
+                height: 26.h,
+                width: 36.h,
+                text: AppVietnameseStrings.newLabel,
+                buttonStyle: CustomButtonStyles.fillGreenA,
+                buttonTextStyle: CustomTextStyles.bodySmallWhiteA700,
+              ),
+            ),
+        ],
+      ),
+    );
   }
 }
 
@@ -185,10 +187,10 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
   List favEvents = [];
 
   Future<void> _onRefresh() async {
-  await _getPopularEvents();
-  await _getFavEvents();
-  setState(() {}); // để cập nhật lại màn hình
-}
+    await _getPopularEvents();
+    await _getFavEvents();
+    setState(() {}); // để cập nhật lại màn hình
+  }
 
   Future<void> _getFavEvents() async {
     final response = await ApiService.requestGetApi(
@@ -197,7 +199,7 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
 
     if (response != null) {
       setState(() {
-      favEvents = List<int>.from(response['data'].map((e) => e['id']));
+        favEvents = List<int>.from(response['data'].map((e) => e['id']));
       });
     } else {
       print(AppVietnameseStrings.errorNoFavoriteEvents);
@@ -266,12 +268,13 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  Image.network(
-                    'http://162.248.102.236:8055/assets/${event['eventPoster'] ?? ''}',
+                  CachedNetworkImage(
+                    imageUrl:
+                        'http://162.248.102.236:8055/assets/${event['eventPoster'] ?? ''}',
                     height: 120.h,
                     width: double.maxFinite,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => CustomImageView(
+                    errorWidget: (context, url, error) => CustomImageView(
                       imagePath: 'assets/images/No-Image.png',
                       width: double.maxFinite,
                       height: 120.h,
@@ -343,22 +346,16 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
                 children: [
                   IconButton(
                     icon: Icon(
-                      
                       favEvents.contains(event['id'])
-
-
                           ? Icons.favorite
                           : Icons.favorite_border_outlined,
                       color: favEvents.contains(event['id'])
-
-
                           ? Colors.red
                           : appTheme.gray900,
                       size: 18.h,
                     ),
                     onPressed: () async {
-final isFav = favEvents.contains(event['id'])
-;
+                      final isFav = favEvents.contains(event['id']);
                       final endpoint = isFav
                           ? 'event/private/remove-favourite-event/${event['id']}'
                           : 'event/private/add-favourite-event/${event['id']}';
@@ -425,7 +422,6 @@ final isFav = favEvents.contains(event['id'])
 
   @override
   Widget build(BuildContext context) {
-
     return RefreshIndicator(
       onRefresh: _onRefresh,
       child: Container(
@@ -436,7 +432,8 @@ final isFav = favEvents.contains(event['id'])
             Expanded(
               child: SingleChildScrollView(
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 24.h, vertical: 20.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 24.h, vertical: 20.h),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

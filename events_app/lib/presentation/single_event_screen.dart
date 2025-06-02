@@ -9,6 +9,11 @@ import '../app_theme.dart';
 import '../service/api_service.dart';
 import '../src/localization/app_vietnamese_strings.dart';
 import 'buy_ticket_screen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:add_2_calendar/add_2_calendar.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:intl/intl.dart';
 
 class EventPage extends StatefulWidget {
   final int eventId;
@@ -32,9 +37,8 @@ class _EventPageState extends State<EventPage> {
   }
 
   Future<void> getEventDetails(int eventId) async {
-    final response = await ApiService.requestGetApi(
-        'event/public/$eventId',
-        useAuth: false);
+    final response =
+        await ApiService.requestGetApi('event/public/$eventId', useAuth: false);
     if (response != null) {
       log('getEventDetails response data: ${response['data']}');
 
@@ -59,7 +63,8 @@ class _EventPageState extends State<EventPage> {
             Padding(
               padding: EdgeInsets.only(left: 24.h),
               child: Text(
-                eventDetails['name'] ?? AppVietnameseStrings.eventNameUnavailable,
+                eventDetails['name'] ??
+                    AppVietnameseStrings.eventNameUnavailable,
                 style: CustomTextStyles.headlineSmallBlack900,
               ),
             ),
@@ -69,28 +74,54 @@ class _EventPageState extends State<EventPage> {
             Container(
               width: double.maxFinite,
               margin: EdgeInsets.symmetric(horizontal: 26.h),
-              child: Row(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.location_on_outlined, size: 18.h),
-                  SizedBox(width: 8.h),
-                  Expanded(
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(Icons.location_on_outlined, size: 18.h),
+                      SizedBox(width: 8.h),
+                      Expanded(
+                        child: Text(
+                          eventDetails['location'] ??
+                              AppVietnameseStrings.locationUnavailable,
+                          style: CustomTextStyles.titleMediumGray900_1.copyWith(
+                            color: appTheme.gray900,
+                          ),
+                          softWrap: true,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8.h),
+                  GestureDetector(
+                    onTap: () async {
+                      final location = eventDetails['location'];
+                      if (location != null && location.isNotEmpty) {
+                        final encodedLocation = Uri.encodeComponent(location);
+                        final googleMapsUrl =
+                            'https://www.google.com/maps/search/?api=1&query=$encodedLocation';
+                        final uri = Uri.parse(googleMapsUrl);
+
+                        if (await canLaunchUrl(uri)) {
+                          await launchUrl(uri,
+                              mode: LaunchMode.externalApplication);
+                        } else {
+                          // Optional: thông báo lỗi
+                          print("Không thể mở bản đồ.");
+                        }
+                      }
+                    },
                     child: Text(
-                      eventDetails['location'] ?? AppVietnameseStrings.locationUnavailable,
-                      style: CustomTextStyles.titleMediumGray900_1
-                          .copyWith(color: appTheme.gray900),
-                      softWrap: true,
+                      AppVietnameseStrings.viewOnMap,
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                      ),
                     ),
                   ),
                 ],
-              ),
-            ),
-            SizedBox(height: 8.h),
-            Padding(
-              padding: EdgeInsets.only(left: 26.h),
-              child: Text(
-                AppVietnameseStrings.viewOnMap,
-                style: theme.textTheme.labelLarge,
               ),
             ),
             SizedBox(height: 28.h),
@@ -129,7 +160,8 @@ class _EventPageState extends State<EventPage> {
             Padding(
               padding: EdgeInsets.only(left: 24.h),
               child: Text(
-                eventDetails['description'] ?? AppVietnameseStrings.descriptionUnavailable,
+                eventDetails['description'] ??
+                    AppVietnameseStrings.descriptionUnavailable,
                 style: theme.textTheme.bodySmall!.copyWith(height: 1.6),
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
@@ -155,7 +187,7 @@ class _EventPageState extends State<EventPage> {
             height: 194.h,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage(
+                image: CachedNetworkImageProvider(
                   'http://162.248.102.236:8055/assets/${eventDetails['eventPoster'] ?? ''}',
                 ),
                 fit: BoxFit.cover,
@@ -220,7 +252,29 @@ class _EventPageState extends State<EventPage> {
     );
   }
 
+  // Hàm xin quyền calendar
+  Future<bool> requestCalendarPermission() async {
+    var status = await Permission.calendar.status;
+    if (!status.isGranted) {
+      status = await Permission.calendar.request();
+    }
+    return status.isGranted;
+  }
+
   Widget _buildEventDetails(BuildContext context) {
+    // Tạo Event để thêm vào lịch
+    final event = Event(
+      title: eventDetails['name'] ?? 'Sự kiện',
+      description: eventDetails['description'] ?? '',
+      location: eventDetails['location'] ?? '',
+      startDate: eventDetails['startTime'] != null
+          ? DateTime.parse(eventDetails['startTime'])
+          : DateTime.now(),
+      endDate: eventDetails['endTime'] != null
+          ? DateTime.parse(eventDetails['endTime'])
+          : DateTime.now().add(const Duration(hours: 1)),
+    );
+
     return Container(
       width: double.maxFinite,
       margin: EdgeInsets.symmetric(horizontal: 26.h),
@@ -247,9 +301,26 @@ class _EventPageState extends State<EventPage> {
             ),
           ),
           SizedBox(height: 4.h),
-          Text(
-            AppVietnameseStrings.addToCalendar,
-            style: theme.textTheme.labelLarge,
+          GestureDetector(
+            onTap: () async {
+              final granted = await requestCalendarPermission();
+              if (granted) {
+                Add2Calendar.addEvent2Cal(event);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                      content:
+                          Text('Cần cấp quyền truy cập lịch để thêm sự kiện')),
+                );
+              }
+            },
+            child: Text(
+              AppVietnameseStrings.addToCalendar,
+              style: theme.textTheme.labelLarge?.copyWith(
+                color: Colors.blue,
+                decoration: TextDecoration.underline,
+              ),
+            ),
           ),
         ],
       ),
@@ -271,9 +342,12 @@ class _EventPageState extends State<EventPage> {
             children: [
               Text('Giá vé', style: CustomTextStyles.titleMediumGray900_1),
               Text(
-                  formatCurrencyVND((eventDetails['listTicket'] != null && eventDetails['listTicket'].isNotEmpty
-                          ? (eventDetails['listTicket'][0]['price'] as num?)?.toInt() ?? 0
-                          : 0)),
+                  formatCurrencyVND((eventDetails['listTicket'] != null &&
+                          eventDetails['listTicket'].isNotEmpty
+                      ? (eventDetails['listTicket'][0]['price'] as num?)
+                              ?.toInt() ??
+                          0
+                      : 0)),
                   style: theme.textTheme.bodyLarge),
             ],
           ),

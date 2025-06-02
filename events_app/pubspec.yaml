@@ -45,6 +45,9 @@ dependencies:
   webview_flutter: ^4.10.0
   fluttertoast: ^8.2.12
   share_plus: ^10.1.4
+  url_launcher: ^6.1.10
+  add_2_calendar: ^2.1.0
+  permission_handler: ^11.3.0
 
 dev_dependencies:
   flutter_test:

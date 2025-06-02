@@ -37,10 +37,13 @@ class _SignupscreenState extends State<SignUpScreen> {
 
     try {
       final body = {
+        'requests': [
+          {
         'username': _emailController.text,
         'email': _emailController.text,
         'fullName': _nameController.text,
         'password': _passwordController.text,
+          }]
       };
 
       final response = await ApiService.requestApi(

@@ -485,9 +485,10 @@ class AppUtils {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('access_token');
     // Giả sử bạn đã đăng ký route '/login' cho màn hình đăng nhập
-    Navigator.pushAndRemoveUntil(context, 
-      MaterialPageRoute(builder: (context) => const LoginScreen()),
-      (route) => false,
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+      (Route<dynamic> route) => false,
     );
   }
 
@@ -500,7 +501,6 @@ class AppUtils {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Image selected: ${image.path}')),
           );
-          
         }
         return image.path;
       } else {
@@ -532,5 +532,5 @@ String formatCurrencyVND(int? amount) {
   }
   final format = NumberFormat.currency(locale: 'vi_VN', symbol: 'vnđ');
   // Làm tròn đến số nguyên gần nhất trước khi định dạng
-  return format.format(amount.round()); 
+  return format.format(amount.round());
 }

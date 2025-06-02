@@ -9,29 +9,31 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../service/api_service.dart';
 import '../src/localization/app_vietnamese_strings.dart';
 import 'web_view_screen.dart';
-  void hideLoadingDialog(BuildContext context) {
-    Navigator.of(context, rootNavigator: true).pop();
-  }
-    void showLoadingDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
-  }
 
+void hideLoadingDialog(BuildContext context) {
+  Navigator.of(context, rootNavigator: true).pop();
+}
 
-  void showToast(String message) {
-    Fluttertoast.showToast(
-      msg: message,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-    );
-  }
+void showLoadingDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    },
+  );
+}
+
+void showToast(String message) {
+  Fluttertoast.showToast(
+    msg: message,
+    toastLength: Toast.LENGTH_SHORT,
+    gravity: ToastGravity.BOTTOM,
+  );
+}
+
 class PaymentScreen extends StatefulWidget {
   final Map<String, dynamic> eventDetails; // Thêm trường này
   final int totalPrice; // Thêm trường này
@@ -140,7 +142,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text('La Rosalia', style: theme.textTheme.titleLarge),
+        Text(widget.eventDetails['name'], textAlign: TextAlign.center, style: theme.textTheme.titleLarge),
         SizedBox(height: 12.h),
         Text('Remaining time 20.32', style: CustomTextStyles.bodySmallRed400),
       ],
@@ -152,14 +154,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(AppVietnameseStrings.enterContactInfoTitle, style: theme.textTheme.titleMedium),
+        Text(AppVietnameseStrings.enterContactInfoTitle,
+            style: theme.textTheme.titleMedium),
         SizedBox(height: 16.h),
         CustomTextFormField(
           controller: fullnameController,
           hintText: AppVietnameseStrings.fullName,
           contentPadding:
               EdgeInsets.symmetric(vertical: 12.h, horizontal: 14.h),
-          validator: (value) => value!.isEmpty ? AppVietnameseStrings.plsEnterFullName : null,
+          validator: (value) =>
+              value!.isEmpty ? AppVietnameseStrings.plsEnterFullName : null,
         ),
         SizedBox(height: 12.h),
         CustomTextFormField(
@@ -167,10 +171,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
           hintText: AppVietnameseStrings.phoneNumberLabel,
           contentPadding:
               EdgeInsets.symmetric(vertical: 12.h, horizontal: 14.h),
-          validator: (value) => value!.isEmpty ? AppVietnameseStrings.plsEnterPhoneNumber : null,
+          validator: (value) =>
+              value!.isEmpty ? AppVietnameseStrings.plsEnterPhoneNumber : null,
         ),
         SizedBox(height: 12.h),
-        Text(AppVietnameseStrings.genderLabel, style: theme.textTheme.bodyLarge),
+        Text(AppVietnameseStrings.genderLabel,
+            style: theme.textTheme.bodyLarge),
         SizedBox(height: 8.h),
         RadioListTile<String>(
           title: const Text(AppVietnameseStrings.male),
@@ -179,8 +185,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           onChanged: (value) {
             setState(() {
               selectedGender = value;
-              genderController.text =
-                  value!;
+              genderController.text = value!;
             });
           },
         ),
@@ -209,7 +214,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
           hintText: AppVietnameseStrings.emailLabel,
           contentPadding:
               EdgeInsets.symmetric(vertical: 12.h, horizontal: 14.h),
-          validator: (value) => value!.isEmpty ? AppVietnameseStrings.plsEnterEmail : null,
+          validator: (value) =>
+              value!.isEmpty ? AppVietnameseStrings.plsEnterEmail : null,
         ),
         SizedBox(height: 12.h),
         CustomTextFormField(
@@ -217,7 +223,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
           hintText: AppVietnameseStrings.addressLabel,
           contentPadding:
               EdgeInsets.symmetric(vertical: 12.h, horizontal: 14.h),
-          validator: (value) => value!.isEmpty ? AppVietnameseStrings.plsEnterAddress : null,
+          validator: (value) =>
+              value!.isEmpty ? AppVietnameseStrings.plsEnterAddress : null,
         ),
       ],
     );
@@ -228,7 +235,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(AppVietnameseStrings.paymentMethodsTitle, style: theme.textTheme.titleMedium),
+        Text(AppVietnameseStrings.paymentMethodsTitle,
+            style: theme.textTheme.titleMedium),
         SizedBox(height: 12.h),
         PaymentMethodTile(
           index: 0,
@@ -251,9 +259,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
       textAlign: TextAlign.center,
     );
   }
-
-
-
 
   /// **Bottom Payment Bar**
   Widget _buildBottomPaymentBar() {
@@ -329,18 +334,23 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         );
                         log("Chi tiết phản hồi từ server: $orderRes");
                         if (orderRes == null) {
-                          showToast(AppVietnameseStrings.bookingFailedToastPrefix + (orderRes['message'] ?? "Tạo đơn hàng thất bại"));
-                          print(
-                              "Không nhận được phản hồi từ server");
+                          showToast(AppVietnameseStrings
+                                  .bookingFailedToastPrefix +
+                              (orderRes['message'] ?? "Tạo đơn hàng thất bại"));
+                          print("Không nhận được phản hồi từ server");
                         } else if (orderRes['data']["id"] == null) {
-                          print(
-                              "Chi tiết lỗi từ server: $orderRes");
-                          showToast(AppVietnameseStrings.bookingFailedToastPrefix + (orderRes['message'] ?? "Tạo đơn hàng thất bại"));
+                          print("Chi tiết lỗi từ server: $orderRes");
+                          showToast(AppVietnameseStrings
+                                  .bookingFailedToastPrefix +
+                              (orderRes['message'] ?? "Tạo đơn hàng thất bại"));
                           return;
                         }
                         if (orderRes != null &&
                             orderRes['data']["id"] != null) {
                           final orderId = orderRes['data']["id"];
+                          // Hiển thị thông báo thành công
+                          showToast(AppVietnameseStrings
+                              .bookingSuccessfulAnDirectPaymentToast);
 
                           // 2. Gọi API tạo URL thanh toán VNPAY
                           final vnpayRes = await ApiService.requestPostOder(
@@ -350,8 +360,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             },
                             useAuth: true,
                           );
-                          print(
-                              "Chi tiết phản hồi từ server: $vnpayRes");
+                          print("Chi tiết phản hồi từ server: $vnpayRes");
                           if (vnpayRes != null &&
                               vnpayRes["data"]?['paymentUrl'] != null) {
                             final paymentUrl = vnpayRes["data"]['paymentUrl'];
@@ -370,24 +379,31 @@ class _PaymentScreenState extends State<PaymentScreen> {
                               ),
                             );
                           } else {
-                            showToast(AppVietnameseStrings.bookingFailedToastPrefix + AppVietnameseStrings.bookingFailedToastNoPaymentUrl);
+                            showToast(
+                                AppVietnameseStrings.bookingFailedToastPrefix +
+                                    AppVietnameseStrings
+                                        .bookingFailedToastNoPaymentUrl);
                           }
                         } else {
-                          showToast(AppVietnameseStrings.bookingFailedToastPrefix + AppVietnameseStrings.bookingFailedToastNoOrderId);
+                          showToast(AppVietnameseStrings
+                                  .bookingFailedToastPrefix +
+                              AppVietnameseStrings.bookingFailedToastNoOrderId);
                         }
                       } catch (e) {
                         print("Error: $e");
-                        showToast(AppVietnameseStrings.bookingFailedToastPrefix + AppVietnameseStrings.bookingFailedToastGeneralError);
+                        showToast(
+                            AppVietnameseStrings.bookingFailedToastPrefix +
+                                AppVietnameseStrings
+                                    .bookingFailedToastGeneralError);
                       } finally {
                         if (!_dialogDismissed) {
                           hideLoadingDialog(context);
                         }
                         _dialogDismissed = false;
-                        showToast(AppVietnameseStrings.bookingSuccessfulToast);
+                        // showToast(AppVietnameseStrings.bookingSuccessfulToast);
                       }
                     }
                   },
-
                   label: Text(
                     "Pay with ${paymentMethods[selectedMethod]}",
                     overflow: TextOverflow.ellipsis,
