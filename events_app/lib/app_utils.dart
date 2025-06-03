@@ -4,6 +4,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'presentation/dashboard_screen.dart';
 import 'presentation/loginScreen.dart';
 
 final Map<String, String> en = {
@@ -484,11 +485,17 @@ class AppUtils {
   static Future<void> logout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('access_token');
-    // Giả sử bạn đã đăng ký route '/login' cho màn hình đăng nhập
+    // Đầu tiên push DashboardScreen vào stack, sau đó push LoginScreen lên trên
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => LoginScreen()),
+      MaterialPageRoute(builder: (context) => DashboardScreen()),
       (Route<dynamic> route) => false,
+    );
+    // Đợi một chút để đảm bảo DashboardScreen đã được push
+    await Future.delayed(const Duration(milliseconds: 100));
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
     );
   }
 

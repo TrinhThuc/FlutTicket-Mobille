@@ -1,3 +1,4 @@
+import 'package:events_app/presentation/dashboard_screen.dart';
 import 'package:events_app/presentation/selectLocation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Thêm import để lưu access token
@@ -49,10 +50,9 @@ class _LoginScreenState extends State<LoginScreen> {
           SnackBar(content: Text(response['error'])),
         );
       } else {
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.remove('access_token'); // Xóa token cũ trước khi lưu
-          await prefs.setString('access_token', response?['access_token']);
-        
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.remove('access_token'); // Xóa token cũ trước khi lưu
+        await prefs.setString('access_token', response?['access_token']);
 
         // Chuyển đến màn hình chọn vị trí
         Navigator.pushReplacement(
@@ -66,6 +66,17 @@ class _LoginScreenState extends State<LoginScreen> {
         const SnackBar(content: Text(AppVietnameseStrings.errorOccurredPleaseTryAgain)),
       );
     }
+  }
+
+  void _continueWithoutLogin() async {
+    // Xóa access_token nếu có
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('access_token');
+    // Chuyển đến màn hình chọn vị trí mà không cần đăng nhập
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const DashboardScreen()),
+    );
   }
 
   @override
@@ -171,7 +182,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               const SizedBox(height: 175),
 
-              // Sign in button
+              // Nút đăng nhập
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -189,6 +200,22 @@ class _LoginScreenState extends State<LoginScreen> {
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                       color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+
+              // Thêm nút TextButton cho phép dùng mà không cần đăng nhập
+              const SizedBox(height: 16),
+              Center(
+                child: TextButton(
+                  onPressed: _continueWithoutLogin,
+                  child: const Text(
+                    'Tiếp tục mà không cần đăng nhập',
+                    style: TextStyle(
+                      color: Color(0xFF0DCDAA),
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),

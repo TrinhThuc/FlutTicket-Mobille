@@ -1,13 +1,48 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:events_app/presentation/loginScreen.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
+  // Hàm hiển thị dialog yêu cầu đăng nhập
+  static Future<void> showLoginRequiredDialog(BuildContext context) async {
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Yêu cầu đăng nhập'),
+        content: const Text('Bạn cần đăng nhập để sử dụng chức năng này.'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('Đóng'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+              );
+            },
+            child: const Text('Đăng nhập'),
+          ),
+        ],
+      ),
+    );
+  }
+
   // Hàm để gửi request API
-  static Future<dynamic> requestApi(String endpoint, dynamic body,
-      {bool useAuth = false}) async {
+  static Future<dynamic> requestApi(
+    String endpoint,
+    dynamic body, {
+    bool useAuth = false,
+    BuildContext? context,
+  }) async {
     final url = 'http://192.168.0.104:8301/$endpoint';
 
     Map<String, String> headers = {
@@ -20,6 +55,9 @@ class ApiService {
       String? accessToken = prefs.getString('access_token');
       if (accessToken == null || accessToken.isEmpty) {
         print('Error: No access token found');
+        if (context != null) {
+          await showLoginRequiredDialog(context);
+        }
         return {"error": "Unauthorized"};
       }
       headers['Authorization'] = 'Bearer $accessToken';
@@ -42,8 +80,11 @@ class ApiService {
     }
   }
 
-  static Future<dynamic> requestGetApi(String endpoint,
-      {bool useAuth = true}) async {
+  static Future<dynamic> requestGetApi(
+    String endpoint, {
+    bool useAuth = true,
+    BuildContext? context,
+  }) async {
     final url = 'http://192.168.0.104:8301/$endpoint';
 
     Map<String, String> headers = {
@@ -57,6 +98,9 @@ class ApiService {
       log('Access token: $accessToken');
       if (accessToken == null || accessToken.isEmpty) {
         print('Error: No access token found');
+        if (context != null) {
+          await showLoginRequiredDialog(context);
+        }
         return {"error": "Unauthorized"};
       }
       headers['Authorization'] = 'Bearer $accessToken';
@@ -109,7 +153,8 @@ class ApiService {
     return null;
   }
 
-  Future<Map<String, dynamic>?> updateAvatar(String filePath) async {
+  Future<Map<String, dynamic>?> updateAvatar(String filePath,
+      {BuildContext? context}) async {
     final url = Uri.parse('http://192.168.0.104:8301/oauth/user/update-avatar');
 
     try {
@@ -119,6 +164,9 @@ class ApiService {
 
       if (accessToken == null || accessToken.isEmpty) {
         print('Error: No access token found');
+        if (context != null) {
+          await showLoginRequiredDialog(context);
+        }
         return {"error": "Unauthorized"};
       }
 
@@ -148,8 +196,11 @@ class ApiService {
   }
 
   static Future<dynamic> requestPostOder(
-      String endpoint, Map<String, dynamic> body,
-      {bool useAuth = false}) async {
+    String endpoint,
+    Map<String, dynamic> body, {
+    bool useAuth = false,
+    BuildContext? context,
+  }) async {
     final url = 'http://192.168.0.104:8301/$endpoint';
 
     Map<String, String> headers = {
@@ -162,6 +213,9 @@ class ApiService {
       String? accessToken = prefs.getString('access_token');
       if (accessToken == null || accessToken.isEmpty) {
         print('Error: No access token found');
+        if (context != null) {
+          await showLoginRequiredDialog(context);
+        }
         return {"error": "Unauthorized"};
       }
       headers['Authorization'] = 'Bearer $accessToken';
@@ -186,8 +240,11 @@ class ApiService {
   }
 
   // hàm get oder
-  static Future<dynamic> requestGetOder(String endpoint,
-      {bool useAuth = true}) async {
+  static Future<dynamic> requestGetOder(
+    String endpoint, {
+    bool useAuth = true,
+    BuildContext? context,
+  }) async {
     final url = 'http://192.168.0.104:8301/$endpoint';
 
     Map<String, String> headers = {
@@ -200,6 +257,9 @@ class ApiService {
       String? accessToken = prefs.getString('access_token');
       if (accessToken == null || accessToken.isEmpty) {
         print('Error: No access token found');
+        if (context != null) {
+          await showLoginRequiredDialog(context);
+        }
         return {"error": "Unauthorized"};
       }
       headers['Authorization'] = 'Bearer $accessToken';
