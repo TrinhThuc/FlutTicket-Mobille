@@ -11,10 +11,10 @@ class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<ProfileScreen> createState() => ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class ProfileScreenState extends State<ProfileScreen> {
   bool isCopyEvent = false;
   // Khai báo biến chứa thông tin user
   String userName = '';
@@ -25,6 +25,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     _getUserInfo(); // Gọi lấy thông tin user khi widget khởi tạo
+  }
+
+  void refreshData() {
+    setState(() {
+      // Gọi lại các hàm load dữ liệu
+      _getUserInfo();
+    });
   }
 
   Future<void> _getUserInfo() async {

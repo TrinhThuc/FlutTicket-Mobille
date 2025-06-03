@@ -15,21 +15,43 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   int selectTab = 0;
-  void _refreshDashboard() {
-    setState(() {});
+  final List<GlobalKey<State<StatefulWidget>>> _screenKeys = [
+    GlobalKey<HomeInitialPageState>(),
+    GlobalKey<SearchScreenState>(),
+    GlobalKey<TicketEmptyScreenState>(),
+    GlobalKey<FavouritesScreenState>(),
+    GlobalKey<ProfileScreenState>(),
+  ];
+
+  void _refreshCurrentScreen() {
+    switch (selectTab) {
+      case 0:
+        (_screenKeys[0].currentState as HomeInitialPageState?)?.refreshData();
+        break;
+      case 1:
+        (_screenKeys[1].currentState as SearchScreenState?)?.refreshData();
+        break;
+      case 2:
+        (_screenKeys[2].currentState as TicketEmptyScreenState?)?.refreshData();
+        break;
+      case 3:
+        (_screenKeys[3].currentState as FavouritesScreenState?)?.refreshData();
+        break;
+      case 4:
+        (_screenKeys[4].currentState as ProfileScreenState?)?.refreshData();
+        break;
+    }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
-      final List<Widget> widgetOptions = <Widget>[
-    const HomeScreen(selectedLocation: 'Barcelona'),
-    const SearchScreen(),
-     const TicketScreen(),
-     const FavouritesScreen(),
-     const ProfileScreen(),
-  ];
+    final List<Widget> widgetOptions = <Widget>[
+      HomeScreen(key: _screenKeys[0], selectedLocation: 'Barcelona'),
+      SearchScreen(key: _screenKeys[1]),
+      TicketScreen(key: _screenKeys[2]),
+      FavouritesScreen(key: _screenKeys[3]),
+      ProfileScreen(key: _screenKeys[4]),
+    ];
     return Scaffold(
       backgroundColor: appTheme.gray900,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -56,6 +78,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     if (mounted) {
                       setState(() {
                         selectTab = 0;
+                        _refreshCurrentScreen();
                       });
                     }
                   }),
@@ -67,6 +90,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     if (mounted) {
                       setState(() {
                         selectTab = 1;
+                        _refreshCurrentScreen();
                       });
                     }
                   }),
@@ -78,6 +102,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     if (mounted) {
                       setState(() {
                         selectTab = 2;
+                        _refreshCurrentScreen();
                       });
                     }
                   }),
@@ -89,6 +114,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     if (mounted) {
                       setState(() {
                         selectTab = 3;
+                        _refreshCurrentScreen();
                       });
                     }
                   }),
@@ -100,6 +126,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     if (mounted) {
                       setState(() {
                         selectTab = 4;
+                        _refreshCurrentScreen();
                       });
                     }
                   }),

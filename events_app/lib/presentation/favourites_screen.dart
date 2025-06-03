@@ -12,10 +12,10 @@ class FavouritesScreen extends StatefulWidget {
   const FavouritesScreen({super.key});
 
   @override
-  State<FavouritesScreen> createState() => _FavouritesScreenState();
+  State<FavouritesScreen> createState() => FavouritesScreenState();
 }
 
-class _FavouritesScreenState extends State<FavouritesScreen> {
+class FavouritesScreenState extends State<FavouritesScreen> {
   GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   List favEvents = [];
@@ -42,6 +42,13 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
 
   Future<void> _onRefresh() async {
     await _getFavEvents();
+  }
+
+  void refreshData() {
+    setState(() {
+      // Gọi lại các hàm load dữ liệu
+      _getFavEvents();
+    });
   }
 
   @override

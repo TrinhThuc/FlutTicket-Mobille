@@ -12,19 +12,30 @@ import '../src/localization/app_vietnamese_strings.dart';
 import '../widgets.dart';
 import 'single_event_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   final String selectedLocation;
 
   const HomeScreen({super.key, required this.selectedLocation});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: const SafeArea(
-        child: HomeInitialPage(),
+      body: SafeArea(
+        child: HomeInitialPage(selectedLocation: widget.selectedLocation),
       ),
     );
+  }
+
+  void refreshData() {
+    setState(() {
+      // Refresh toàn bộ màn hình
+    });
   }
 }
 
@@ -184,23 +195,49 @@ class _EventlistItemWidgetState extends State<EventlistItemWidget> {
 }
 
 class HomeInitialPage extends StatefulWidget {
-  const HomeInitialPage({super.key});
+  final String selectedLocation;
+  
+  const HomeInitialPage({super.key, required this.selectedLocation});
 
   @override
-  _HomeInitialPageState createState() => _HomeInitialPageState();
+  HomeInitialPageState createState() => HomeInitialPageState();
 }
 
-class _HomeInitialPageState extends State<HomeInitialPage> {
+class HomeInitialPageState extends State<HomeInitialPage> {
   List popularEvents = [];
-  String selectedLocation = 'Hà Nội';
-
   List favEvents = [];
   bool isLoggedIn = false;
+  late String selectedLocation;
 
   Future<void> _onRefresh() async {
+    await _loadSelectedLocation();
     await _getPopularEvents();
     await _getFavEvents();
     setState(() {}); // để cập nhật lại màn hình
+  }
+
+  void refreshData() {
+    setState(() async {
+      await _loadSelectedLocation();
+      await _getPopularEvents();
+      await _getFavEvents();
+    });
+  }
+
+  Future<void> _loadSelectedLocation() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      selectedLocation = prefs.getString('selectedLocation') ?? widget.selectedLocation;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    selectedLocation = widget.selectedLocation;
+    _loadSelectedLocation();
+    _getPopularEvents();
+    _getFavEvents();
   }
 
   Future<void> _getFavEvents() async {
@@ -230,21 +267,6 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
     } else {
       print(AppVietnameseStrings.errorNoFavoriteEvents);
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _loadSelectedLocation();
-    _getPopularEvents();
-    _getFavEvents();
-  }
-
-  Future<void> _loadSelectedLocation() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      selectedLocation = prefs.getString('selectedLocation') ?? 'Hà Nội';
-    });
   }
 
   Future<void> _getPopularEvents() async {
@@ -464,8 +486,7 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
             Expanded(
               child: SingleChildScrollView(
                 child: Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 24.h, vertical: 20.h),
+                  padding: EdgeInsets.symmetric(horizontal: 24.h, vertical: 20.h),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

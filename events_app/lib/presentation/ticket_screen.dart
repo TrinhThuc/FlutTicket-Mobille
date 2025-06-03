@@ -1,213 +1,40 @@
-import 'package:events_app/app_utils.dart';
-import 'package:events_app/presentation/ticket_detail.dart';
-import 'package:events_app/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Thêm thư viện để định dạng ngày
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../app_theme.dart';
 import '../service/api_service.dart';
 import '../src/localization/app_vietnamese_strings.dart'; // Import
 
 class TicketScreen extends StatefulWidget {
-  const TicketScreen({super.key});
+  const TicketScreen({Key? key}) : super(key: key);
 
   @override
-  TicketEmptyScreenState createState() => TicketEmptyScreenState();
+  State<TicketScreen> createState() => TicketEmptyScreenState();
 }
 
 class TicketEmptyScreenState extends State<TicketScreen>
     with TickerProviderStateMixin {
   late TabController tabviewController;
+  bool isLoading = false;
+  List upcomingEvents = [];
+  List pastEvents = [];
+  List allEvents = [];
 
   @override
   void initState() {
     super.initState();
     tabviewController = TabController(length: 3, vsync: this);
+    refreshData();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildTicketsSection(context),
-            Expanded(
-              child: TabBarView(
-                controller: tabviewController,
-                children: const [
-                  TicketUpcomingTabPage(),
-                  TicketPastTabPage(),
-                  AllTicketTabPage(),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTicketsSection(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(top: 44.h),
-      decoration: AppDecoration.globalPrimary,
-      child: Column(
-        children: [
-          CustomAppBar(
-            title: AppbarTitle(
-              text: AppVietnameseStrings.ticketsTitle,
-              margin: EdgeInsets.symmetric(horizontal: 14.h, vertical: 22.h),
-            ),
-          ),
-          SizedBox(height: 16.h),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 14.h),
-            child: TabBar(
-              controller: tabviewController,
-              labelPadding: EdgeInsets.zero,
-              labelColor: Colors.white,
-              labelStyle: TextStyle(
-                fontSize: 16.fSize,
-                fontWeight: FontWeight.w700,
-                fontFamily: 'Inter',
-              ),
-              unselectedLabelColor: appTheme.gray100.withOpacity(0.75),
-              unselectedLabelStyle: TextStyle(
-                fontSize: 16.fSize,
-                fontWeight: FontWeight.w400,
-                fontFamily: 'Inter',
-              ),
-              indicatorColor: Colors.white,
-              tabs: const [
-                Tab(text: AppVietnameseStrings.upcomingTab),
-                Tab(text: AppVietnameseStrings.pastTicketsTab),
-                Tab(text: AppVietnameseStrings.allTab),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class TicketPastTabPage extends StatefulWidget {
-  const TicketPastTabPage({super.key});
-
-  @override
-  State<TicketPastTabPage> createState() => _TicketPastTabPageState();
-}
-
-class _TicketPastTabPageState extends State<TicketPastTabPage> {
-  List pastEvents = [];
-  bool isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    getPastEvents();
-  }
-
-  Future<void> getPastEvents() async {
-    setState(() {
-      isLoading = true;
-    });
-    final response = await ApiService.requestApi(
-      'order/private/search-event',
-      {
-        "isPastTicket": true,
-        "page": 0,
-        "size": 99
-      },
-      useAuth: true,
-    );
-
-    if (!mounted) return;
-
-    if (response != null && response['data'] != null) {
+  void refreshData() {
+    if (mounted) {
       setState(() {
-        isLoading = false;
-
-        pastEvents = response['data']['content'];
+        // Refresh tất cả các tab
+        getUpcomingEvent();
+        getPastEvents();
+        getAllEvents();
       });
-    } else {
-      print(AppVietnameseStrings.noDataFound);
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-     return isLoading
-        ? const Center(child: CircularProgressIndicator())
-        : RefreshIndicator(
-            onRefresh: getPastEvents,
-            child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 24.h, vertical: 30.h),
-      child: pastEvents.isNotEmpty 
-        ? ListView.separated(
-            itemCount: pastEvents.length,
-            separatorBuilder: (_, __) => SizedBox(height: 12.h),
-            itemBuilder: (context, index) {
-              final event = pastEvents[index];
-              return _buildTicketItem(event);
-            },
-          )
-        : Center(child: Text(AppVietnameseStrings.noEvents, style: theme.textTheme.titleMedium)),
-    )
-
-    );
-  }
-
-
-}
-  Widget _buildTicketItem(event) {
-    String status;
-    switch (event['status']) {
-      case 0:
-        status = AppVietnameseStrings.statusPendingPayment;
-        break;
-      case 1:
-        status = AppVietnameseStrings.statusPaid;
-        break;
-      case 2:
-        status = AppVietnameseStrings.statusPaymentFailed;
-        break;
-      default:
-        status = AppVietnameseStrings.statusUndefined;
-    }
-
-    return Container(
-      padding: EdgeInsets.all(8.h),
-      // decoration: AppDecoration.outlineGray.copyWith(borderRadius: BorderRadiusStyle.roundedBorder4),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Text(event['orderCode'], style: theme.textTheme.titleMedium),
-          // Text(DateFormat('dd/MM/yyyy').format(DateTime.parse(event['createdAt'])), style: theme.textTheme.bodySmall), // Định dạng ngày
-          // Text("${event['totalAmount']} VND", style: CustomTextStyles.bodySmallBlack900),
-          Text(status, style: theme.textTheme.bodySmall), // Hiển thị trạng thái
-        ],
-      ),
-    );
-  }
-class TicketUpcomingTabPage extends StatefulWidget {
-  const TicketUpcomingTabPage({super.key});
-
-  @override
-  State<TicketUpcomingTabPage> createState() => _TicketUpcomingTabPageState();
-}
-
-class _TicketUpcomingTabPageState extends State<TicketUpcomingTabPage> {
-  int? selectedIndex;
-  List upcomingEvents = [];
-  bool isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    getUpcomingEvent();
   }
 
   Future<void> getUpcomingEvent() async {
@@ -233,64 +60,30 @@ class _TicketUpcomingTabPageState extends State<TicketUpcomingTabPage> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return isLoading
-        ? const Center(child: CircularProgressIndicator())
-        : RefreshIndicator(
-            onRefresh: getUpcomingEvent,
-            child:  Padding(
-      padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 30.h),
-      child: upcomingEvents.isNotEmpty 
-        ? ListView.separated(
-            physics: const BouncingScrollPhysics(),
-            itemCount: upcomingEvents.length,
-            separatorBuilder: (_, __) => SizedBox(height: 8.h),
-            itemBuilder: (context, index) {
-              final event = upcomingEvents[index];
-              final isSelected = selectedIndex == index;
-
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => TicketPage(id: event["id"] ?? 0),
-                  ));
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: isSelected ? appTheme.green500 : Colors.white,
-                    border: Border.all(
-                      color: isSelected ? appTheme.greenA700 : appTheme.gray300,
-                      width: 1,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: TicketItemWidget(event: event),
-                ),
-              );
-            },
-          )
-        : Center(child: Text(AppVietnameseStrings.noEvents, style: theme.textTheme.titleMedium)),
-    )
+  Future<void> getPastEvents() async {
+    setState(() {
+      isLoading = true;
+    });
+    final response = await ApiService.requestApi(
+      'order/private/search-event',
+      {
+        "isPastTicket": true,
+        "page": 0,
+        "size": 99
+      },
+      useAuth: true,
     );
-  }
-}
 
-class AllTicketTabPage extends StatefulWidget {
-  const AllTicketTabPage({super.key});
+    if (!mounted) return;
 
-  @override
-  State<AllTicketTabPage> createState() => _AllTicketTabPageState();
-}
-
-class _AllTicketTabPageState extends State<AllTicketTabPage> {
-  bool isLoading = false;
-  List allEvents = [];
-
-  @override
-  void initState() {
-    super.initState();
-    getAllEvents();
+    if (response != null && response['data'] != null) {
+      setState(() {
+        isLoading = false;
+        pastEvents = response['data']['content'];
+      });
+    } else {
+      print(AppVietnameseStrings.noDataFound);
+    }
   }
 
   Future<void> getAllEvents() async {
@@ -317,107 +110,315 @@ class _AllTicketTabPageState extends State<AllTicketTabPage> {
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Column(
+          children: [
+            _buildTicketsSection(context),
+            Expanded(
+              child: TabBarView(
+                controller: tabviewController,
+                children: [
+                  TicketUpcomingTabPage(events: upcomingEvents),
+                  TicketPastTabPage(events: pastEvents),
+                  AllTicketTabPage(events: allEvents),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTicketsSection(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Vé của tôi',
+            style: TextStyle(
+              fontSize: 24.sp,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 16.h),
+          TabBar(
+            controller: tabviewController,
+            labelColor: Colors.black,
+            unselectedLabelColor: Colors.grey,
+            indicatorColor: Colors.black,
+            tabs: [
+              Tab(text: 'Sắp tới'),
+              Tab(text: 'Đã qua'),
+              Tab(text: 'Tất cả'),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class TicketPastTabPage extends StatefulWidget {
+  final List events;
+
+  const TicketPastTabPage({Key? key, required this.events}) : super(key: key);
+
+  @override
+  State<TicketPastTabPage> createState() => _TicketPastTabPageState();
+}
+
+class _TicketPastTabPageState extends State<TicketPastTabPage> {
+  late List events;
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    events = widget.events;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return isLoading
         ? const Center(child: CircularProgressIndicator())
         : RefreshIndicator(
-            onRefresh: getAllEvents,
-            child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 30.h),
-      child: allEvents.isNotEmpty 
-        ? ListView.separated(
-        physics: const BouncingScrollPhysics(),
-        itemCount: allEvents.length,
-        itemBuilder: (context, index) {
-          final event = allEvents[index];
-          return GestureDetector(
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) => TicketPage(id:  event["id"] ?? 0),
-              ));
+            onRefresh: () async {
+              // Implement refresh logic
             },
-            child: TicketItemWidget(event: event),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24.h, vertical: 30.h),
+              child: events.isNotEmpty 
+                ? ListView.separated(
+                    itemCount: events.length,
+                    separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                    itemBuilder: (context, index) {
+                      final event = events[index];
+                      return TicketItemWidget(event: event);
+                    },
+                  )
+                : Center(
+                    child: Text(
+                      AppVietnameseStrings.noDataFound,
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 16.sp,
+                      ),
+                    ),
+                  ),
+            ),
           );
-        },
-        separatorBuilder: (_, __) => SizedBox(height: 8.h),
-      )
-        : Center(child: Text(AppVietnameseStrings.noEvents, style: theme.textTheme.titleMedium)),
-    )
-    );
   }
 }
 
 class TicketItemWidget extends StatelessWidget {
   final dynamic event;
 
-  const TicketItemWidget({super.key, this.event});
+  const TicketItemWidget({
+    Key? key,
+    required this.event,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    String status;
+    Color statusColor;
+    Color backgroundColor;
+
+    switch (event['status']) {
+      case 'ACTIVE':
+        status = 'Đang hoạt động';
+        statusColor = Colors.green;
+        backgroundColor = Colors.green.withOpacity(0.1);
+        break;
+      case 'CANCELLED':
+        status = 'Đã hủy';
+        statusColor = Colors.red;
+        backgroundColor = Colors.red.withOpacity(0.1);
+        break;
+      case 'COMPLETED':
+        status = 'Hoàn thành';
+        statusColor = Colors.blue;
+        backgroundColor = Colors.blue.withOpacity(0.1);
+        break;
+      default:
+        status = 'Không xác định';
+        statusColor = Colors.grey;
+        backgroundColor = Colors.grey.withOpacity(0.1);
+    }
+
     return Container(
-      decoration: AppDecoration.outlineGray.copyWith(borderRadius: BorderRadiusStyle.roundedBorder4),
-      child: Row(
+      padding: EdgeInsets.all(16.h),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(left: 8.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      CustomImageView(
-                        color: appTheme.greenA700,
-                        imagePath: 'assets/images/empty_ticket.png',
-                        width: 30.h,
-                        height: 30.h,
-                        fit: BoxFit.cover,
-                      ),
-                      // Image.network(
-                      //   event != null ? event['eventPoster'] : 'https://example.com/default_image.png',
-                      //   width: 30.h,
-                      //   height: 30.h,
-                      //   fit: BoxFit.cover,
-                      // ),
-                      SizedBox(width: 8.h),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(event != null ? event['eventDTO']['name'] : "Tên sự kiện", style: theme.textTheme.titleMedium),
-                            Text(event != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(event['createdAt'])) : "Ngày & Giờ", style: theme.textTheme.bodySmall), // Định dạng ngày
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 4.h),
-                    // child: Text(event != null ? "${event['totalAmount']} VND" : "2 vé", style: CustomTextStyles.bodySmallBlack900),
-                    child: _buildTicketItem(event ?? 0),
-                  ),
-                ],
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                event['eventName'] ?? '',
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                decoration: BoxDecoration(
+                  color: backgroundColor,
+                  borderRadius: BorderRadius.circular(4.r),
+                ),
+                child: Text(
+                  status,
+                  style: TextStyle(
+                    color: statusColor,
+                    fontSize: 12.sp,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            event['eventDate'] ?? '',
+            style: TextStyle(
+              fontSize: 14.sp,
+              color: Colors.grey,
             ),
           ),
-          Container(
-          width: 88.h,
-          height: 84.h,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.h),
-            image: DecorationImage(
-              image: NetworkImage(
-                             'http://162.248.102.236:8055/assets/${
-                event != null ? event['eventDTO']['eventPoster'] : 'default_image.png'
-              }',
-
-              ),
-              fit: BoxFit.cover,
+          SizedBox(height: 8.h),
+          Text(
+            event['venue'] ?? '',
+            style: TextStyle(
+              fontSize: 14.sp,
+              color: Colors.grey,
             ),
           ),
-        ),
-
         ],
       ),
     );
+  }
+}
+
+class TicketUpcomingTabPage extends StatefulWidget {
+  final List events;
+
+  const TicketUpcomingTabPage({Key? key, required this.events}) : super(key: key);
+
+  @override
+  State<TicketUpcomingTabPage> createState() => _TicketUpcomingTabPageState();
+}
+
+class _TicketUpcomingTabPageState extends State<TicketUpcomingTabPage> {
+  late List events;
+  int? selectedIndex;
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    events = widget.events;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : RefreshIndicator(
+            onRefresh: () async {
+              // Implement refresh logic
+            },
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 30.h),
+              child: events.isNotEmpty 
+                ? ListView.separated(
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: events.length,
+                    separatorBuilder: (_, __) => SizedBox(height: 8.h),
+                    itemBuilder: (context, index) {
+                      final event = events[index];
+                      final isSelected = selectedIndex == index;
+                      return TicketItemWidget(event: event);
+                    },
+                  )
+                : Center(
+                    child: Text(
+                      AppVietnameseStrings.noDataFound,
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 16.sp,
+                      ),
+                    ),
+                  ),
+            ),
+          );
+  }
+}
+
+class AllTicketTabPage extends StatefulWidget {
+  final List events;
+
+  const AllTicketTabPage({Key? key, required this.events}) : super(key: key);
+
+  @override
+  State<AllTicketTabPage> createState() => _AllTicketTabPageState();
+}
+
+class _AllTicketTabPageState extends State<AllTicketTabPage> {
+  late List events;
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    events = widget.events;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : RefreshIndicator(
+            onRefresh: () async {
+              // Implement refresh logic
+            },
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 30.h),
+              child: events.isNotEmpty 
+                ? ListView.separated(
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: events.length,
+                    separatorBuilder: (_, __) => SizedBox(height: 8.h),
+                    itemBuilder: (context, index) {
+                      final event = events[index];
+                      return TicketItemWidget(event: event);
+                    },
+                  )
+                : Center(
+                    child: Text(
+                      AppVietnameseStrings.noDataFound,
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 16.sp,
+                      ),
+                    ),
+                  ),
+            ),
+          );
   }
 }

@@ -12,10 +12,10 @@ class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
 
   @override
-  _SearchScreenState createState() => _SearchScreenState();
+  State<SearchScreen> createState() => SearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> {
+class SearchScreenState extends State<SearchScreen> {
   final TextEditingController searchController = TextEditingController();
   List events = [];
   Map<String, dynamic> filters = {};
@@ -85,6 +85,15 @@ class _SearchScreenState extends State<SearchScreen> {
       print(AppVietnameseStrings.errorNoSearchResults);
     }
   }
+
+  void refreshData() {
+    setState(() {
+      // Gọi lại các hàm load dữ liệu
+      _getPopularEvents();
+      _getEventTypes();
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
