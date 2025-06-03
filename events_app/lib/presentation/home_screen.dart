@@ -55,7 +55,17 @@ class _EventlistItemWidgetState extends State<EventlistItemWidget> {
       isProcessing = true;
     });
 
-    // final isFav = widget.event['isFav'] ?? false;
+    // Nếu chưa đăng nhập thì không cho thao tác yêu thích
+    final prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('access_token');
+    if (accessToken == null) {
+      ApiService.showLoginRequiredDialog(context);
+      setState(() {
+        isProcessing = false;
+      });
+      return;
+    }
+
     final eventId = widget.event['id'];
 
     String endpoint = isFav
@@ -185,6 +195,7 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
   String selectedLocation = 'Hà Nội';
 
   List favEvents = [];
+  bool isLoggedIn = false;
 
   Future<void> _onRefresh() async {
     await _getPopularEvents();
@@ -193,6 +204,20 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
   }
 
   Future<void> _getFavEvents() async {
+    // Kiểm tra đăng nhập
+    final prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('access_token');
+    if (accessToken == null) {
+      setState(() {
+        favEvents = [];
+        isLoggedIn = false;
+      });
+      return;
+    }
+    setState(() {
+      isLoggedIn = true;
+    });
+
     final response = await ApiService.requestGetApi(
         'event/private/get-favourite-event',
         context: context,
@@ -357,20 +382,24 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
                           : appTheme.gray900,
                       size: 18.h,
                     ),
-                    onPressed: () async {
-                      final isFav = favEvents.contains(event['id']);
-                      final endpoint = isFav
-                          ? 'event/private/remove-favourite-event/${event['id']}'
-                          : 'event/private/add-favourite-event/${event['id']}';
+                    onPressed: isLoggedIn
+                        ? () async {
+                            final isFav = favEvents.contains(event['id']);
+                            final endpoint = isFav
+                                ? 'event/private/remove-favourite-event/${event['id']}'
+                                : 'event/private/add-favourite-event/${event['id']}';
 
-                      final response = await ApiService.requestApi(endpoint, {},
-                          useAuth: true);
-                      if (response != null) {
-                        await _getFavEvents();
+                            final response = await ApiService.requestApi(endpoint, {},
+                                useAuth: true);
+                            if (response != null) {
+                              await _getFavEvents();
 
-                        setState(() {});
-                      }
-                    },
+                              setState(() {});
+                            }
+                          }
+                        : () {
+                            ApiService.showLoginRequiredDialog(context);
+                          },
                   ),
                   IconButton(
                     icon: Icon(Icons.share_outlined,
