@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
@@ -10,7 +11,6 @@ import '../service/api_service.dart';
 import '../src/localization/app_vietnamese_strings.dart';
 import '../widgets.dart';
 import 'single_event_screen.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class HomeScreen extends StatelessWidget {
   final String selectedLocation;
@@ -195,6 +195,7 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
   Future<void> _getFavEvents() async {
     final response = await ApiService.requestGetApi(
         'event/private/get-favourite-event',
+        context: context,
         useAuth: true);
 
     if (response != null) {
@@ -224,6 +225,8 @@ class _HomeInitialPageState extends State<HomeInitialPage> {
   Future<void> _getPopularEvents() async {
     final response = await ApiService.requestGetApi(
       'event/public/get-popular-event',
+      context: context,
+      useAuth: false,
     );
     if (response != null) {
       setState(() {
