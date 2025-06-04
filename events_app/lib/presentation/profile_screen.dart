@@ -1,5 +1,6 @@
 import 'package:events_app/app_utils.dart';
 import 'package:events_app/presentation/update_info_screen.dart';
+import 'package:events_app/utils/auth_utils.dart';
 import 'package:events_app/widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -24,6 +25,7 @@ class ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
+    AuthUtils.checkLogin(context);
     _getUserInfo(); // Gọi lấy thông tin user khi widget khởi tạo
   }
 

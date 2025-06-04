@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 
-import 'package:events_app/presentation/loginScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../utils/auth_utils.dart';
 
 class ApiService {
   // Hàm hiển thị dialog yêu cầu đăng nhập
@@ -25,18 +25,13 @@ class ApiService {
       'Accept-Language': 'vi-VN',
     };
 
-    // if (useAuth) {
-    //   final prefs = await SharedPreferences.getInstance();
-    //   String? accessToken = prefs.getString('access_token');
-    //   if (accessToken == null || accessToken.isEmpty) {
-    //     print('Error: No access token found');
-    //     if (context != null) {
-    //       await showLoginRequiredDialog(context);
-    //     }
-    //     return null;
-    //   }
-    //   headers['Authorization'] = 'Bearer $accessToken';
-    // }
+    if (useAuth) {
+      final prefs = await SharedPreferences.getInstance();
+      String? accessToken = prefs.getString('access_token');
+      if (accessToken != null && accessToken.isNotEmpty) {
+        headers['Authorization'] = 'Bearer $accessToken';
+      }
+    }
 
     try {
       final response = await http.post(
@@ -69,19 +64,13 @@ class ApiService {
       'Accept-Language': 'vi-VN',
     };
 
-    // if (useAuth) {
-    //   final prefs = await SharedPreferences.getInstance();
-    //   String? accessToken = prefs.getString('access_token');
-    //   log('Access token: $accessToken');
-    //   if (accessToken == null || accessToken.isEmpty) {
-    //     print('Error: No access token found');
-    //     if (context != null) {
-    //       await showLoginRequiredDialog(context);
-    //     }
-    //     return null;
-    //   }
-    //   headers['Authorization'] = 'Bearer $accessToken';
-    // }
+    if (useAuth) {
+      final prefs = await SharedPreferences.getInstance();
+      String? accessToken = prefs.getString('access_token');
+      if (accessToken != null && accessToken.isNotEmpty) {
+        headers['Authorization'] = 'Bearer $accessToken';
+      }
+    }
 
     try {
       final response = await http.get(Uri.parse(url), headers: headers);
@@ -149,13 +138,13 @@ class ApiService {
       final prefs = await SharedPreferences.getInstance();
       String? accessToken = prefs.getString('access_token');
 
-      // if (accessToken == null || accessToken.isEmpty) {
-      //   print('Error: No access token found');
-      //   if (context != null) {
-      //     await showLoginRequiredDialog(context);
-      //   }
-      //   return {"error": "Unauthorized"};
-      // }
+      if (accessToken == null || accessToken.isEmpty) {
+        print('Error: No access token found');
+        if (context != null) {
+          await showLoginRequiredDialog(context);
+        }
+        return {"error": "Unauthorized"};
+      }
 
       // Tạo request dạng Multipart để gửi file
       final request = http.MultipartRequest('POST', url)
@@ -195,18 +184,13 @@ class ApiService {
       'Content-Type': 'application/json',
     };
 
-    // if (useAuth) {
-    //   final prefs = await SharedPreferences.getInstance();
-    //   String? accessToken = prefs.getString('access_token');
-    //   if (accessToken == null || accessToken.isEmpty) {
-    //     print('Error: No access token found');
-    //     if (context != null) {
-    //       await showLoginRequiredDialog(context);
-    //     }
-    //     return {"error": "Unauthorized"};
-    //   }
-    //   headers['Authorization'] = 'Bearer $accessToken';
-    // }
+    if (useAuth) {
+      final prefs = await SharedPreferences.getInstance();
+      String? accessToken = prefs.getString('access_token');
+      if (accessToken != null && accessToken.isNotEmpty) {
+        headers['Authorization'] = 'Bearer $accessToken';
+      }
+    }
 
     try {
       final response = await http.post(
@@ -239,18 +223,13 @@ class ApiService {
       'Accept-Language': 'vi-VN',
     };
 
-    // if (useAuth) {
-    //   final prefs = await SharedPreferences.getInstance();
-    //   String? accessToken = prefs.getString('access_token');
-    //   if (accessToken == null || accessToken.isEmpty) {
-    //     print('Error: No access token found');
-    //     if (context != null) {
-    //       await showLoginRequiredDialog(context);
-    //     }
-    //     return {"error": "Unauthorized"};
-    //   }
-    //   headers['Authorization'] = 'Bearer $accessToken';
-    // }
+    if (useAuth) {
+      final prefs = await SharedPreferences.getInstance();
+      String? accessToken = prefs.getString('access_token');
+      if (accessToken != null && accessToken.isNotEmpty) {
+        headers['Authorization'] = 'Bearer $accessToken';
+      }
+    }
 
     try {
       final response = await http.get(Uri.parse(url), headers: headers);
