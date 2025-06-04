@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../service/api_service.dart';
 import '../src/localization/app_vietnamese_strings.dart'; // Import
+import '../utils/auth_utils.dart';
 
 class TicketScreen extends StatefulWidget {
   const TicketScreen({Key? key}) : super(key: key);
@@ -23,6 +24,7 @@ class TicketEmptyScreenState extends State<TicketScreen>
   void initState() {
     super.initState();
     tabviewController = TabController(length: 3, vsync: this);
+    AuthUtils.checkLogin(context);
     refreshData();
   }
 

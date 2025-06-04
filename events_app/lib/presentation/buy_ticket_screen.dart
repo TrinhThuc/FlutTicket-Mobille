@@ -1,5 +1,6 @@
 import 'package:events_app/app_theme.dart';
 import 'package:events_app/app_utils.dart';
+import 'package:events_app/utils/auth_utils.dart';
 import 'package:events_app/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Thêm thư viện để định dạng ngày tháng
@@ -19,6 +20,12 @@ class BuyTicketScreen extends StatefulWidget {
 class _BuyTicketScreenState extends State<BuyTicketScreen> {
   int totalPrice = 0;
   Map<int, int> ticketQuantities = {}; // ticketId -> quantity
+
+  @override
+  void initState() {
+    super.initState();
+    AuthUtils.checkLogin(context);
+  }
 
   void _updateQuantity(int index, int quantity) {
     final ticket = widget.eventDetails['listTicket'][index];

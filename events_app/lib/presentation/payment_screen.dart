@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:events_app/app_theme.dart';
 import 'package:events_app/app_utils.dart';
+import 'package:events_app/utils/auth_utils.dart';
 import 'package:events_app/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -64,9 +65,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   int selectedMethod = 0; // Track selected payment method globally
   String? selectedGender;
+
   @override
   void initState() {
     super.initState();
+    AuthUtils.checkLogin(context);
     _getUserInfo(); // Gọi lấy thông tin user khi widget khởi tạo
   }
 

@@ -1,7 +1,7 @@
 import 'package:events_app/constants/colors.dart';
 import 'package:events_app/constants/styles.dart';
 import 'package:events_app/constants/values.dart';
-import 'package:events_app/presentation/dashboard_screen.dart';
+import 'package:events_app/utils/auth_utils.dart';
 import 'package:events_app/widgets/button_widget.dart';
 import 'package:events_app/widgets/text_field_widget.dart';
 import 'package:flutter/material.dart';
@@ -40,8 +40,10 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
   int _selectedGender = 0;
   bool _isLoading = true;
 
+  @override
   void initState() {
     super.initState();
+    AuthUtils.checkLogin(context);
     _getUserInfo(); // Gọi lấy thông tin user khi widget khởi tạo
   }
 

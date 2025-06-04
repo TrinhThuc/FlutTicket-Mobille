@@ -1,5 +1,6 @@
 import 'package:events_app/app_theme.dart';
 import 'package:events_app/app_utils.dart';
+import 'package:events_app/utils/auth_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -23,6 +24,7 @@ class FavouritesScreenState extends State<FavouritesScreen> {
   @override
   void initState() {
     super.initState();
+    AuthUtils.checkLogin(context);
     _getFavEvents();
   }
 
