@@ -44,42 +44,49 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  Widget _buildScreen(int index) {
+    switch (index) {
+      case 0:
+        return Sizer(
+          builder: (context, orientation, deviceType) {
+            return HomeScreen(key: _screenKeys[0], selectedLocation: 'Barcelona');
+          },
+        );
+      case 1:
+        return Sizer(
+          builder: (context, orientation, deviceType) {
+            return SearchScreen(key: _screenKeys[1]);
+          },
+        );
+      case 2:
+        return Sizer(
+          builder: (context, orientation, deviceType) {
+            return TicketScreen(key: _screenKeys[2]);
+          },
+        );
+      case 3:
+        return Sizer(
+          builder: (context, orientation, deviceType) {
+            return FavouritesScreen(key: _screenKeys[3]);
+          },
+        );
+      case 4:
+        return Sizer(
+          builder: (context, orientation, deviceType) {
+            return ProfileScreen(key: _screenKeys[4]);
+          },
+        );
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final List<Widget> widgetOptions = <Widget>[
-      Sizer(
-        builder: (context, orientation, deviceType) {
-          return HomeScreen(key: _screenKeys[0], selectedLocation: 'Barcelona');
-        },
-      ),
-      Sizer(
-        builder: (context, orientation, deviceType) {
-          return SearchScreen(key: _screenKeys[1]);
-        },
-      ),
-      Sizer(
-        builder: (context, orientation, deviceType) {
-          return TicketScreen(key: _screenKeys[2]);
-        },
-      ),
-      Sizer(
-        builder: (context, orientation, deviceType) {
-          return FavouritesScreen(key: _screenKeys[3]);
-        },
-      ),
-      Sizer(
-        builder: (context, orientation, deviceType) {
-          return ProfileScreen(key: _screenKeys[4]);
-        },
-      ),
-    ];
     return Scaffold(
       backgroundColor: appTheme.gray900,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      body: IndexedStack(
-        index: selectTab,
-        children: widgetOptions,
-      ),
+      body: _buildScreen(selectTab),
       bottomNavigationBar: BottomAppBar(
         color: appTheme.gray900,
         padding: const EdgeInsets.all(0),
