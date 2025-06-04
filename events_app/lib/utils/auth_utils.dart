@@ -38,7 +38,6 @@ class AuthUtils {
     if (token == null || token.isEmpty) {
       if (context.mounted) {
         await showLoginRequiredDialog(context);
-        Navigator.pop(context); // Quay lại màn hình trước
       }
       return false;
     }
