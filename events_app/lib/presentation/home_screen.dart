@@ -9,6 +9,7 @@ import '../app_theme.dart';
 import '../app_utils.dart';
 import '../service/api_service.dart';
 import '../src/localization/app_vietnamese_strings.dart';
+import '../utils/auth_utils.dart';
 import '../widgets.dart';
 import 'single_event_screen.dart';
 
@@ -74,7 +75,7 @@ class _EventlistItemWidgetState extends State<EventlistItemWidget> {
     final prefs = await SharedPreferences.getInstance();
     final accessToken = prefs.getString('access_token');
     if (accessToken == null) {
-      ApiService.showLoginRequiredDialog(context);
+      showLoginRequiredDialog(context);
       setState(() {
         isProcessing = false;
       });
@@ -424,7 +425,7 @@ class HomeInitialPageState extends State<HomeInitialPage> {
                             }
                           }
                         : () {
-                            ApiService.showLoginRequiredDialog(context);
+                            showLoginRequiredDialog(context);
                           },
                   ),
                   IconButton(

@@ -22,9 +22,10 @@ class TicketEmptyScreenState extends State<TicketScreen>
 
   @override
   void initState() {
-    super.initState();
-    tabviewController = TabController(length: 3, vsync: this);
+    super.initState(); 
     AuthUtils.checkLogin(context);
+    tabviewController = TabController(length: 3, vsync: this);
+   
     refreshData();
   }
 
