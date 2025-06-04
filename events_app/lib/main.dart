@@ -26,10 +26,7 @@ void main() {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          home: const MyApp(),
-        );
+        return const MyApp();
       },
     ),
   );
@@ -49,7 +46,6 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const StartScreen(),
-
     );
   }
 }

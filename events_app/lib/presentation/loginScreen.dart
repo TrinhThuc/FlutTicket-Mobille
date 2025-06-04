@@ -45,25 +45,39 @@ class _LoginScreenState extends State<LoginScreen> {
       // Đóng dialog loading
       Navigator.of(context, rootNavigator: true).pop();
 
-      if (response != null && response.containsKey('error')) {
+      if (response == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Không thể kết nối đến server. Vui lòng thử lại sau.')),
+        );
+        return;
+      }
+
+      if (response.containsKey('error')) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(response['error'])),
         );
-      } else {
+      } else if (response.containsKey('access_token')) {
         final prefs = await SharedPreferences.getInstance();
         await prefs.remove('access_token'); // Xóa token cũ trước khi lưu
-        await prefs.setString('access_token', response?['access_token']);
+        await prefs.setString('access_token', response['access_token']);
 
         // Chuyển đến màn hình chọn vị trí
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const SelectLocation()),
         );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.')),
+        );
       }
     } catch (e) {
-      Navigator.of(context, rootNavigator: true).pop(); // Đóng dialog
+      // Đóng dialog loading nếu có lỗi
+      if (Navigator.canPop(context)) {
+        Navigator.of(context, rootNavigator: true).pop();
+      }
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(AppVietnameseStrings.errorOccurredPleaseTryAgain)),
+        SnackBar(content: Text('Có lỗi xảy ra: $e')),
       );
     }
   }

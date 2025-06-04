@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
@@ -139,7 +140,13 @@ class ApiService {
     request.fields['password'] = password;
 
     try {
-      final streamedResponse = await request.send();
+      // Thêm timeout 10 giây cho request
+      final streamedResponse = await request.send().timeout(
+        const Duration(seconds: 30),
+        onTimeout: () {
+          throw TimeoutException('Request timeout');
+        },
+      );
       final response = await http.Response.fromStream(streamedResponse);
 
       if (response.statusCode == 200) {
@@ -148,13 +155,15 @@ class ApiService {
       } else {
         // Xử lý lỗi, có thể ghi log hoặc ném exception
         print('Lỗi đăng nhập: ${response.statusCode} - ${response.body}');
-        // return await _loadFakeResponse('login'); // Lấy response local nếu đăng nhập thất bại
+        return {"error": "Đăng nhập thất bại: ${response.body}"};
       }
     } catch (e) {
       print('Exception: $e');
-      // return await _loadFakeResponse('login'); // Lấy response local nếu có lỗi
+      if (e is TimeoutException) {
+        return {"error": "Kết nối đến server quá thời gian. Vui lòng thử lại."};
+      }
+      return {"error": "Có lỗi xảy ra: $e"};
     }
-    return null;
   }
 
   Future<Map<String, dynamic>?> updateAvatar(String filePath,
