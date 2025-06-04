@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'app_utils.dart';
 import 'presentation/dashboard_screen.dart';
 import 'presentation/loginScreen.dart';
 import 'presentation/signUpScreen.dart';
@@ -21,11 +21,14 @@ import 'src/localization/app_vietnamese_strings.dart';
 // }
 void main() {
   runApp(
-    Sizer(
-      builder: (context, orientation, deviceType) {
-        return const MaterialApp(
+    ScreenUtilInit(
+      designSize: const Size(375, 812),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return MaterialApp(
           debugShowCheckedModeBanner: false,
-          home: MyApp(),  
+          home: const MyApp(),
         );
       },
     ),

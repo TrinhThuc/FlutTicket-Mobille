@@ -58,7 +58,7 @@ class ApiService {
         if (context != null) {
           await showLoginRequiredDialog(context);
         }
-        return {"error": "Unauthorized"};
+        return null;
       }
       headers['Authorization'] = 'Bearer $accessToken';
     }
@@ -74,15 +74,17 @@ class ApiService {
         return json.decode(response.body);
       } else {
         print('API request $url failed with status: ${response.statusCode}');
+        return null;
       }
     } catch (e) {
       print('Error connecting to API: $e');
+      return null;
     }
   }
 
   static Future<dynamic> requestGetApi(
     String endpoint, {
-    bool useAuth = true,
+    bool useAuth = false,
     BuildContext? context,
   }) async {
     final url = 'http://192.168.0.104:8301/$endpoint';
@@ -101,7 +103,7 @@ class ApiService {
         if (context != null) {
           await showLoginRequiredDialog(context);
         }
-        return {"error": "Unauthorized"};
+        return null;
       }
       headers['Authorization'] = 'Bearer $accessToken';
     }
@@ -113,9 +115,11 @@ class ApiService {
         return json.decode(response.body);
       } else {
         print('API request $url failed with status: ${response.statusCode}');
+        return null;
       }
     } catch (e) {
       print('Error connecting to API: $e');
+      return null;
     }
   }
 

@@ -37,28 +37,46 @@ class SearchScreenState extends State<SearchScreen> {
   }
 
   Future<void> _getPopularEvents() async {
-    final response =
-        await ApiService.requestGetApi('event/public/get-popular-event');
-
-    if (response != null) {
+    try {
+      final response = await ApiService.requestGetApi('event/public/get-popular-event');
+      
+      if (response != null && response['data'] != null && response['data']['content'] != null) {
+        setState(() {
+          events = response['data']['content'];
+        });
+      } else {
+        setState(() {
+          events = [];
+        });
+        print(AppVietnameseStrings.errorNoPopularEvents);
+      }
+    } catch (e) {
+      print('Error getting popular events: $e');
       setState(() {
-        events = response['data']['content'];
+        events = [];
       });
-    } else {
-      print(AppVietnameseStrings.errorNoPopularEvents);
     }
   }
 
   Future<void> _getEventTypes() async {
-    final response =
-        await ApiService.requestGetApi('event/public/get-event-type');
-
-    if (response != null) {
+    try {
+      final response = await ApiService.requestGetApi('event/public/get-event-type');
+      
+      if (response != null && response['data'] != null) {
+        setState(() {
+          eventTypes = List<Map<String, dynamic>>.from(response['data']);
+        });
+      } else {
+        setState(() {
+          eventTypes = [];
+        });
+        print(AppVietnameseStrings.errorNoEventTypes);
+      }
+    } catch (e) {
+      print('Error getting event types: $e');
       setState(() {
-        eventTypes = List<Map<String, dynamic>>.from(response['data']);
+        eventTypes = [];
       });
-    } else {
-      print(AppVietnameseStrings.errorNoEventTypes);
     }
   }
 
@@ -73,16 +91,25 @@ class SearchScreenState extends State<SearchScreen> {
   }
 
   Future<void> _searchEvents(String query) async {
-    final response = await ApiService.requestApi(
-        'event/public/search-event?sort=name,asc', {});
+    try {
+      final response = await ApiService.requestApi(
+          'event/public/search-event?sort=name,asc', {});
 
-    if (response != null) {
-      debugPrint('Search response data: ${response['data']}');
+      if (response != null && response['data'] != null && response['data']['content'] != null) {
+        setState(() {
+          events = response['data']['content'];
+        });
+      } else {
+        setState(() {
+          events = [];
+        });
+        print(AppVietnameseStrings.errorNoSearchResults);
+      }
+    } catch (e) {
+      print('Error searching events: $e');
       setState(() {
-        events = response['data']['content'];
+        events = [];
       });
-    } else {
-      print(AppVietnameseStrings.errorNoSearchResults);
     }
   }
 
