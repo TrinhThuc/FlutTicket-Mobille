@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../app_theme.dart';
 import '../service/api_service.dart';
 import '../src/localization/app_vietnamese_strings.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -21,10 +22,24 @@ class ProfileScreenState extends State<ProfileScreen> {
   String userEmail = '';
   String avatar = '';
 
+  // Thêm biến này để lưu location
+  String selectedLocation = '';
+
   @override
   void initState() {
     super.initState();
+    _loadSelectedLocation();
     _getUserInfo(); // Gọi lấy thông tin user khi widget khởi tạo
+  }
+
+  Future<void> _loadSelectedLocation() async {
+    final prefs = await SharedPreferences.getInstance();
+    final storedLocation = prefs.getString('selectedLocation');
+    setState(() {
+      selectedLocation = storedLocation != null && storedLocation.isNotEmpty
+          ? storedLocation
+          : 'Hà Nội'; // Giá trị mặc định nếu chưa có trong prefs
+    });
   }
 
   void refreshData() {
@@ -166,7 +181,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                       SizedBox(height: 10.h),
                       _buildPrimaryCityTab(context),
                       _buildCopyEventTab(context),
-                      _buildManageEventsTab(context),
+                      // _buildManageEventsTab(context),
                       _buildLoginOptionsTab(context),
                       _buildAccountSettingsTab(context),
                     ],
@@ -216,7 +231,8 @@ class ProfileScreenState extends State<ProfileScreen> {
                   style: CustomTextStyles.bodySmallBlack900),
             ),
           ),
-          Text('Hà Nội', style: CustomTextStyles.bodySmallBlack900),
+          Text(selectedLocation ?? 'Hà Nội',
+              style: CustomTextStyles.bodySmallBlack900),
         ],
       ),
     );
@@ -252,28 +268,28 @@ class ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildManageEventsTab(BuildContext context) {
-    return Container(
-      width: double.maxFinite,
-      margin: EdgeInsets.symmetric(horizontal: 4.h),
-      padding: EdgeInsets.all(10.h),
-      decoration: AppDecoration.globalGreylight,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: EdgeInsets.only(left: 8.h),
-              child: Text('Manage Events',
-                  style: CustomTextStyles.bodySmallBlack900),
-            ),
-          ),
-          Icon(Icons.arrow_forward_ios, size: 20.h)
-        ],
-      ),
-    );
-  }
+  // Widget _buildManageEventsTab(BuildContext context) {
+  //   return Container(
+  //     width: double.maxFinite,
+  //     margin: EdgeInsets.symmetric(horizontal: 4.h),
+  //     padding: EdgeInsets.all(10.h),
+  //     decoration: AppDecoration.globalGreylight,
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //       children: [
+  //         Align(
+  //           alignment: Alignment.bottomCenter,
+  //           child: Padding(
+  //             padding: EdgeInsets.only(left: 8.h),
+  //             child: Text('Tùy chỉnh sự kie',
+  //                 style: CustomTextStyles.bodySmallBlack900),
+  //           ),
+  //         ),
+  //         Icon(Icons.arrow_forward_ios, size: 20.h)
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _buildLoginOptionsTab(BuildContext context) {
     return Container(
@@ -288,7 +304,7 @@ class ProfileScreenState extends State<ProfileScreen> {
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: EdgeInsets.only(left: 8.h),
-              child: Text('Manage Log in options',
+              child: Text('Tùy chọn đăng nhập',
                   style: CustomTextStyles.bodySmallBlack900),
             ),
           ),
@@ -311,7 +327,7 @@ class ProfileScreenState extends State<ProfileScreen> {
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: EdgeInsets.only(left: 8.h),
-              child: Text('Account Settings',
+              child: Text('Cài đặt tài khoản',
                   style: CustomTextStyles.bodySmallBlack900),
             ),
           ),
