@@ -24,7 +24,7 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
   @override
   void initState() {
     super.initState();
-    // AuthUtils.checkLogin(context);
+    AuthUtils.checkLogin(context);
   }
 
   void _updateQuantity(int index, int quantity) {
