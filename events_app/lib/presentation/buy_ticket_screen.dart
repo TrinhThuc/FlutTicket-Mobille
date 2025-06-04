@@ -81,16 +81,19 @@ class _BuyTicketScreenState extends State<BuyTicketScreen> {
                               widget.eventDetails['name'] ??
                                   AppVietnameseStrings.eventNameUnavailable,
                               style: theme.textTheme.titleLarge,
+                              textAlign: TextAlign.center,
                             ),
                             SizedBox(height: 8.h),
                             Text(
                               '${AppVietnameseStrings.timePrefix}${widget.eventDetails['startTime'] != null ? DateFormat('dd-MM-yyyy').format(DateTime.parse(widget.eventDetails['startTime'])) : AppVietnameseStrings.noInformationAvailable}',
                               style: theme.textTheme.bodySmall,
+                              textAlign: TextAlign.center,
                             ),
                             Text(
                               widget.eventDetails['location'] ??
                                   AppVietnameseStrings.locationUnavailable,
                               style: theme.textTheme.bodySmall,
+                              textAlign: TextAlign.center,
                             ),
                             SizedBox(height: 82.h),
                             Expanded(
