@@ -24,11 +24,15 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: HomeInitialPage(selectedLocation: widget.selectedLocation),
-      ),
+    return Sizer(
+      builder: (context, orientation, deviceType) {
+        return Scaffold(
+          backgroundColor: Colors.white,
+          body: SafeArea(
+            child: HomeInitialPage(selectedLocation: widget.selectedLocation),
+          ),
+        );
+      },
     );
   }
 

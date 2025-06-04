@@ -5,6 +5,7 @@ import 'package:events_app/presentation/ticket_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../app_theme.dart';
+import '../app_utils.dart';
 import 'search_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -46,11 +47,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> widgetOptions = <Widget>[
-      HomeScreen(key: _screenKeys[0], selectedLocation: 'Barcelona'),
-      SearchScreen(key: _screenKeys[1]),
-      TicketScreen(key: _screenKeys[2]),
-      FavouritesScreen(key: _screenKeys[3]),
-      ProfileScreen(key: _screenKeys[4]),
+      Sizer(
+        builder: (context, orientation, deviceType) {
+          return HomeScreen(key: _screenKeys[0], selectedLocation: 'Barcelona');
+        },
+      ),
+      Sizer(
+        builder: (context, orientation, deviceType) {
+          return SearchScreen(key: _screenKeys[1]);
+        },
+      ),
+      Sizer(
+        builder: (context, orientation, deviceType) {
+          return TicketScreen(key: _screenKeys[2]);
+        },
+      ),
+      Sizer(
+        builder: (context, orientation, deviceType) {
+          return FavouritesScreen(key: _screenKeys[3]);
+        },
+      ),
+      Sizer(
+        builder: (context, orientation, deviceType) {
+          return ProfileScreen(key: _screenKeys[4]);
+        },
+      ),
     ];
     return Scaffold(
       backgroundColor: appTheme.gray900,
