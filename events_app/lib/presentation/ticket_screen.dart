@@ -1,6 +1,8 @@
+import 'package:events_app/app_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../app_theme.dart';
 import '../service/api_service.dart';
 import '../src/localization/app_vietnamese_strings.dart'; // Import
 import '../utils/auth_utils.dart';
@@ -23,8 +25,9 @@ class TicketEmptyScreenState extends State<TicketScreen>
   @override
   void initState() {
     super.initState();
-    tabviewController = TabController(length: 3, vsync: this);
     AuthUtils.checkLogin(context);
+    tabviewController = TabController(length: 3, vsync: this);
+
     refreshData();
   }
 
@@ -49,7 +52,8 @@ class TicketEmptyScreenState extends State<TicketScreen>
         "isPastTicket": false,
         "page": 0,
         "size": 99,
-      }, useAuth: true,
+      },
+      useAuth: true,
     );
     if (!mounted) return;
     if (response != null && response['data'] != null) {
@@ -68,11 +72,7 @@ class TicketEmptyScreenState extends State<TicketScreen>
     });
     final response = await ApiService.requestApi(
       'order/private/search-event',
-      {
-        "isPastTicket": true,
-        "page": 0,
-        "size": 99
-      },
+      {"isPastTicket": true, "page": 0, "size": 99},
       useAuth: true,
     );
 
@@ -98,7 +98,8 @@ class TicketEmptyScreenState extends State<TicketScreen>
         "isPastTicket": null,
         "page": 0,
         "size": 99,
-      }, useAuth: true,
+      },
+      useAuth: true,
     );
     if (response != null && response['data'] != null) {
       setState(() {
@@ -127,7 +128,7 @@ class TicketEmptyScreenState extends State<TicketScreen>
                   AllTicketTabPage(events: allEvents),
                 ],
               ),
-            ),
+            )
           ],
         ),
       ),
@@ -136,7 +137,7 @@ class TicketEmptyScreenState extends State<TicketScreen>
 
   Widget _buildTicketsSection(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -147,18 +148,31 @@ class TicketEmptyScreenState extends State<TicketScreen>
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 16.h),
-          TabBar(
-            controller: tabviewController,
-            labelColor: Colors.black,
-            unselectedLabelColor: Colors.grey,
-            indicatorColor: Colors.black,
-            tabs: [
-              Tab(text: 'Sắp tới'),
-              Tab(text: 'Đã qua'),
-              Tab(text: 'Tất cả'),
-            ],
-          ),
+          SizedBox(height: 16),
+          Container(
+              margin: EdgeInsets.symmetric(horizontal: 14),
+              child: TabBar(
+                controller: tabviewController,
+                labelPadding: EdgeInsets.zero,
+                labelColor: Colors.white,
+                labelStyle: TextStyle(
+                  fontSize: 16.fSize,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Inter',
+                ),
+                unselectedLabelColor: appTheme.gray100.withOpacity(0.75),
+                unselectedLabelStyle: TextStyle(
+                  fontSize: 16.fSize,
+                  fontWeight: FontWeight.w400,
+                  fontFamily: 'Inter',
+                ),
+                indicatorColor: Colors.white,
+                tabs: const [
+                  Tab(text: AppVietnameseStrings.upcomingTab),
+                  Tab(text: AppVietnameseStrings.pastTicketsTab),
+                  Tab(text: AppVietnameseStrings.allTab),
+                ],
+              ))
         ],
       ),
     );
@@ -193,134 +207,71 @@ class _TicketPastTabPageState extends State<TicketPastTabPage> {
               // Implement refresh logic
             },
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24.h, vertical: 30.h),
-              child: events.isNotEmpty 
-                ? ListView.separated(
-                    itemCount: events.length,
-                    separatorBuilder: (_, __) => SizedBox(height: 12.h),
-                    itemBuilder: (context, index) {
-                      final event = events[index];
-                      return TicketItemWidget(event: event);
-                    },
-                  )
-                : Center(
-                    child: Text(
-                      AppVietnameseStrings.noDataFound,
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 16.sp,
+              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 30),
+              child: events.isNotEmpty
+                  ? ListView.separated(
+                      itemCount: events.length,
+                      separatorBuilder: (_, __) => SizedBox(height: 12),
+                      itemBuilder: (context, index) {
+                        final event = events[index];
+                        return _buildTicketItem(event: event);
+                      },
+                    )
+                  : Center(
+                      child: Text(
+                        AppVietnameseStrings.noDataFound,
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16.sp,
+                        ),
                       ),
                     ),
-                  ),
             ),
           );
   }
 }
 
-class TicketItemWidget extends StatelessWidget {
-  final dynamic event;
+Widget _buildTicketItem({required event}) {
+  String status;
 
-  const TicketItemWidget({
-    Key? key,
-    required this.event,
-  }) : super(key: key);
+  switch (event['status']) {
+    case 0:
+      status = AppVietnameseStrings.statusPendingPayment;
 
-  @override
-  Widget build(BuildContext context) {
-    String status;
-    Color statusColor;
-    Color backgroundColor;
+      break;
+    case 1:
+      status = AppVietnameseStrings.statusPaid;
 
-    switch (event['status']) {
-      case 'ACTIVE':
-        status = 'Đang hoạt động';
-        statusColor = Colors.green;
-        backgroundColor = Colors.green.withOpacity(0.1);
-        break;
-      case 'CANCELLED':
-        status = 'Đã hủy';
-        statusColor = Colors.red;
-        backgroundColor = Colors.red.withOpacity(0.1);
-        break;
-      case 'COMPLETED':
-        status = 'Hoàn thành';
-        statusColor = Colors.blue;
-        backgroundColor = Colors.blue.withOpacity(0.1);
-        break;
-      default:
-        status = 'Không xác định';
-        statusColor = Colors.grey;
-        backgroundColor = Colors.grey.withOpacity(0.1);
-    }
+      break;
+    case 2:
+      status = AppVietnameseStrings.statusPaymentFailed;
 
-    return Container(
-      padding: EdgeInsets.all(16.h),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                event['eventName'] ?? '',
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                decoration: BoxDecoration(
-                  color: backgroundColor,
-                  borderRadius: BorderRadius.circular(4.r),
-                ),
-                child: Text(
-                  status,
-                  style: TextStyle(
-                    color: statusColor,
-                    fontSize: 12.sp,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            event['eventDate'] ?? '',
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: Colors.grey,
-            ),
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            event['venue'] ?? '',
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: Colors.grey,
-            ),
-          ),
-        ],
-      ),
-    );
+      break;
+    default:
+      status = AppVietnameseStrings.statusUndefined;
   }
+
+  return Container(
+    padding: EdgeInsets.all(8),
+    // decoration: AppDecoration.outlineGray.copyWith(borderRadius: BorderRadiusStyle.roundedBorder4),
+
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Text(event['orderCode'], style: theme.textTheme.titleMedium),
+        // Text(DateFormat('dd/MM/yyyy').format(DateTime.parse(event['createdAt'])), style: theme.textTheme.bodySmall), // Định dạng ngày
+        // Text("${event['totalAmount']} VND", style: CustomTextStyles.bodySmallBlack900),
+        Text(status, style: theme.textTheme.bodySmall), // Hiển thị trạng thái
+      ],
+    ),
+  );
 }
 
 class TicketUpcomingTabPage extends StatefulWidget {
   final List events;
 
-  const TicketUpcomingTabPage({Key? key, required this.events}) : super(key: key);
+  const TicketUpcomingTabPage({Key? key, required this.events})
+      : super(key: key);
 
   @override
   State<TicketUpcomingTabPage> createState() => _TicketUpcomingTabPageState();
@@ -346,27 +297,27 @@ class _TicketUpcomingTabPageState extends State<TicketUpcomingTabPage> {
               // Implement refresh logic
             },
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 30.h),
-              child: events.isNotEmpty 
-                ? ListView.separated(
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: events.length,
-                    separatorBuilder: (_, __) => SizedBox(height: 8.h),
-                    itemBuilder: (context, index) {
-                      final event = events[index];
-                      final isSelected = selectedIndex == index;
-                      return TicketItemWidget(event: event);
-                    },
-                  )
-                : Center(
-                    child: Text(
-                      AppVietnameseStrings.noDataFound,
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 16.sp,
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 30),
+              child: events.isNotEmpty
+                  ? ListView.separated(
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: events.length,
+                      separatorBuilder: (_, __) => SizedBox(height: 8),
+                      itemBuilder: (context, index) {
+                        final event = events[index];
+                        final isSelected = selectedIndex == index;
+                        return _buildTicketItem(event: event);
+                      },
+                    )
+                  : Center(
+                      child: Text(
+                        AppVietnameseStrings.noDataFound,
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16.sp,
+                        ),
                       ),
                     ),
-                  ),
             ),
           );
   }
@@ -400,26 +351,26 @@ class _AllTicketTabPageState extends State<AllTicketTabPage> {
               // Implement refresh logic
             },
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 30.h),
-              child: events.isNotEmpty 
-                ? ListView.separated(
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: events.length,
-                    separatorBuilder: (_, __) => SizedBox(height: 8.h),
-                    itemBuilder: (context, index) {
-                      final event = events[index];
-                      return TicketItemWidget(event: event);
-                    },
-                  )
-                : Center(
-                    child: Text(
-                      AppVietnameseStrings.noDataFound,
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 16.sp,
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 30),
+              child: events.isNotEmpty
+                  ? ListView.separated(
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: events.length,
+                      separatorBuilder: (_, __) => SizedBox(height: 8),
+                      itemBuilder: (context, index) {
+                        final event = events[index];
+                        return _buildTicketItem(event: event);
+                      },
+                    )
+                  : Center(
+                      child: Text(
+                        AppVietnameseStrings.noDataFound,
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16.sp,
+                        ),
                       ),
                     ),
-                  ),
             ),
           );
   }
