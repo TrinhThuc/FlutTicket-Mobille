@@ -7,6 +7,8 @@ import '../app_theme.dart';
 import '../service/api_service.dart';
 import '../src/localization/app_vietnamese_strings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -87,17 +89,19 @@ class ProfileScreenState extends State<ProfileScreen> {
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
-                            Image.network(
-                              'http://162.248.102.236:8055/assets/$avatar',
+                            CachedNetworkImage(
+                              imageUrl:
+                                  'http://162.248.102.236:8055/assets/$avatar',
                               width: 60,
                               height: 60,
                               fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => CustomImageView(
-                                imagePath: 'assets/images/no_avatar.png',
-                                width: double.maxFinite,
-                                height: 120.h,
+                              placeholder: (context, url) =>
+                                  const SizedBox(), // hoặc CircularProgressIndicator()
+                              errorWidget: (context, url, error) => Image.asset(
+                                'assets/images/no_avatar.png',
+                                width: 60,
+                                height: 60,
                                 fit: BoxFit.cover,
-                                radius: BorderRadius.circular(52.h),
                               ),
                             ),
                             CustomIconButton(

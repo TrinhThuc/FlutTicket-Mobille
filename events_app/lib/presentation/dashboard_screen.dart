@@ -33,7 +33,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         (_screenKeys[1].currentState as SearchScreenState?)?.refreshData();
         break;
       case 2:
-        (_screenKeys[2].currentState as TicketEmptyScreenState?)?.refreshData();
+        // (_screenKeys[2].currentState as TicketEmptyScreenState?)?.refreshData();
         break;
       case 3:
         (_screenKeys[3].currentState as FavouritesScreenState?)?.refreshData();

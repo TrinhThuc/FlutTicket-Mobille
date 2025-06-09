@@ -8,6 +8,7 @@ import '../service/api_service.dart';
 import '../src/localization/app_vietnamese_strings.dart';
 import '../widgets.dart';
 import 'single_event_screen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class FavouritesScreen extends StatefulWidget {
   const FavouritesScreen({super.key});
@@ -210,13 +211,18 @@ class _FavouritesItemWidgetState extends State<FavouritesItemWidget> {
           Container(
             width: 88.h,
             height: 84.h,
-            decoration: BoxDecoration(
+            child: ClipRRect(
               borderRadius: BorderRadius.circular(10.h),
-              image: DecorationImage(
-                image: NetworkImage(
-                  "http://162.248.102.236:8055/assets/${widget.event['eventPoster'] ?? 'default_image.png'}",
-                ),
+              child: CachedNetworkImage(
+                imageUrl:
+                    "http://162.248.102.236:8055/assets/${widget.event['eventPoster'] ?? ''}",
                 fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
+                errorWidget: (context, url, error) => Image.asset(
+                  'assets/images/default_image.png',
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),

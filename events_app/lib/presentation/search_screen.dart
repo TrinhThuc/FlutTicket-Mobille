@@ -7,6 +7,8 @@ import '../app_theme.dart';
 import '../service/api_service.dart';
 import '../src/localization/app_vietnamese_strings.dart';
 import 'filter_screen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -38,9 +40,12 @@ class SearchScreenState extends State<SearchScreen> {
 
   Future<void> _getPopularEvents() async {
     try {
-      final response = await ApiService.requestGetApi('event/public/get-popular-event');
-      
-      if (response != null && response['data'] != null && response['data']['content'] != null) {
+      final response =
+          await ApiService.requestGetApi('event/public/get-popular-event');
+
+      if (response != null &&
+          response['data'] != null &&
+          response['data']['content'] != null) {
         setState(() {
           events = response['data']['content'];
         });
@@ -60,8 +65,9 @@ class SearchScreenState extends State<SearchScreen> {
 
   Future<void> _getEventTypes() async {
     try {
-      final response = await ApiService.requestGetApi('event/public/get-event-type');
-      
+      final response =
+          await ApiService.requestGetApi('event/public/get-event-type');
+
       if (response != null && response['data'] != null) {
         setState(() {
           eventTypes = List<Map<String, dynamic>>.from(response['data']);
@@ -95,7 +101,9 @@ class SearchScreenState extends State<SearchScreen> {
       final response = await ApiService.requestApi(
           'event/public/search-event?sort=name,asc', {});
 
-      if (response != null && response['data'] != null && response['data']['content'] != null) {
+      if (response != null &&
+          response['data'] != null &&
+          response['data']['content'] != null) {
         setState(() {
           events = response['data']['content'];
         });
@@ -120,7 +128,6 @@ class SearchScreenState extends State<SearchScreen> {
       _getEventTypes();
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -192,7 +199,8 @@ class SearchScreenState extends State<SearchScreen> {
                             );
                           },
                           icon: const Icon(Icons.filter_list),
-                          label: const Text(AppVietnameseStrings.openFiltersButton),
+                          label: const Text(
+                              AppVietnameseStrings.openFiltersButton),
                         ),
                       ],
                     ),
@@ -214,7 +222,8 @@ class SearchScreenState extends State<SearchScreen> {
                           ),
                         if (filters['startDate'] != null)
                           FilterChipviewItemWidget(
-                            label: '${AppVietnameseStrings.startDateFilterPrefix}${filters['startDate']}',
+                            label:
+                                '${AppVietnameseStrings.startDateFilterPrefix}${filters['startDate']}',
                             onSelected: (selected) {
                               setState(() {
                                 filters['startDate'] = null;
@@ -224,7 +233,8 @@ class SearchScreenState extends State<SearchScreen> {
                           ),
                         if (filters['endDate'] != null)
                           FilterChipviewItemWidget(
-                            label: '${AppVietnameseStrings.endDateFilterPrefix}${filters['endDate']}',
+                            label:
+                                '${AppVietnameseStrings.endDateFilterPrefix}${filters['endDate']}',
                             onSelected: (selected) {
                               setState(() {
                                 filters['endDate'] = null;
@@ -234,7 +244,8 @@ class SearchScreenState extends State<SearchScreen> {
                           ),
                         if (filters['location'] != null)
                           FilterChipviewItemWidget(
-                            label: '${AppVietnameseStrings.locationFilterPrefix}${filters['location']}',
+                            label:
+                                '${AppVietnameseStrings.locationFilterPrefix}${filters['location']}',
                             onSelected: (selected) {
                               setState(() {
                                 filters['location'] = null;
@@ -262,7 +273,8 @@ class SearchScreenState extends State<SearchScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('${events.length}${AppVietnameseStrings.eventsSuffix}',
+                          Text(
+                              '${events.length}${AppVietnameseStrings.eventsSuffix}',
                               style: CustomTextStyles.bodyLargeBlack900),
                           const Spacer(),
                           Text(AppVietnameseStrings.sortByRelevant,
@@ -287,18 +299,21 @@ class SearchScreenState extends State<SearchScreen> {
                           },
                           itemBuilder: (context, index) {
                             final event = events[index];
-                            return event['name'] != null ? GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => EventPage(eventId: event['id'] ?? 0),
-                                  ),
-                                );
-                              },
-                              child: EventListItemWidget(event: event),
-                            ) :
-                            Center(child: Text(AppVietnameseStrings.noEvents));
+                            return event['name'] != null
+                                ? GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => EventPage(
+                                              eventId: event['id'] ?? 0),
+                                        ),
+                                      );
+                                    },
+                                    child: EventListItemWidget(event: event),
+                                  )
+                                : Center(
+                                    child: Text(AppVietnameseStrings.noEvents));
                           },
                         ),
                       ),
@@ -343,33 +358,33 @@ class SearchScreenState extends State<SearchScreen> {
     // }
     final Map<String, dynamic> body = {};
 
-  if (filters['eventTypeId'] != null) {
-    body['eventTypeId'] = filters['eventTypeId'];
-  }
-  if (filters['startDate'] != null) {
-    body['startDate'] = filters['startDate'];
-  }
-  if (filters['endDate'] != null) {
-    body['endDate'] = filters['endDate'];
-  }
-  if (filters['location'] != null) {
-    body['location'] = filters['location'];
-  }
-  if (filters['searchContent'] != null) {
-    body['searchContent'] = filters['searchContent'];
-  }
+    if (filters['eventTypeId'] != null) {
+      body['eventTypeId'] = filters['eventTypeId'];
+    }
+    if (filters['startDate'] != null) {
+      body['startDate'] = filters['startDate'];
+    }
+    if (filters['endDate'] != null) {
+      body['endDate'] = filters['endDate'];
+    }
+    if (filters['location'] != null) {
+      body['location'] = filters['location'];
+    }
+    if (filters['searchContent'] != null) {
+      body['searchContent'] = filters['searchContent'];
+    }
     body['page'] = filters['page'] ?? 0;
-  body['size'] = filters['size'] ?? 99;
+    body['size'] = filters['size'] ?? 99;
 
     queryParams['sort'] = 'name,asc';
 
     // Tạo URL với query parameters
     final queryString = Uri(queryParameters: queryParams).query;
     final url = 'event/public/search-event?$queryString';
-  final response = await ApiService.requestApi(
-    url,
-    body,
-  );
+    final response = await ApiService.requestApi(
+      url,
+      body,
+    );
 
     if (response != null) {
       setState(() {
@@ -402,7 +417,7 @@ class _EventListItemWidgetState extends State<EventListItemWidget> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context)  => EventPage(eventId: widget.event['id']),
+            builder: (context) => EventPage(eventId: widget.event['id']),
           ),
         );
       },
@@ -411,12 +426,20 @@ class _EventListItemWidgetState extends State<EventListItemWidget> {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: Image.network(
-              'http://162.248.102.236:8055/assets/${widget.event['eventPoster']}',
+            child: CachedNetworkImage(
+              imageUrl: widget.event['eventPoster'] != null
+                  ? 'http://162.248.102.236:8055/assets/${widget.event['eventPoster']}'
+                  : '',
               width: 88,
               height: 84,
               fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => CustomImageView(
+              placeholder: (context, url) => Container(
+                width: 88,
+                height: 84,
+                color: Colors.grey.shade200,
+                alignment: Alignment.center,
+              ),
+              errorWidget: (context, url, error) => CustomImageView(
                 imagePath: 'assets/images/No-Image.png',
                 width: 88,
                 height: 84,
